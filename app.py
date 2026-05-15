@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-MODEL_NAME = "deepseek/deepseek-r1:free"
+MODEL_NAME = "meta-llama/llama-3.3-70b-instruct:free"
 
 @app.get("/", response_class=HTMLResponse)
 async def home_page(request: Request):
