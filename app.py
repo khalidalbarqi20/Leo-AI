@@ -6,23 +6,22 @@ from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
 
-# إعداد مجلد الواجهات الرسومية
-templates = Jinja2Templates(directory="templates")
+# تعديل جوهري: تحديد مسار المجلد الحالي بدقة لضمان العثور على الواجهة في Render
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 # استدعاء مفتاح الـ API المشفر من إعدادات سيرفر Render
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 # اسم النموذج المحدث لـ Claude 4.6 Sonnet عبر سيرفر OpenRouter
-MODEL_NAME = "anthropic/claude-4.6-sonnet"
+MODEL_NAME = "anthropic/claude-sonnet-4.6"
 
 @app.get("/", response_class=HTMLResponse)
 async def home_page(request: Request):
-    # عرض الصفحة فارغة عند أول دخول للموقع
     return templates.TemplateResponse("index.html", {"request": request, "response": ""})
 
 @app.post("/", response_class=HTMLResponse)
 async def generate_code(request: Request, prompt: str = Form(...)):
-    # التحقق من وجود مفتاح الـ API قبل إرسال الطلب
     if not OPENROUTER_API_KEY:
         error_msg = "خطأ أمني: لم يتم العثور على مفتاح الـ API البرمجي في خادم الاستضافة."
         return templates.TemplateResponse("index.html", {"request": request, "response": error_msg})
@@ -32,7 +31,6 @@ async def generate_code(request: Request, prompt: str = Form(...)):
         "Content-Type": "application/json"
     }
 
-    # الأوامر الثابتة لتهيئة Claude 4.6 ليعمل كخبير برمجي صارم مبني لك خصيصاً
     system_instruction = (
         "أنت مساعد برمجيات ذكي وخبير جداً مخصص للمستخدم فقط. "
         "مهمتك الأساسية هي تلقي المتطلبات باللغة العربية، وكتابة كود برمي كامل، نظيف، "
@@ -49,11 +47,8 @@ async def generate_code(request: Request, prompt: str = Form(...)):
     }
 
     try:
-        # إرسال الطلب عبر السحابة إلى سحابة المطورين للنموذج
         response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
         response_json = response.json()
-        
-        # استخراج النص البرمجي الراجع من كلاود
         ai_response = response_json['choices'][0]['message']['content']
     except Exception as e:
         ai_response = f"حدث خطأ في الاتصال بالنموذج السحابي: {str(e)}"
