@@ -10,8 +10,11 @@ app = FastAPI()
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
+# جلب مفتاح OpenRouter الآمن من إعدادات Render
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-MODEL_NAME = "anthropic/claude-sonnet-4.6"
+
+# النموذج المجاني الخارق المتخصص في البرمجة والتفكير المنطقي المعقد
+MODEL_NAME = "deepseek/deepseek-r1:free"
 
 @app.get("/", response_class=HTMLResponse)
 async def home_page(request: Request):
@@ -24,17 +27,15 @@ async def generate_code_and_analyze(
     file: UploadFile = File(None)
 ):
     if not OPENROUTER_API_KEY:
-        return templates.TemplateResponse("index.html", {"request": request, "response": "خطأ: لم يتم ضبط الـ API Key", "raw_code": ""})
+        return templates.TemplateResponse("index.html", {"request": request, "response": "خطأ: لم يتم ضبط الـ API Key في إعدادات البيئة على Render.", "raw_code": ""})
 
-    # تجهيز محتوى الرسالة الافتراضي للـ API
     content_list = [{"type": "text", "text": prompt}]
 
-    # معالجة الملف أو الصورة المرفوعة إن وجدت
+    # معالجة الملفات المرفوعة (صور أو أكواد)
     if file and file.filename != "":
         file_content = await file.read()
         file_mime = file.content_type
         
-        # إذا كان المرفق صورة، نقوم بتشفيرها وإرسالها للتحليل البصري
         if file_mime.startswith("image/"):
             base64_image = base64.b64encode(file_content).decode("utf-8")
             content_list.append({
@@ -42,7 +43,6 @@ async def generate_code_and_analyze(
                 "image_url": {"url": f"data:{file_mime};base64,{base64_image}"}
             })
         else:
-            # إذا كان ملف نصي أو كود برمي، نقرأ محتواه كمتن نصي مدمج
             try:
                 text_data = file_content.decode("utf-8")
                 content_list[0]["text"] += f"\n\n[محتوى الملف المرفق {file.filename}]:\n{text_data}"
@@ -55,9 +55,10 @@ async def generate_code_and_analyze(
     }
 
     system_instruction = (
-        "أنت محطة تطوير متكاملة وخبير برمجيات أقدم. "
-        "مهمتك هي تحليل الطلبات والملفات المرفقة (أكواد أو صور تصاميم)، وكتابة حلول برمجية احترافية. "
-        "يجب أن تفصل الشرح العربي عن الكود البرمجي البرمجي الحقيقي لكي يتمكن المستخدم من تحميله مباشرة."
+        "أنت محطة تطوير برمجية متكاملة (IDE Expert). مهمتك هي كتابة أكواد برمجية دقيقة جداً، "
+        "نظيفة، ومتوافقة مع أعلى معايير الجودة لعام 2026. "
+        "قم بفصل الشرح العربي عن الكود البرمجي النظيف داخل بلوكات الماركداون (```) "
+        "لكي يتمكن المستخدم من تحميل الكود كملف مستقل مباشرة."
     )
 
     data = {
@@ -71,19 +72,26 @@ async def generate_code_and_analyze(
     ai_response = ""
     raw_code = ""
     try:
-        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
+        response = requests.post("[https://openrouter.ai/api/v1/chat/completions](https://openrouter.ai/api/v1/chat/completions)", headers=headers, json=data)
         response_json = response.json()
-        ai_response = response_json['choices'][0]['message']['content']
         
-        # استخراج الكود النظيف فقط لغرض ميزة التحميل كملف جاهز
-        if "```" in ai_response:
-            parts = ai_response.split("```")
-            # أخذ أول كود برمجي يظهر في الإجابة وتجريده من اسم اللغة
-            raw_code = parts[1].split("\n", 1)[1] if "\n" in parts[1] else parts[1]
+        # فحص أمني للتأكد من أن الاستجابة تحتوي على نص الاسترجاع الصحيح
+        if 'choices' in response_json:
+            ai_response = response_json['choices'][0]['message']['content']
+            
+            # استخراج الكود النظيف فقط لزر التحميل
+            if "```" in ai_response:
+                parts = ai_response.split("```")
+                raw_code = parts[1].split("\n", 1)[1] if "\n" in parts[1] else parts[1]
+            else:
+                raw_code = ai_response
+        elif 'error' in response_json:
+            ai_response = f"رفض السيرفر السحابي الطلب. سبب الخطأ: {response_json['error'].get('message', 'غير معروف')}"
         else:
-            raw_code = ai_response
+            ai_response = f"استجابة غير متوقعة من السيرفر السحابي. تفاصيل الرد: {str(response_json)}"
+            
     except Exception as e:
-        ai_response = f"حدث خطأ في الاتصال بالسيرفر السحابي: {str(e)}"
+        ai_response = f"حدث خطأ أثناء الاتصال بالشبكة الخارجية: {str(e)}"
 
     return templates.TemplateResponse("index.html", {
         "request": request, 
@@ -92,11 +100,9 @@ async def generate_code_and_analyze(
         "raw_code": raw_code
     })
 
-# مسار جديد تماماً مخصص لتحميل الكود الناتج بملف مستقل جاهز للتنزيل
 @app.post("/download")
 async def download_file(code_content: str = Form(...)):
     filename = "generated_code.txt"
-    # محاولة ذكية لتخمين نوع الملف وحفظه بالصيغة المناسبة
     if "import " in code_content or "def " in code_content: filename = "script.py"
     elif "<html" in code_content.lower(): filename = "index.html"
     elif "const " in code_content or "let " in code_content: filename = "script.js"
