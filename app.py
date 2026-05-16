@@ -11,7 +11,15 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-MODEL_NAME = "meta-llama/llama-3.3-70b-instruct:free"
+
+# ✅ قائمة نماذج احتياطية — يجربهم بالترتيب تلقائياً
+FALLBACK_MODELS = [
+    "google/gemma-4-26b-a4b-it:free",      # Google — مستقر
+    "openai/gpt-oss-120b:free",             # OpenAI — قوي
+    "nvidia/nemotron-3-super-120b-a12b:free", # NVIDIA — سريع
+    "poolside/laguna-m.1:free",             # مخصص للأكواد
+    "meta-llama/llama-3.3-70b-instruct:free", # Llama — احتياطي
+]
 
 @app.get("/", response_class=HTMLResponse)
 async def home_page(request: Request):
@@ -32,7 +40,7 @@ async def generate_code_and_analyze(
     if file and file.filename != "":
         file_content = await file.read()
         file_mime = file.content_type
-        
+
         if file_mime.startswith("image/"):
             base64_image = base64.b64encode(file_content).decode("utf-8")
             content_list.append({
@@ -53,40 +61,56 @@ async def generate_code_and_analyze(
 
     system_instruction = (
         "أنت مساعد برمجيات ذكي خبير جداً ومخصص للمستخدم. "
-        "مهمتك الأساسية هي تلقي المتطلبات باللغة العربية، وكتابة كود برمي كامل ونظيف "
+        "مهمتك الأساسية هي تلقي المتطلبات باللغة العربية، وكتابة كود برمجي كامل ونظيف "
         "داخل بلوكات برمجية واضحة (Markdown Code Blocks) مع توفير شرح مبسط ومباشر باللغة العربية."
     )
 
-    data = {
-        "model": MODEL_NAME,
-        "messages": [
-            {"role": "system", "content": system_instruction},
-            {"role": "user", "content": content_list}
-        ]
-    }
-
     ai_response = ""
     raw_code = ""
-    try:
-        # هنا تم تنظيف الرابط السحابي تماماً وبشكل حاسم من أي أقواس تشعبية
-        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
-        response_json = response.json()
-        
-        if 'choices' in response_json:
-            ai_response = response_json['choices'][0]['message']['content']
-            
-            if "```" in ai_response:
-                parts = ai_response.split("```")
-                raw_code = parts[1].split("\n", 1)[1] if "\n" in parts[1] else parts[1]
-            else:
-                raw_code = ai_response
-        elif 'error' in response_json:
-            ai_response = f"تم رفض الطلب من الحساب السحابي. السبب: {response_json['error'].get('message', 'غير معروف')}"
-        else:
-            ai_response = f"رد غير متوقع من السيرفر. تفاصيل: {str(response_json)}"
-            
-    except Exception as e:
-        ai_response = f"حدث خطأ أثناء الاتصال بالشبكة الخارجية: {str(e)}"
+    last_error = ""
+
+    # ✅ جرب كل نموذج بالترتيب حتى يشتغل واحد
+    for model_name in FALLBACK_MODELS:
+        try:
+            data = {
+                "model": model_name,
+                "messages": [
+                    {"role": "system", "content": system_instruction},
+                    {"role": "user", "content": content_list}
+                ]
+            }
+
+            response = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers=headers,
+                json=data,
+                timeout=30
+            )
+            response_json = response.json()
+
+            if 'choices' in response_json and response_json['choices']:
+                ai_response = response_json['choices'][0]['message']['content']
+
+                if "```" in ai_response:
+                    parts = ai_response.split("```")
+                    raw_code = parts[1].split("\n", 1)[1] if "\n" in parts[1] else parts[1]
+                else:
+                    raw_code = ai_response
+
+                # ✅ اشتغل — اخرج من الحلقة
+                break
+
+            elif 'error' in response_json:
+                last_error = f"{model_name}: {response_json['error'].get('message', 'غير معروف')}"
+                continue  # جرب النموذج التالي
+
+        except Exception as e:
+            last_error = f"{model_name}: {str(e)}"
+            continue  # جرب النموذج التالي
+
+    # لو ما اشتغل ولا نموذج
+    if not ai_response:
+        ai_response = f"تم رفض الطلب من جميع النماذج المتاحة. آخر خطأ: {last_error}"
 
     return templates.TemplateResponse("index.html", {
         "request": request, 
@@ -101,7 +125,7 @@ async def download_file(code_content: str = Form(...)):
     if "import " in code_content or "def " in code_content: filename = "script.py"
     elif "<html" in code_content.lower(): filename = "index.html"
     elif "const " in code_content or "let " in code_content: filename = "script.js"
-    
+
     return Response(
         content=code_content,
         media_type="application/octet-stream",
