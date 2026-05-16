@@ -43,10 +43,10 @@
             gap: 10px;
         }
 
-        .btn-clear {
-            background: #ef4444;
-            color: white;
-            border: none;
+        .btn-header {
+            background: #2e3440;
+            color: #e2e8f0;
+            border: 1px solid #414868;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
@@ -55,7 +55,11 @@
             transition: all 0.2s;
         }
 
+        .btn-header:hover { background: #414868; }
+        .btn-clear { background: #ef4444; border-color: #ef4444; color: white; }
         .btn-clear:hover { background: #dc2626; }
+        .btn-save { background: #73daca; border-color: #73daca; color: #111216; }
+        .btn-save:hover { background: #5cbfb0; }
 
         .chat-container {
             flex: 1;
@@ -67,7 +71,7 @@
         }
 
         .message {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             animation: fadeIn 0.3s ease;
         }
 
@@ -108,18 +112,137 @@
             border-bottom-right-radius: 4px;
         }
 
-        .bubble-ai pre {
-            background: #0d0e12 !important;
-            border-radius: 10px;
-            margin: 10px 0;
-            direction: ltr;
-            text-align: left;
+        /* Markdown styling */
+        .bubble-ai h1, .bubble-ai h2, .bubble-ai h3, .bubble-ai h4 {
+            color: #ffb454;
+            margin: 15px 0 10px 0;
+            font-weight: 600;
         }
 
-        .bubble-ai code {
-            font-family: 'Fira Code', 'Consolas', monospace;
+        .bubble-ai h1 { font-size: 22px; }
+        .bubble-ai h2 { font-size: 19px; }
+        .bubble-ai h3 { font-size: 17px; }
+        .bubble-ai h4 { font-size: 15px; }
+
+        .bubble-ai p { margin: 10px 0; }
+
+        .bubble-ai ul, .bubble-ai ol {
+            margin: 10px 0;
+            padding-right: 20px;
+        }
+
+        .bubble-ai li { margin: 5px 0; }
+
+        .bubble-ai strong { color: #73daca; }
+        .bubble-ai em { color: #ff9e64; }
+
+        .bubble-ai blockquote {
+            border-right: 3px solid #ffb454;
+            padding-right: 15px;
+            margin: 10px 0;
+            color: #94a3b8;
+        }
+
+        .bubble-ai hr {
+            border: none;
+            border-top: 1px solid #2e3440;
+            margin: 15px 0;
+        }
+
+        .bubble-ai a { color: #73daca; text-decoration: none; }
+        .bubble-ai a:hover { text-decoration: underline; }
+
+        /* Code blocks with copy button */
+        .code-block-wrapper {
+            position: relative;
+            margin: 15px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #0d0e12;
+            border: 1px solid #2e3440;
+        }
+
+        .code-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: #161821;
+            border-bottom: 1px solid #2e3440;
+        }
+
+        .code-lang {
+            color: #ff9e64;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .btn-copy-code {
+            background: #414868;
+            color: #ffffff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-copy-code:hover { background: #565f89; }
+        .btn-copy-code.copied { background: #73daca; color: #111216; }
+
+        .code-block-wrapper pre {
+            margin: 0 !important;
+            padding: 15px !important;
+            background: #0d0e12 !important;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .code-block-wrapper code {
+            font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
             font-size: 13px;
         }
+
+        /* Inline code */
+        .bubble-ai code:not(pre code) {
+            background: #0d0e12;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            color: #ff9e64;
+        }
+
+        /* Tables */
+        .bubble-ai table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .bubble-ai th, .bubble-ai td {
+            border: 1px solid #2e3440;
+            padding: 10px 15px;
+            text-align: right;
+        }
+
+        .bubble-ai th {
+            background: #161821;
+            color: #ffb454;
+            font-weight: 600;
+        }
+
+        .bubble-ai tr:nth-child(even) { background: #161821; }
 
         .input-area {
             background: rgba(22, 24, 33, 0.95);
@@ -237,9 +360,7 @@
             transition: all 0.2s;
         }
 
-        .file-card:hover {
-            border-color: #ffb454;
-        }
+        .file-card:hover { border-color: #ffb454; }
 
         .file-info {
             display: flex;
@@ -247,20 +368,9 @@
             gap: 10px;
         }
 
-        .file-icon {
-            font-size: 20px;
-        }
-
-        .file-name {
-            color: #e2e8f0;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .file-lang {
-            color: #94a3b8;
-            font-size: 12px;
-        }
+        .file-icon { font-size: 20px; }
+        .file-name { color: #e2e8f0; font-weight: 600; font-size: 14px; }
+        .file-lang { color: #94a3b8; font-size: 12px; }
 
         .btn-download-file {
             background: #73daca;
@@ -274,9 +384,7 @@
             transition: all 0.2s;
         }
 
-        .btn-download-file:hover {
-            background: #5cbfb0;
-        }
+        .btn-download-file:hover { background: #5cbfb0; }
 
         .typing-indicator {
             display: none;
@@ -289,10 +397,7 @@
 
         .typing-indicator.active { display: flex; }
 
-        .dots {
-            display: flex;
-            gap: 4px;
-        }
+        .dots { display: flex; gap: 4px; }
 
         .dots span {
             width: 8px;
@@ -354,10 +459,77 @@
             color: #ffb454;
         }
 
+        /* Saved chats sidebar */
+        .saved-chats-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .saved-chats-modal.active { display: flex; }
+
+        .modal-content {
+            background: #161821;
+            border-radius: 16px;
+            padding: 25px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 70vh;
+            overflow-y: auto;
+            border: 1px solid #2e3440;
+        }
+
+        .modal-content h2 {
+            color: #ffb454;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .saved-chat-item {
+            background: #1f2335;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #2e3440;
+        }
+
+        .saved-chat-item:hover { border-color: #ffb454; }
+
+        .saved-chat-title {
+            color: #e2e8f0;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .saved-chat-date {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .btn-close-modal {
+            background: #414868;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             .chat-container { padding: 10px; }
             .bubble { max-width: 95%; }
             .header h1 { font-size: 16px; }
+            .header-actions { gap: 5px; }
+            .btn-header { padding: 6px 12px; font-size: 12px; }
         }
     </style>
 </head>
@@ -366,7 +538,9 @@
 <div class="header">
     <h1>🚀 Leo-AI Pro Station</h1>
     <div class="header-actions">
-        <button class="btn-clear" onclick="clearChat()">🗑️ مسح المحادثة</button>
+        <button class="btn-header btn-save" onclick="saveChat()">💾 حفظ</button>
+        <button class="btn-header" onclick="showSavedChats()">📂 المحادثات</button>
+        <button class="btn-header btn-clear" onclick="clearChat()">🗑️ مسح</button>
     </div>
 </div>
 
@@ -422,13 +596,40 @@
     </div>
 </div>
 
+<!-- Saved Chats Modal -->
+<div class="saved-chats-modal" id="savedChatsModal">
+    <div class="modal-content">
+        <h2>📂 المحادثات المحفوظة</h2>
+        <div id="savedChatsList"></div>
+        <button class="btn-close-modal" onclick="closeModal()">إغلاق</button>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
 
 <script>
+// Copy code function
+function copyCode(button, codeText) {
+    navigator.clipboard.writeText(codeText).then(() => {
+        button.innerHTML = '✅ تم النسخ';
+        button.classList.add('copied');
+        setTimeout(() => {
+            button.innerHTML = '📋 نسخ';
+            button.classList.remove('copied');
+        }, 2000);
+    }).catch(err => {
+        alert("فشل النسخ: " + err);
+    });
+}
+
 function handleSubmit(e) {
     document.getElementById('typingIndicator').classList.add('active');
     document.getElementById('sendBtn').disabled = true;
@@ -452,6 +653,67 @@ function clearChat() {
     if (confirm('هل تريد مسح المحادثة بالكامل؟')) {
         fetch('/clear', { method: 'POST' })
             .then(() => location.reload());
+    }
+}
+
+// Save chat to localStorage
+function saveChat() {
+    const chatContainer = document.getElementById('chatContainer');
+    const messages = chatContainer.querySelectorAll('.message');
+    if (messages.length === 0) {
+        alert('لا توجد محادثة لحفظها!');
+        return;
+    }
+
+    const chatData = {
+        id: Date.now(),
+        title: document.querySelector('.bubble-user')?.textContent?.substring(0, 50) || 'محادثة جديدة',
+        date: new Date().toLocaleString('ar-SA'),
+        html: chatContainer.innerHTML
+    };
+
+    let saved = JSON.parse(localStorage.getItem('leoai_chats') || '[]');
+    saved.unshift(chatData);
+    if (saved.length > 20) saved = saved.slice(0, 20); // Keep last 20
+    localStorage.setItem('leoai_chats', JSON.stringify(saved));
+
+    alert('✅ تم حفظ المحادثة!');
+}
+
+// Show saved chats
+function showSavedChats() {
+    const modal = document.getElementById('savedChatsModal');
+    const list = document.getElementById('savedChatsList');
+    const saved = JSON.parse(localStorage.getItem('leoai_chats') || '[]');
+
+    if (saved.length === 0) {
+        list.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">لا توجد محادثات محفوظة</p>';
+    } else {
+        list.innerHTML = saved.map(chat => `
+            <div class="saved-chat-item" onclick="loadChat(${chat.id})">
+                <div class="saved-chat-title">${chat.title}...</div>
+                <div class="saved-chat-date">${chat.date}</div>
+            </div>
+        `).join('');
+    }
+
+    modal.classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('savedChatsModal').classList.remove('active');
+}
+
+function loadChat(chatId) {
+    const saved = JSON.parse(localStorage.getItem('leoai_chats') || '[]');
+    const chat = saved.find(c => c.id === chatId);
+    if (chat) {
+        document.getElementById('chatContainer').innerHTML = chat.html;
+        closeModal();
+        // Re-initialize code blocks
+        if (typeof Prism !== 'undefined') {
+            Prism.highlightAll();
+        }
     }
 }
 
