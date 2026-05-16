@@ -17,7 +17,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 chat_sessions = {}
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 
 FALLBACK_MODELS = [
     "google/gemma-4-26b-a4b-it:free",
@@ -28,24 +28,22 @@ FALLBACK_MODELS = [
 ]
 
 SYSTEM_PROMPT = (
-    "أنت مساعد برمجي ذكي ومتفاعل. قواعدك:\n"
-    "1. تفاعل مع المستخدم بالمحادثة - اسأل لتوضيح المتطلبات\n"
-    "2. اشرح فهمك قبل كتابة الكود\n"
-    "3. اكتب الأكواد في بلوكات Markdown واضحة\n"
-    "4. لو المستخدم يحتاج أكثر من ملف، اكتب كل ملف منفصل مع اسم الملف\n"
-    "5. استخدم هذا التنسيق لكل ملف:\n"
+    "You are a helpful coding assistant. Rules:\n"
+    "1. Interact conversationally - ask clarifying questions\n"
+    "2. Explain your understanding before writing code\n"
+    "3. Write code in clear Markdown blocks\n"
+    "4. If user needs multiple files, write each separately with filename\n"
+    "5. Use this format for each file:\n"
     "   ### filename.ext\n"
     "   ```language\n"
     "   // code here\n"
     "   ```\n"
-    "6. كن سريعاً ومختصراً في الشرح\n"
-    "7. اكتب بالعربية دائماً"
+    "6. Be quick and concise in explanations\n"
+    "7. Always respond in Arabic"
 )
 
 def markdown_to_html(text):
     """Convert markdown to HTML with copy buttons for code blocks"""
-
-    # Store code blocks temporarily
     code_blocks = []
 
     def extract_code_block(match):
@@ -55,32 +53,19 @@ def markdown_to_html(text):
         code_blocks.append((lang, code))
         return f"__CODE_BLOCK_{idx}__"
 
-    # Extract code blocks first
     text = re.sub(r'```(\w+)?\n(.*?)```', extract_code_block, text, flags=re.DOTALL)
 
-    # Escape HTML
     text = text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-
-    # Process inline code
     text = re.sub(r'`([^`]+)`', r'<code>\1</code>', text)
-
-    # Headers
     text = re.sub(r'^### (.*?)$', r'<h3>\1</h3>', text, flags=re.MULTILINE)
     text = re.sub(r'^## (.*?)$', r'<h2>\1</h2>', text, flags=re.MULTILINE)
     text = re.sub(r'^# (.*?)$', r'<h1>\1</h1>', text, flags=re.MULTILINE)
-
-    # Bold and italic
     text = re.sub(r'\*\*\*(.*?)\*\*\*', r'<strong><em>\1</em></strong>', text)
     text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
     text = re.sub(r'\*(.*?)\*', r'<em>\1</em>', text)
-
-    # Blockquotes
     text = re.sub(r'^> (.*?)$', r'<blockquote>\1</blockquote>', text, flags=re.MULTILINE)
-
-    # Lists
     text = re.sub(r'^\d+\.\s+(.*?)$', r'<li>\1</li>', text, flags=re.MULTILINE)
 
-    # Line breaks - handle paragraphs
     paragraphs = text.split('\n\n')
     processed_paragraphs = []
     for p in paragraphs:
@@ -94,7 +79,6 @@ def markdown_to_html(text):
 
     text = '\n'.join(processed_paragraphs)
 
-    # Restore code blocks with copy buttons
     lang_map = {
         'python': 'python', 'py': 'python',
         'javascript': 'javascript', 'js': 'javascript',
@@ -112,26 +96,16 @@ def markdown_to_html(text):
     for idx, (lang, code) in enumerate(code_blocks):
         prism_lang = lang_map.get(lang.lower(), 'text')
         display_lang = lang if lang else 'code'
-
-        # Escape code for HTML display
         escaped_code = code.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-
-        # Encode code for JavaScript copy function
         code_b64 = base64.b64encode(code.encode('utf-8')).decode('utf-8')
 
         code_html = (
-            '<div class="code-block-wrapper">
-'
-            '    <div class="code-block-header">
-'
-            '        <span class="code-lang">' + display_lang + '</span>
-'
-            '        <button class="btn-copy-code" onclick="copyCode(this, '' + code_b64 + '')">&#128203; نسخ</button>
-'
-            '    </div>
-'
-            '    <pre><code class="language-' + prism_lang + '">' + escaped_code + '</code></pre>
-'
+            '<div class="code-block-wrapper">\n'
+            '    <div class="code-block-header">\n'
+            '        <span class="code-lang">' + display_lang + '</span>\n'
+            '        <button class="btn-copy-code" onclick="copyCode(this, \'' + code_b64 + '\')">&#128203; نسخ</button>\n'
+            '    </div>\n'
+            '    <pre><code class="language-' + prism_lang + '">' + escaped_code + '</code></pre>\n'
             '</div>'
         )
 
@@ -142,13 +116,10 @@ def markdown_to_html(text):
 def extract_files_from_response(text):
     """Extract multiple files from AI response"""
     files = {}
-
     pattern = r'###\s*(\S+\.(?:py|html|css|js|json|txt|md|jsx|ts|tsx|vue|php|java|cpp|c|go|rs|swift|kt|dart|rb|pl|sh|sql|xml|yaml|yml))\s*\n*```(?:\w+)?\n(.*?)```'
     matches = re.findall(pattern, text, re.DOTALL | re.IGNORECASE)
-
     for filename, code in matches:
         files[filename.strip()] = code.strip()
-
     if not files:
         code_pattern = r'```(?:\w+)?\n(.*?)```'
         code_matches = re.findall(code_pattern, text, re.DOTALL)
@@ -156,13 +127,11 @@ def extract_files_from_response(text):
             content = code_matches[0]
             filename = guess_filename(content)
             files[filename] = content.strip()
-
     return files
 
 def guess_filename(content):
     """Guess filename from code content"""
     content_lower = content.lower().strip()
-
     if content_lower.startswith('<!doctype html>') or content_lower.startswith('<html'):
         return 'index.html'
     elif 'fastapi' in content_lower or 'flask' in content_lower or content_lower.startswith('import '):
@@ -174,169 +143,128 @@ def guess_filename(content):
         return 'style.css'
     elif content_lower.startswith('{') or content_lower.startswith('['):
         return 'data.json'
-
     return 'generated_code.txt'
 
-def get_file_icon(filename):
-    """Get emoji icon for file type"""
-    ext = filename.split('.')[-1].lower()
-    icons = {
-        'py': '&#128013;', 'js': '&#128220;', 'html': '&#127760;', 'css': '&#127912;',
-        'json': '&#128203;', 'txt': '&#128196;', 'md': '&#128221;', 'jsx': '&#9883;',
-        'ts': '&#128216;', 'tsx': '&#128216;', 'vue': '&#128994;', 'php': '&#128024;',
-        'java': '&#9749;', 'cpp': '&#9881;', 'c': '&#9881;', 'go': '&#128057;',
-        'rs': '&#129408;', 'swift': '&#128038;', 'kt': '&#128995;', 'dart': '&#127919;',
-        'rb': '&#128142;', 'sql': '&#128190;', 'xml': '&#128240;', 'yaml': '&#9881;', 'yml': '&#9881;'
-    }
-    return icons.get(ext, '&#128196;')
-
-def get_language_label(filename):
-    """Get human-readable language name"""
-    ext = filename.split('.')[-1].lower()
-    labels = {
-        'py': 'Python', 'js': 'JavaScript', 'html': 'HTML',
-        'css': 'CSS', 'json': 'JSON', 'txt': 'Text',
-        'md': 'Markdown', 'jsx': 'React JSX', 'ts': 'TypeScript',
-        'tsx': 'React TSX', 'vue': 'Vue.js', 'php': 'PHP',
-        'java': 'Java', 'cpp': 'C++', 'c': 'C', 'go': 'Go',
-        'rs': 'Rust', 'swift': 'Swift', 'kt': 'Kotlin',
-        'dart': 'Dart', 'rb': 'Ruby', 'sql': 'SQL',
-        'xml': 'XML', 'yaml': 'YAML', 'yml': 'YAML'
-    }
-    return labels.get(ext, 'Code')
-
-@app.get("/", response_class=HTMLResponse)
+@app.get('/', response_class=HTMLResponse)
 async def home_page(request: Request):
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "chat_history": [],
-        "files": {},
-        "user_prompt": ""
+    return templates.TemplateResponse('index.html', {
+        'request': request,
+        'chat_history': [],
+        'files': {},
+        'user_prompt': ''
     })
 
-@app.post("/", response_class=HTMLResponse)
+@app.post('/', response_class=HTMLResponse)
 async def chat_with_ai(
     request: Request,
     prompt: str = Form(...),
     file: UploadFile = File(None),
-    session_id: str = Form("default")
+    session_id: str = Form('default')
 ):
-    logger.info(f"Chat: {prompt[:50]}...")
-
+    logger.info(f'Chat: {prompt[:50]}...')
     if not OPENROUTER_API_KEY:
-        error_msg = "&#9888; خطأ: لم يتم إعداد مفتاح API. اذهب إلى إعدادات Render وأضف OPENROUTER_API_KEY"
-        return templates.TemplateResponse("index.html", {
-            "request": request,
-            "chat_history": [{"role": "user", "content": prompt}, {"role": "ai", "content": error_msg}],
-            "files": {},
-            "user_prompt": ""
+        error_msg = 'Error: OPENROUTER_API_KEY not set'
+        return templates.TemplateResponse('index.html', {
+            'request': request,
+            'chat_history': [{'role': 'user', 'content': prompt}, {'role': 'ai', 'content': error_msg}],
+            'files': {},
+            'user_prompt': ''
         })
 
     if session_id not in chat_sessions:
         chat_sessions[session_id] = []
-
     session = chat_sessions[session_id]
 
-    content_list = [{"type": "text", "text": prompt}]
-
-    if file and file.filename != "":
+    content_list = [{'type': 'text', 'text': prompt}]
+    if file and file.filename != '':
         try:
             file_content = await file.read()
             file_mime = file.content_type
-
-            if file_mime.startswith("image/"):
-                base64_image = base64.b64encode(file_content).decode("utf-8")
+            if file_mime.startswith('image/'):
+                base64_image = base64.b64encode(file_content).decode('utf-8')
                 content_list.append({
-                    "type": "image_url",
-                    "image_url": {"url": f"data:{file_mime};base64,{base64_image}"}
+                    'type': 'image_url',
+                    'image_url': {'url': f'data:{file_mime};base64,{base64_image}'}
                 })
             else:
                 try:
-                    text_data = file_content.decode("utf-8")
-                    content_list[0]["text"] += f"\n\n[محتوى الملف المرفق {file.filename}]:\n{text_data}"
+                    text_data = file_content.decode('utf-8')
+                    content_list[0]['text'] += f'\n\n[File {file.filename}]:\n{text_data}'
                 except:
-                    content_list[0]["text"] += f"\n\n(تم إرفاق ملف غير نصي: {file.filename})"
+                    content_list[0]['text'] += f'\n\n(Non-text file: {file.filename})'
         except Exception as e:
-            logger.error(f"File error: {e}")
+            logger.error(f'File error: {e}')
 
     headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json"
+        'Authorization': f'Bearer {OPENROUTER_API_KEY}',
+        'Content-Type': 'application/json'
     }
 
-    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-    for msg in session[-10:]:  # Keep last 10 messages for longer context
+    messages = [{'role': 'system', 'content': SYSTEM_PROMPT}]
+    for msg in session[-10:]:
         messages.append(msg)
-    messages.append({"role": "user", "content": content_list})
+    messages.append({'role': 'user', 'content': content_list})
 
-    ai_response = ""
-    last_error = ""
-
+    ai_response = ''
+    last_error = ''
     for model_name in FALLBACK_MODELS:
         try:
-            logger.info(f"Trying: {model_name}")
+            logger.info(f'Trying: {model_name}')
             data = {
-                "model": model_name,
-                "messages": messages,
-                "temperature": 0.7,
-                "max_tokens": 4000
+                'model': model_name,
+                'messages': messages,
+                'temperature': 0.7,
+                'max_tokens': 4000
             }
-
             response = requests.post(
-                "https://openrouter.ai/api/v1/chat/completions",
+                'https://openrouter.ai/api/v1/chat/completions',
                 headers=headers,
                 json=data,
                 timeout=20
             )
-
-            logger.info(f"Status: {response.status_code}")
+            logger.info(f'Status: {response.status_code}')
             response_json = response.json()
-
-            if "choices" in response_json and response_json["choices"]:
-                ai_response = response_json["choices"][0]["message"]["content"]
-                logger.info(f"Success: {model_name}")
+            if 'choices' in response_json and response_json['choices']:
+                ai_response = response_json['choices'][0]['message']['content']
+                logger.info(f'Success: {model_name}')
                 break
-            elif "error" in response_json:
-                last_error = f"{model_name}: {response_json['error'].get('message', 'خطأ')}"
+            elif 'error' in response_json:
+                last_error = f'{model_name}: {response_json["error"].get("message", "error")}'
                 logger.warning(last_error)
                 continue
-
         except requests.exceptions.Timeout:
-            last_error = f"{model_name}: انتهى الوقت"
+            last_error = f'{model_name}: timeout'
             continue
         except Exception as e:
-            last_error = f"{model_name}: {str(e)}"
+            last_error = f'{model_name}: {str(e)}'
             continue
 
     if not ai_response:
-        ai_response = f"&#10060; تم رفض الطلب من جميع النماذج. آخر خطأ: {last_error}"
+        ai_response = f'All models failed. Last error: {last_error}'
 
-    # Update session
-    session.append({"role": "user", "content": prompt})
-    session.append({"role": "assistant", "content": ai_response})
+    session.append({'role': 'user', 'content': prompt})
+    session.append({'role': 'assistant', 'content': ai_response})
 
-    # Extract files
     files = extract_files_from_response(ai_response)
 
-    # Build chat history with markdown rendering
     chat_history = []
     for i in range(0, len(session), 2):
         if i < len(session):
-            user_msg = session[i]["content"] if isinstance(session[i]["content"], str) else str(session[i]["content"])
-            chat_history.append({"role": "user", "content": user_msg})
+            user_msg = session[i]['content'] if isinstance(session[i]['content'], str) else str(session[i]['content'])
+            chat_history.append({'role': 'user', 'content': user_msg})
         if i + 1 < len(session):
-            ai_msg_raw = session[i + 1]["content"]
+            ai_msg_raw = session[i + 1]['content']
             ai_msg_html = markdown_to_html(ai_msg_raw)
-            chat_history.append({"role": "ai", "content": ai_msg_html})
+            chat_history.append({'role': 'ai', 'content': ai_msg_html})
 
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "chat_history": chat_history,
-        "files": files,
-        "user_prompt": ""
+    return templates.TemplateResponse('index.html', {
+        'request': request,
+        'chat_history': chat_history,
+        'files': files,
+        'user_prompt': ''
     })
 
-@app.post("/download")
+@app.post('/download')
 async def download_file(filename: str = Form(...), code_content: str = Form(...)):
     ext = filename.split('.')[-1].lower()
     mime_types = {
@@ -353,15 +281,14 @@ async def download_file(filename: str = Form(...), code_content: str = Form(...)
         'rb': 'text/x-ruby', 'sql': 'text/x-sql',
         'xml': 'text/xml', 'yaml': 'text/yaml', 'yml': 'text/yaml'
     }
-
     return Response(
         content=code_content,
         media_type=mime_types.get(ext, 'text/plain'),
-        headers={"Content-Disposition": f"attachment; filename={filename}"}
+        headers={'Content-Disposition': f'attachment; filename={filename}'}
     )
 
-@app.post("/clear")
-async def clear_chat(session_id: str = Form("default")):
+@app.post('/clear')
+async def clear_chat(session_id: str = Form('default')):
     if session_id in chat_sessions:
         chat_sessions[session_id] = []
-    return JSONResponse({"status": "cleared"})
+    return JSONResponse({'status': 'cleared'})
