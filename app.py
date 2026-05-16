@@ -21,7 +21,7 @@ templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 chat_sessions = {}
 OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 
-# ─── قائمة الموديلات ────────────────────────────────────────────────────────
+# ─── قائمة الموديلات (vision = يدعم الصور) ──────────────────────────────────
 MODELS = [
     {
         "id":      "qwen/qwen3-coder-480b-a35b-instruct:free",
@@ -31,6 +31,7 @@ MODELS = [
         "context": "262K",
         "speed":   "متوسط",
         "tag":     "أفضل للكود",
+        "vision":  False,
     },
     {
         "id":      "deepseek/deepseek-r1:free",
@@ -40,6 +41,27 @@ MODELS = [
         "context": "128K",
         "speed":   "بطيء",
         "tag":     "أفضل للتفكير",
+        "vision":  False,
+    },
+    {
+        "id":      "google/gemma-4-31b-it:free",
+        "name":    "Gemma 4 31B",
+        "desc":    "يقرأ الصور • 256K context • من Google",
+        "badge":   "👁️",
+        "context": "256K",
+        "speed":   "متوسط",
+        "tag":     "يرى الصور",
+        "vision":  True,
+    },
+    {
+        "id":      "meta-llama/llama-4-maverick:free",
+        "name":    "Llama 4 Maverick",
+        "desc":    "يقرأ الصور • 128K context",
+        "badge":   "🦙",
+        "context": "128K",
+        "speed":   "متوسط",
+        "tag":     "يرى الصور",
+        "vision":  True,
     },
     {
         "id":      "openai/gpt-oss-20b:free",
@@ -49,15 +71,7 @@ MODELS = [
         "context": "128K",
         "speed":   "سريع",
         "tag":     "سريع",
-    },
-    {
-        "id":      "meta-llama/llama-4-maverick:free",
-        "name":    "Llama 4 Maverick",
-        "desc":    "يدعم الصور والنصوص الطويلة",
-        "badge":   "🦙",
-        "context": "128K",
-        "speed":   "متوسط",
-        "tag":     "يدعم الصور",
+        "vision":  False,
     },
     {
         "id":      "meta-llama/llama-4-scout:free",
@@ -67,6 +81,7 @@ MODELS = [
         "context": "128K",
         "speed":   "سريع جداً",
         "tag":     "الأسرع",
+        "vision":  False,
     },
     {
         "id":      "nvidia/nemotron-3-super-120b-a12b:free",
@@ -76,8 +91,11 @@ MODELS = [
         "context": "1M",
         "speed":   "متوسط",
         "tag":     "سياق ضخم",
+        "vision":  False,
     },
 ]
+
+VISION_FALLBACK_IDS = [m["id"] for m in MODELS if m["vision"]]
 
 SYSTEM_PROMPT = (
     "أنت مساعد برمجي متخصص. مهمتك الوحيدة هي مساعدة المستخدم في كتابة وتعديل وشرح الأكواد البرمجية. "
@@ -85,7 +103,7 @@ SYSTEM_PROMPT = (
     "كن دقيقاً ومختصراً. رد دائماً باللغة العربية."
 )
 
-# ─── Markdown → HTML ────────────────────────────────────────────────────────
+# ─── Markdown → HTML ─────────────────────────────────────────────────────────
 def markdown_to_html(text: str) -> str:
     code_blocks = []
 
@@ -133,7 +151,7 @@ def markdown_to_html(text: str) -> str:
         text = text.replace(f"___CODE_{idx}___", html)
     return text
 
-# ─── استخراج الملفات ────────────────────────────────────────────────────────
+# ─── استخراج الملفات ──────────────────────────────────────────────────────────
 def extract_files(text: str) -> dict:
     files = {}
     pattern = (
@@ -152,14 +170,14 @@ def extract_files(text: str) -> dict:
 
 def guess_name(content: str) -> str:
     cl = content.lower().strip()
-    if cl.startswith("<!doctype") or cl.startswith("<html"):   return "index.html"
+    if cl.startswith("<!doctype") or cl.startswith("<html"):          return "index.html"
     elif "fastapi" in cl or "flask" in cl or cl.startswith("import "): return "app.py"
-    elif cl.startswith("const ") or cl.startswith("let ") or "function " in cl: return "script.js"
-    elif "body {" in cl or ".class" in cl: return "style.css"
-    elif cl.startswith("{") or cl.startswith("["): return "data.json"
+    elif cl.startswith("const ") or "function " in cl:                 return "script.js"
+    elif "body {" in cl or ".class" in cl:                             return "style.css"
+    elif cl.startswith("{") or cl.startswith("["):                     return "data.json"
     return "code.txt"
 
-# ─── قراءة الملفات المضغوطة ─────────────────────────────────────────────────
+# ─── قراءة الملفات المضغوطة ───────────────────────────────────────────────────
 MAX_FILE_TEXT = 12_000
 
 def read_file_content(filename: str, raw_bytes: bytes, content_type: str) -> str:
@@ -201,7 +219,13 @@ def read_file_content(filename: str, raw_bytes: bytes, content_type: str) -> str
     except Exception:
         return f"(لم يمكن قراءة الملف: {filename})"
 
-# ─── Routes ──────────────────────────────────────────────────────────────────
+# ─── توليد الصور عبر Pollinations (مجاني بدون API key) ─────────────────────
+def build_image_url(prompt: str, width: int = 1024, height: int = 1024, model: str = "flux") -> str:
+    import urllib.parse
+    encoded = urllib.parse.quote(prompt)
+    return f"https://image.pollinations.ai/prompt/{encoded}?width={width}&height={height}&model={model}&nologo=true&seed={abs(hash(prompt)) % 99999}"
+
+# ─── Routes ───────────────────────────────────────────────────────────────────
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -217,20 +241,49 @@ async def get_models():
     return JSONResponse(MODELS)
 
 
+@app.post("/generate-image", response_class=JSONResponse)
+async def generate_image(prompt: str = Form(...), size: str = Form("1024x1024")):
+    """توليد صورة عبر Pollinations AI (مجاني)"""
+    try:
+        parts  = size.split("x")
+        width  = int(parts[0]) if len(parts) == 2 else 1024
+        height = int(parts[1]) if len(parts) == 2 else 1024
+        url    = build_image_url(prompt, width, height)
+        # نتحقق أن الرابط يعمل
+        r = requests.head(url, timeout=15)
+        if r.status_code == 200:
+            return JSONResponse({"url": url, "prompt": prompt})
+        else:
+            return JSONResponse({"url": url, "prompt": prompt})   # نرجعه على أي حال
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+
 @app.post("/chat", response_class=JSONResponse)
 async def chat(
-    request: Request,
-    prompt:   str = Form(...),
-    model_id: str = Form(None),
-    file: UploadFile = File(None),
+    request:  Request,
+    prompt:   str        = Form(...),
+    model_id: str        = Form(None),
+    file:     UploadFile = File(None),
 ):
     if not OPENROUTER_API_KEY:
         return JSONResponse({"error": "API key not set"}, status_code=500)
 
-    # الموديل المختار + fallback
     valid_ids = [m["id"] for m in MODELS]
-    chosen   = model_id if model_id in valid_ids else MODELS[0]["id"]
-    ordered  = [chosen] + [mid for mid in valid_ids if mid != chosen]
+    chosen    = model_id if model_id in valid_ids else MODELS[0]["id"]
+
+    # إذا وجد ملف صورة وكان الموديل لا يدعم vision، نحول لموديل يدعمها
+    has_image_file = False
+    if file and file.filename:
+        mt = file.content_type or ""
+        if mt.startswith("image/"):
+            has_image_file = True
+
+    chosen_model_obj = next((m for m in MODELS if m["id"] == chosen), MODELS[0])
+    if has_image_file and not chosen_model_obj["vision"] and VISION_FALLBACK_IDS:
+        chosen = VISION_FALLBACK_IDS[0]   # تحويل تلقائي لموديل يرى الصور
+
+    ordered = [chosen] + [mid for mid in valid_ids if mid != chosen]
 
     sid = "default"
     if sid not in chat_sessions:
@@ -246,16 +299,25 @@ async def chat(
             mt  = file.content_type or ""
             if mt.startswith("image/"):
                 b64 = base64.b64encode(raw).decode("utf-8")
-                image_content = {"type": "image_url", "image_url": {"url": f"data:{mt};base64,{b64}"}}
+                image_content = {
+                    "type": "image_url",
+                    "image_url": {"url": f"data:{mt};base64,{b64}"}
+                }
             else:
                 user_text = f"{prompt}\n\n{read_file_content(file.filename, raw, mt)}"
         except Exception as e:
             logger.error(f"File error: {e}")
 
-    msg_content = [{"type": "text", "text": user_text}, image_content] if image_content else user_text
+    if image_content:
+        msg_content = [{"type": "text", "text": user_text}, image_content]
+    else:
+        msg_content = user_text
 
-    headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json"}
-    msgs    = [{"role": "system", "content": SYSTEM_PROMPT}]
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type":  "application/json",
+    }
+    msgs = [{"role": "system", "content": SYSTEM_PROMPT}]
     msgs.extend(session[-8:])
     msgs.append({"role": "user", "content": msg_content})
 
@@ -264,6 +326,11 @@ async def chat(
     last_err   = ""
 
     for mid in ordered:
+        # تخطّ الموديلات التي لا تدعم vision إذا كان هناك صورة
+        if has_image_file:
+            mid_obj = next((m for m in MODELS if m["id"] == mid), None)
+            if mid_obj and not mid_obj["vision"]:
+                continue
         try:
             r = requests.post(
                 "https://openrouter.ai/api/v1/chat/completions",
@@ -290,9 +357,10 @@ async def chat(
     used_name = next((m["name"] for m in MODELS if m["id"] == used_model), used_model.split("/")[-1])
 
     return JSONResponse({
-        "ai_html":    markdown_to_html(ai_resp),
-        "files":      extract_files(ai_resp),
-        "used_model": used_name,
+        "ai_html":        markdown_to_html(ai_resp),
+        "files":          extract_files(ai_resp),
+        "used_model":     used_name,
+        "switched_model": used_model != chosen,   # أخبر الواجهة إذا تم التحويل
     })
 
 
@@ -300,10 +368,10 @@ async def chat(
 async def download(filename: str = Form(...), code_content: str = Form(...)):
     ext = filename.split(".")[-1].lower()
     mime_map = {
-        "py":"text/x-python","js":"application/javascript","html":"text/html",
-        "css":"text/css","json":"application/json","txt":"text/plain",
-        "md":"text/markdown","sh":"text/x-sh","sql":"text/x-sql",
-        "xml":"text/xml","yaml":"text/yaml","yml":"text/yaml",
+        "py": "text/x-python", "js": "application/javascript", "html": "text/html",
+        "css": "text/css", "json": "application/json", "txt": "text/plain",
+        "md": "text/markdown", "sh": "text/x-sh", "sql": "text/x-sql",
+        "xml": "text/xml", "yaml": "text/yaml", "yml": "text/yaml",
     }
     return Response(
         content=code_content,
