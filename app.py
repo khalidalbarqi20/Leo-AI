@@ -3,6 +3,7 @@ import base64
 import requests
 import logging
 import re
+import json
 from fastapi import FastAPI, Request, Form, UploadFile, File
 from fastapi.responses import HTMLResponse, Response, JSONResponse
 from fastapi.templating import Jinja2Templates
@@ -41,18 +42,113 @@ SYSTEM_PROMPT = (
     "7. اكتب بالعربية دائماً"
 )
 
+def markdown_to_html(text):
+    """Convert markdown to HTML with copy buttons for code blocks"""
+
+    # Store code blocks temporarily
+    code_blocks = []
+
+    def extract_code_block(match):
+        lang = match.group(1) or 'text'
+        code = match.group(2)
+        idx = len(code_blocks)
+        code_blocks.append((lang, code))
+        return f"__CODE_BLOCK_{idx}__"
+
+    # Extract code blocks first
+    text = re.sub(r'```(\w+)?\n(.*?)```', extract_code_block, text, flags=re.DOTALL)
+
+    # Escape HTML
+    text = text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+    # Process inline code
+    text = re.sub(r'`([^`]+)`', r'<code>\1</code>', text)
+
+    # Headers
+    text = re.sub(r'^### (.*?)$', r'<h3>\1</h3>', text, flags=re.MULTILINE)
+    text = re.sub(r'^## (.*?)$', r'<h2>\1</h2>', text, flags=re.MULTILINE)
+    text = re.sub(r'^# (.*?)$', r'<h1>\1</h1>', text, flags=re.MULTILINE)
+
+    # Bold and italic
+    text = re.sub(r'\*\*\*(.*?)\*\*\*', r'<strong><em>\1</em></strong>', text)
+    text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
+    text = re.sub(r'\*(.*?)\*', r'<em>\1</em>', text)
+
+    # Blockquotes
+    text = re.sub(r'^> (.*?)$', r'<blockquote>\1</blockquote>', text, flags=re.MULTILINE)
+
+    # Lists
+    text = re.sub(r'^\d+\.\s+(.*?)$', r'<li>\1</li>', text, flags=re.MULTILINE)
+
+    # Line breaks - handle paragraphs
+    paragraphs = text.split('\n\n')
+    processed_paragraphs = []
+    for p in paragraphs:
+        p = p.strip()
+        if not p:
+            continue
+        p = p.replace('\n', '<br>')
+        if not p.startswith('<'):
+            p = f'<p>{p}</p>'
+        processed_paragraphs.append(p)
+
+    text = '\n'.join(processed_paragraphs)
+
+    # Restore code blocks with copy buttons
+    lang_map = {
+        'python': 'python', 'py': 'python',
+        'javascript': 'javascript', 'js': 'javascript',
+        'typescript': 'typescript', 'ts': 'typescript',
+        'html': 'markup', 'xml': 'markup',
+        'css': 'css', 'json': 'json',
+        'bash': 'bash', 'sh': 'bash',
+        'jsx': 'jsx', 'tsx': 'tsx',
+        'java': 'java', 'cpp': 'cpp', 'c': 'c',
+        'go': 'go', 'rust': 'rust', 'rs': 'rust',
+        'php': 'php', 'ruby': 'ruby', 'rb': 'ruby',
+        'sql': 'sql', 'yaml': 'yaml', 'yml': 'yaml'
+    }
+
+    for idx, (lang, code) in enumerate(code_blocks):
+        prism_lang = lang_map.get(lang.lower(), 'text')
+        display_lang = lang if lang else 'code'
+
+        # Escape code for HTML display
+        escaped_code = code.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+        # Encode code for JavaScript copy function
+        code_b64 = base64.b64encode(code.encode('utf-8')).decode('utf-8')
+
+        code_html = (
+            '<div class="code-block-wrapper">
+'
+            '    <div class="code-block-header">
+'
+            '        <span class="code-lang">' + display_lang + '</span>
+'
+            '        <button class="btn-copy-code" onclick="copyCode(this, '' + code_b64 + '')">&#128203; نسخ</button>
+'
+            '    </div>
+'
+            '    <pre><code class="language-' + prism_lang + '">' + escaped_code + '</code></pre>
+'
+            '</div>'
+        )
+
+        text = text.replace(f"__CODE_BLOCK_{idx}__", code_html)
+
+    return text
+
 def extract_files_from_response(text):
-    """Extract multiple files from AI response with ### filename.ext pattern"""
+    """Extract multiple files from AI response"""
     files = {}
 
-    # Pattern: ### filename.ext followed by code block
     pattern = r'###\s*(\S+\.(?:py|html|css|js|json|txt|md|jsx|ts|tsx|vue|php|java|cpp|c|go|rs|swift|kt|dart|rb|pl|sh|sql|xml|yaml|yml))\s*\n*```(?:\w+)?\n(.*?)```'
     matches = re.findall(pattern, text, re.DOTALL | re.IGNORECASE)
 
     for filename, code in matches:
         files[filename.strip()] = code.strip()
 
-    # If no files found with ### pattern, try single code block
     if not files:
         code_pattern = r'```(?:\w+)?\n(.*?)```'
         code_matches = re.findall(code_pattern, text, re.DOTALL)
@@ -85,14 +181,14 @@ def get_file_icon(filename):
     """Get emoji icon for file type"""
     ext = filename.split('.')[-1].lower()
     icons = {
-        'py': '🐍', 'js': '📜', 'html': '🌐', 'css': '🎨',
-        'json': '📋', 'txt': '📄', 'md': '📝', 'jsx': '⚛️',
-        'ts': '📘', 'tsx': '📘', 'vue': '🟢', 'php': '🐘',
-        'java': '☕', 'cpp': '⚙️', 'c': '⚙️', 'go': '🐹',
-        'rs': '🦀', 'swift': '🐦', 'kt': '🟣', 'dart': '🎯',
-        'rb': '💎', 'sql': '🗄️', 'xml': '📰', 'yaml': '⚙️', 'yml': '⚙️'
+        'py': '&#128013;', 'js': '&#128220;', 'html': '&#127760;', 'css': '&#127912;',
+        'json': '&#128203;', 'txt': '&#128196;', 'md': '&#128221;', 'jsx': '&#9883;',
+        'ts': '&#128216;', 'tsx': '&#128216;', 'vue': '&#128994;', 'php': '&#128024;',
+        'java': '&#9749;', 'cpp': '&#9881;', 'c': '&#9881;', 'go': '&#128057;',
+        'rs': '&#129408;', 'swift': '&#128038;', 'kt': '&#128995;', 'dart': '&#127919;',
+        'rb': '&#128142;', 'sql': '&#128190;', 'xml': '&#128240;', 'yaml': '&#9881;', 'yml': '&#9881;'
     }
-    return icons.get(ext, '📄')
+    return icons.get(ext, '&#128196;')
 
 def get_language_label(filename):
     """Get human-readable language name"""
@@ -128,7 +224,7 @@ async def chat_with_ai(
     logger.info(f"Chat: {prompt[:50]}...")
 
     if not OPENROUTER_API_KEY:
-        error_msg = "⚠️ خطأ: لم يتم إعداد مفتاح API. اذهب إلى إعدادات Render وأضف OPENROUTER_API_KEY"
+        error_msg = "&#9888; خطأ: لم يتم إعداد مفتاح API. اذهب إلى إعدادات Render وأضف OPENROUTER_API_KEY"
         return templates.TemplateResponse("index.html", {
             "request": request,
             "chat_history": [{"role": "user", "content": prompt}, {"role": "ai", "content": error_msg}],
@@ -169,7 +265,7 @@ async def chat_with_ai(
     }
 
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-    for msg in session[-6:]:
+    for msg in session[-10:]:  # Keep last 10 messages for longer context
         messages.append(msg)
     messages.append({"role": "user", "content": content_list})
 
@@ -213,7 +309,7 @@ async def chat_with_ai(
             continue
 
     if not ai_response:
-        ai_response = f"❌ تم رفض الطلب من جميع النماذج. آخر خطأ: {last_error}"
+        ai_response = f"&#10060; تم رفض الطلب من جميع النماذج. آخر خطأ: {last_error}"
 
     # Update session
     session.append({"role": "user", "content": prompt})
@@ -222,16 +318,15 @@ async def chat_with_ai(
     # Extract files
     files = extract_files_from_response(ai_response)
 
-    # Build chat history for display (convert markdown to HTML)
+    # Build chat history with markdown rendering
     chat_history = []
     for i in range(0, len(session), 2):
         if i < len(session):
             user_msg = session[i]["content"] if isinstance(session[i]["content"], str) else str(session[i]["content"])
             chat_history.append({"role": "user", "content": user_msg})
         if i + 1 < len(session):
-            ai_msg = session[i + 1]["content"]
-            # Convert markdown code blocks to HTML for display
-            ai_msg_html = ai_msg.replace("```", "<pre><code>").replace("```", "</code></pre>")
+            ai_msg_raw = session[i + 1]["content"]
+            ai_msg_html = markdown_to_html(ai_msg_raw)
             chat_history.append({"role": "ai", "content": ai_msg_html})
 
     return templates.TemplateResponse("index.html", {
