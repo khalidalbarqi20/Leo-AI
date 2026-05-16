@@ -6,6 +6,7 @@ import re
 import zipfile
 import tarfile
 import io
+import urllib.parse
 from fastapi import FastAPI, Request, Form, UploadFile, File
 from fastapi.responses import HTMLResponse, Response, JSONResponse
 from fastapi.templating import Jinja2Templates
@@ -21,17 +22,58 @@ templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 chat_sessions = {}
 OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 
-# ─── قائمة الموديلات (vision = يدعم الصور) ──────────────────────────────────
+# ─── الموديلات ───────────────────────────────────────────────────────────────
+# vision=True يعني الموديل يقرأ الصور ويفهمها
 MODELS = [
     {
         "id":      "qwen/qwen3-coder-480b-a35b-instruct:free",
         "name":    "Qwen3 Coder 480B",
-        "desc":    "الأقوى للكود حالياً",
+        "desc":    "الأقوى للكود • 262K context",
         "badge":   "🥇",
         "context": "262K",
         "speed":   "متوسط",
         "tag":     "أفضل للكود",
         "vision":  False,
+    },
+    {
+        "id":      "qwen/qwen2.5-vl-72b-instruct:free",
+        "name":    "Qwen2.5 VL 72B",
+        "desc":    "يقرأ الصور • الأقوى في vision مجاناً",
+        "badge":   "👁️",
+        "context": "128K",
+        "speed":   "متوسط",
+        "tag":     "يرى الصور",
+        "vision":  True,
+    },
+    {
+        "id":      "qwen/qwen2.5-vl-32b-instruct:free",
+        "name":    "Qwen2.5 VL 32B",
+        "desc":    "يقرأ الصور • سريع وخفيف",
+        "badge":   "🔍",
+        "context": "128K",
+        "speed":   "سريع",
+        "tag":     "يرى الصور",
+        "vision":  True,
+    },
+    {
+        "id":      "google/gemma-4-31b-it:free",
+        "name":    "Gemma 4 31B",
+        "desc":    "يقرأ الصور • 256K context • من Google",
+        "badge":   "🌟",
+        "context": "256K",
+        "speed":   "متوسط",
+        "tag":     "يرى الصور",
+        "vision":  True,
+    },
+    {
+        "id":      "nvidia/nemotron-nano-12b-v2-vl:free",
+        "name":    "Nemotron VL 12B",
+        "desc":    "يقرأ الصور • متخصص في فهم المستندات",
+        "badge":   "🔬",
+        "context": "300K",
+        "speed":   "سريع",
+        "tag":     "يرى الصور",
+        "vision":  True,
     },
     {
         "id":      "deepseek/deepseek-r1:free",
@@ -42,26 +84,6 @@ MODELS = [
         "speed":   "بطيء",
         "tag":     "أفضل للتفكير",
         "vision":  False,
-    },
-    {
-        "id":      "google/gemma-4-31b-it:free",
-        "name":    "Gemma 4 31B",
-        "desc":    "يقرأ الصور • 256K context • من Google",
-        "badge":   "👁️",
-        "context": "256K",
-        "speed":   "متوسط",
-        "tag":     "يرى الصور",
-        "vision":  True,
-    },
-    {
-        "id":      "meta-llama/llama-4-maverick:free",
-        "name":    "Llama 4 Maverick",
-        "desc":    "يقرأ الصور • 128K context",
-        "badge":   "🦙",
-        "context": "128K",
-        "speed":   "متوسط",
-        "tag":     "يرى الصور",
-        "vision":  True,
     },
     {
         "id":      "openai/gpt-oss-20b:free",
@@ -83,22 +105,14 @@ MODELS = [
         "tag":     "الأسرع",
         "vision":  False,
     },
-    {
-        "id":      "nvidia/nemotron-3-super-120b-a12b:free",
-        "name":    "Nemotron 120B",
-        "desc":    "نافذة سياق ضخمة 1M",
-        "badge":   "🔬",
-        "context": "1M",
-        "speed":   "متوسط",
-        "tag":     "سياق ضخم",
-        "vision":  False,
-    },
 ]
 
-VISION_FALLBACK_IDS = [m["id"] for m in MODELS if m["vision"]]
+# موديلات vision مرتبة حسب الأفضلية (fallback تلقائي عند رفع صورة)
+VISION_MODELS_ORDERED = [m["id"] for m in MODELS if m["vision"]]
 
 SYSTEM_PROMPT = (
-    "أنت مساعد برمجي متخصص. مهمتك الوحيدة هي مساعدة المستخدم في كتابة وتعديل وشرح الأكواد البرمجية. "
+    "أنت مساعد برمجي متخصص. مهمتك هي مساعدة المستخدم في كتابة وتعديل وشرح الأكواد البرمجية، "
+    "وتحليل الصور المتعلقة بالبرمجة (screenshots، رسوم بيانية، أخطاء). "
     "اكتب الكود دائماً داخل بلوكات Markdown. إذا كانت هناك عدة ملفات استخدم ### filename.ext قبل كل بلوك. "
     "كن دقيقاً ومختصراً. رد دائماً باللغة العربية."
 )
@@ -110,19 +124,19 @@ def markdown_to_html(text: str) -> str:
     def extract_code(match):
         lang = match.group(1) or "text"
         code = match.group(2)
-        idx = len(code_blocks)
+        idx  = len(code_blocks)
         code_blocks.append((lang, code))
         return f"___CODE_{idx}___"
 
     text = re.sub(r'```(\w+)?\n(.*?)```', extract_code, text, flags=re.DOTALL)
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    text = re.sub(r'`([^`]+)`', r'<code>\1</code>', text)
+    text = re.sub(r'`([^`]+)`',       r'<code>\1</code>', text)
     text = re.sub(r'^### (.*?)$', r'<h3>\1</h3>', text, flags=re.MULTILINE)
     text = re.sub(r'^## (.*?)$',  r'<h2>\1</h2>', text, flags=re.MULTILINE)
     text = re.sub(r'^# (.*?)$',   r'<h1>\1</h1>', text, flags=re.MULTILINE)
     text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
-    text = re.sub(r'\*(.*?)\*',     r'<em>\1</em>', text)
-    text = re.sub(r'^> (.*?)$', r'<blockquote>\1</blockquote>', text, flags=re.MULTILINE)
+    text = re.sub(r'\*(.*?)\*',     r'<em>\1</em>',         text)
+    text = re.sub(r'^> (.*?)$',   r'<blockquote>\1</blockquote>', text, flags=re.MULTILINE)
     text = re.sub(r'^\d+\.\s+(.*?)$', r'<li>\1</li>', text, flags=re.MULTILINE)
     text = re.sub(r'^[-*]\s+(.*?)$',  r'<li>\1</li>', text, flags=re.MULTILINE)
 
@@ -138,12 +152,11 @@ def markdown_to_html(text: str) -> str:
     text = "\n".join(result)
 
     for idx, (lang, code) in enumerate(code_blocks):
-        escaped = code.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-        b64 = base64.b64encode(code.encode("utf-8")).decode("utf-8")
+        escaped = code.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+        b64     = base64.b64encode(code.encode("utf-8")).decode("utf-8")
         display = lang if lang else "code"
         html = (
-            '<div class="code-wrap">'
-            '<div class="code-hdr">'
+            '<div class="code-wrap"><div class="code-hdr">'
             f'<span>{display}</span>'
             f'<button onclick="cpy(this,\'{b64}\')">&#128203; نسخ</button>'
             '</div><pre><code>' + escaped + '</code></pre></div>'
@@ -153,7 +166,7 @@ def markdown_to_html(text: str) -> str:
 
 # ─── استخراج الملفات ──────────────────────────────────────────────────────────
 def extract_files(text: str) -> dict:
-    files = {}
+    files   = {}
     pattern = (
         r'###\s*(\S+\.(?:py|html|css|js|json|txt|md|jsx|ts|tsx|vue|php|'
         r'java|cpp|c|go|rs|swift|kt|dart|rb|sh|sql|xml|yaml|yml))\s*\n*'
@@ -170,7 +183,7 @@ def extract_files(text: str) -> dict:
 
 def guess_name(content: str) -> str:
     cl = content.lower().strip()
-    if cl.startswith("<!doctype") or cl.startswith("<html"):          return "index.html"
+    if cl.startswith("<!doctype") or cl.startswith("<html"):           return "index.html"
     elif "fastapi" in cl or "flask" in cl or cl.startswith("import "): return "app.py"
     elif cl.startswith("const ") or "function " in cl:                 return "script.js"
     elif "body {" in cl or ".class" in cl:                             return "style.css"
@@ -183,23 +196,23 @@ MAX_FILE_TEXT = 12_000
 def read_file_content(filename: str, raw_bytes: bytes, content_type: str) -> str:
     name_lower = filename.lower()
 
-    if name_lower.endswith(".zip") or content_type in ("application/zip", "application/x-zip-compressed"):
-        parts = [f"[محتوى الأرشيف: {filename}]"]
+    if name_lower.endswith(".zip") or "zip" in content_type:
+        parts = [f"[أرشيف: {filename}]"]
         try:
             with zipfile.ZipFile(io.BytesIO(raw_bytes)) as zf:
                 for info in zf.infolist():
                     if info.is_dir(): continue
                     try:
                         data = zf.read(info.filename)
-                        parts.append(f"\n--- {info.filename} ---\n{data.decode('utf-8', errors='replace')[:4000]}")
+                        parts.append(f"\n--- {info.filename} ---\n{data.decode('utf-8',errors='replace')[:4000]}")
                     except Exception:
                         parts.append(f"\n--- {info.filename} --- (ثنائي)")
         except Exception as e:
             parts.append(f"(فشل: {e})")
         return "\n".join(parts)[:MAX_FILE_TEXT]
 
-    if name_lower.endswith((".tar", ".tar.gz", ".tgz", ".tar.bz2")) or "tar" in content_type:
-        parts = [f"[محتوى الأرشيف: {filename}]"]
+    if name_lower.endswith((".tar",".tar.gz",".tgz",".tar.bz2")) or "tar" in content_type:
+        parts = [f"[أرشيف: {filename}]"]
         try:
             with tarfile.open(fileobj=io.BytesIO(raw_bytes)) as tf:
                 for member in tf.getmembers():
@@ -207,7 +220,7 @@ def read_file_content(filename: str, raw_bytes: bytes, content_type: str) -> str
                     try:
                         f = tf.extractfile(member)
                         if f:
-                            parts.append(f"\n--- {member.name} ---\n{f.read().decode('utf-8', errors='replace')[:4000]}")
+                            parts.append(f"\n--- {member.name} ---\n{f.read().decode('utf-8',errors='replace')[:4000]}")
                     except Exception:
                         parts.append(f"\n--- {member.name} --- (ثنائي)")
         except Exception as e:
@@ -215,15 +228,15 @@ def read_file_content(filename: str, raw_bytes: bytes, content_type: str) -> str
         return "\n".join(parts)[:MAX_FILE_TEXT]
 
     try:
-        return f"[ملف: {filename}]\n{raw_bytes.decode('utf-8', errors='replace')}"[:MAX_FILE_TEXT]
+        return f"[ملف: {filename}]\n{raw_bytes.decode('utf-8',errors='replace')}"[:MAX_FILE_TEXT]
     except Exception:
         return f"(لم يمكن قراءة الملف: {filename})"
 
-# ─── توليد الصور عبر Pollinations (مجاني بدون API key) ─────────────────────
+# ─── توليد الصور – Pollinations (مجاني بلا مفتاح) ────────────────────────────
 def build_image_url(prompt: str, width: int = 1024, height: int = 1024, model: str = "flux") -> str:
-    import urllib.parse
     encoded = urllib.parse.quote(prompt)
-    return f"https://image.pollinations.ai/prompt/{encoded}?width={width}&height={height}&model={model}&nologo=true&seed={abs(hash(prompt)) % 99999}"
+    seed    = abs(hash(prompt)) % 99999
+    return f"https://image.pollinations.ai/prompt/{encoded}?width={width}&height={height}&model={model}&nologo=true&seed={seed}"
 
 # ─── Routes ───────────────────────────────────────────────────────────────────
 
@@ -242,19 +255,11 @@ async def get_models():
 
 
 @app.post("/generate-image", response_class=JSONResponse)
-async def generate_image(prompt: str = Form(...), size: str = Form("1024x1024")):
-    """توليد صورة عبر Pollinations AI (مجاني)"""
+async def generate_image(prompt: str = Form(...), size: str = Form("1024x1024"), model: str = Form("flux")):
     try:
-        parts  = size.split("x")
-        width  = int(parts[0]) if len(parts) == 2 else 1024
-        height = int(parts[1]) if len(parts) == 2 else 1024
-        url    = build_image_url(prompt, width, height)
-        # نتحقق أن الرابط يعمل
-        r = requests.head(url, timeout=15)
-        if r.status_code == 200:
-            return JSONResponse({"url": url, "prompt": prompt})
-        else:
-            return JSONResponse({"url": url, "prompt": prompt})   # نرجعه على أي حال
+        w, h = (int(x) for x in size.split("x")) if "x" in size else (1024, 1024)
+        url  = build_image_url(prompt, w, h, model)
+        return JSONResponse({"url": url, "prompt": prompt})
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
 
@@ -272,71 +277,68 @@ async def chat(
     valid_ids = [m["id"] for m in MODELS]
     chosen    = model_id if model_id in valid_ids else MODELS[0]["id"]
 
-    # إذا وجد ملف صورة وكان الموديل لا يدعم vision، نحول لموديل يدعمها
-    has_image_file = False
-    if file and file.filename:
-        mt = file.content_type or ""
-        if mt.startswith("image/"):
-            has_image_file = True
-
-    chosen_model_obj = next((m for m in MODELS if m["id"] == chosen), MODELS[0])
-    if has_image_file and not chosen_model_obj["vision"] and VISION_FALLBACK_IDS:
-        chosen = VISION_FALLBACK_IDS[0]   # تحويل تلقائي لموديل يرى الصور
-
-    ordered = [chosen] + [mid for mid in valid_ids if mid != chosen]
-
-    sid = "default"
-    if sid not in chat_sessions:
-        chat_sessions[sid] = []
-    session = chat_sessions[sid]
-
-    user_text     = prompt
-    image_content = None
+    # ── معالجة الملف ────────────────────────────────────────────────────────
+    user_text      = prompt
+    image_content  = None
+    has_image      = False
 
     if file and file.filename:
         try:
             raw = await file.read()
             mt  = file.content_type or ""
             if mt.startswith("image/"):
+                has_image = True
                 b64 = base64.b64encode(raw).decode("utf-8")
-                image_content = {
-                    "type": "image_url",
-                    "image_url": {"url": f"data:{mt};base64,{b64}"}
-                }
+                image_content = {"type": "image_url", "image_url": {"url": f"data:{mt};base64,{b64}"}}
             else:
                 user_text = f"{prompt}\n\n{read_file_content(file.filename, raw, mt)}"
         except Exception as e:
             logger.error(f"File error: {e}")
 
+    # ── تحويل تلقائي لموديل vision إذا رُفعت صورة ──────────────────────────
+    switched = False
+    if has_image:
+        chosen_obj = next((m for m in MODELS if m["id"] == chosen), None)
+        if not (chosen_obj and chosen_obj["vision"]):
+            # ابحث عن أول موديل vision متاح
+            chosen  = VISION_MODELS_ORDERED[0] if VISION_MODELS_ORDERED else chosen
+            switched = True
+
+    # ترتيب المحاولات: الموديل المختار أولاً ثم البقية كـ fallback
+    if has_image:
+        # للصور: جرب فقط الموديلات التي تدعم vision
+        ordered = VISION_MODELS_ORDERED
+    else:
+        ordered = [chosen] + [mid for mid in valid_ids if mid != chosen]
+
+    # ── الجلسة ──────────────────────────────────────────────────────────────
+    sid = "default"
+    if sid not in chat_sessions:
+        chat_sessions[sid] = []
+    session = chat_sessions[sid]
+
+    # ── بناء الرسالة ─────────────────────────────────────────────────────────
     if image_content:
         msg_content = [{"type": "text", "text": user_text}, image_content]
     else:
         msg_content = user_text
 
-    headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type":  "application/json",
-    }
-    msgs = [{"role": "system", "content": SYSTEM_PROMPT}]
+    headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json"}
+    msgs    = [{"role": "system", "content": SYSTEM_PROMPT}]
     msgs.extend(session[-8:])
     msgs.append({"role": "user", "content": msg_content})
 
     ai_resp    = ""
-    used_model = chosen
+    used_model = ordered[0] if ordered else chosen
     last_err   = ""
 
     for mid in ordered:
-        # تخطّ الموديلات التي لا تدعم vision إذا كان هناك صورة
-        if has_image_file:
-            mid_obj = next((m for m in MODELS if m["id"] == mid), None)
-            if mid_obj and not mid_obj["vision"]:
-                continue
         try:
             r = requests.post(
                 "https://openrouter.ai/api/v1/chat/completions",
                 headers=headers,
                 json={"model": mid, "messages": msgs, "temperature": 0.5, "max_tokens": 3000},
-                timeout=30,
+                timeout=35,
             )
             j = r.json()
             if "choices" in j and j["choices"]:
@@ -345,8 +347,10 @@ async def chat(
                 break
             elif "error" in j:
                 last_err = j["error"].get("message", "unknown")
+                logger.warning(f"Model {mid} error: {last_err}")
         except Exception as exc:
             last_err = str(exc)
+            logger.warning(f"Model {mid} exception: {exc}")
 
     if not ai_resp:
         ai_resp = f"عذراً، فشلت كل النماذج. الخطأ: {last_err}"
@@ -357,10 +361,10 @@ async def chat(
     used_name = next((m["name"] for m in MODELS if m["id"] == used_model), used_model.split("/")[-1])
 
     return JSONResponse({
-        "ai_html":        markdown_to_html(ai_resp),
-        "files":          extract_files(ai_resp),
-        "used_model":     used_name,
-        "switched_model": used_model != chosen,   # أخبر الواجهة إذا تم التحويل
+        "ai_html":    markdown_to_html(ai_resp),
+        "files":      extract_files(ai_resp),
+        "used_model": used_name,
+        "switched":   switched,
     })
 
 
@@ -368,10 +372,10 @@ async def chat(
 async def download(filename: str = Form(...), code_content: str = Form(...)):
     ext = filename.split(".")[-1].lower()
     mime_map = {
-        "py": "text/x-python", "js": "application/javascript", "html": "text/html",
-        "css": "text/css", "json": "application/json", "txt": "text/plain",
-        "md": "text/markdown", "sh": "text/x-sh", "sql": "text/x-sql",
-        "xml": "text/xml", "yaml": "text/yaml", "yml": "text/yaml",
+        "py":"text/x-python","js":"application/javascript","html":"text/html",
+        "css":"text/css","json":"application/json","txt":"text/plain",
+        "md":"text/markdown","sh":"text/x-sh","sql":"text/x-sql",
+        "xml":"text/xml","yaml":"text/yaml","yml":"text/yaml",
     }
     return Response(
         content=code_content,
