@@ -8,139 +8,71 @@
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
 
 :root {
-  --bg:      #212121;
-  --sf:      #2f2f2f;
-  --sf2:     #3a3a3a;
-  --bd:      #404040;
-  --ac:      #19c37d;
-  --ac2:     #ab68ff;
-  --tx:      #ececec;
-  --mu:      #8e8ea0;
-  --cbg:     #1a1a1a;
-  --chdr:    #252525;
-  --r:       13px;
+  --bg:   #212121;
+  --sf:   #2f2f2f;
+  --sf2:  #3a3a3a;
+  --bd:   #404040;
+  --ac:   #19c37d;
+  --ac2:  #ab68ff;
+  --tx:   #ececec;
+  --mu:   #8e8ea0;
+  --cbg:  #1a1a1a;
+  --chdr: #252525;
+  --r:    13px;
 }
 
 html, body { height:100%; overflow:hidden }
-body {
-  font-family:'Segoe UI',system-ui,sans-serif;
-  background:var(--bg); color:var(--tx);
-  display:flex; flex-direction:column;
-}
+body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--tx); display:flex; flex-direction:column }
 
 /* ══ HEADER ══════════════════════════════════════════════════════════════════ */
 .hdr {
-  background:#171717;
-  border-bottom:1px solid var(--bd);
+  background:#171717; border-bottom:1px solid var(--bd);
   height:50px; padding:0 10px;
-  display:flex; align-items:center;
-  gap:6px; flex-shrink:0; z-index:10;
+  display:flex; align-items:center; gap:6px;
+  flex-shrink:0; z-index:10;
 }
-
-/* Logo */
-.logo {
-  width:30px; height:30px; flex-shrink:0;
-  background:linear-gradient(135deg,#19c37d,#ab68ff);
-  border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:15px;
-}
-
-/* Mode tabs – center */
-.tabs {
-  flex:1; display:flex; justify-content:center;
-}
-.tabs-inner {
-  display:flex; background:var(--sf);
-  border:1px solid var(--bd); border-radius:8px; padding:3px; gap:2px;
-}
-.tab {
-  padding:4px 12px; border-radius:5px; border:none;
-  background:transparent; color:var(--mu);
-  font-size:12px; font-weight:600; cursor:pointer;
-  transition:all .15s; white-space:nowrap;
-}
+.logo { width:30px; height:30px; flex-shrink:0; background:linear-gradient(135deg,#19c37d,#ab68ff); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px }
+.tabs { flex:1; display:flex; justify-content:center }
+.tabs-in { display:flex; background:var(--sf); border:1px solid var(--bd); border-radius:8px; padding:3px; gap:2px }
+.tab { padding:4px 12px; border-radius:5px; border:none; background:transparent; color:var(--mu); font-size:12px; font-weight:600; cursor:pointer; transition:all .15s; white-space:nowrap }
 .tab.on { background:var(--sf2); color:var(--tx) }
-
-/* Model picker – only visible in chat mode */
-.mpick {
-  display:flex; align-items:center; gap:4px;
-  background:var(--sf); border:1px solid var(--bd);
-  border-radius:8px; padding:4px 9px;
-  cursor:pointer; font-size:11.5px; color:var(--tx);
-  transition:border-color .15s; max-width:130px; flex-shrink:0;
-}
+.mpick { display:flex; align-items:center; gap:4px; background:var(--sf); border:1px solid var(--bd); border-radius:8px; padding:4px 9px; cursor:pointer; font-size:11.5px; color:var(--tx); transition:border-color .15s; max-width:130px; flex-shrink:0 }
 .mpick:hover { border-color:var(--ac) }
-.mpick .mn { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600 }
+.mpick .mn  { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600 }
 .mpick .arr { color:var(--mu); font-size:9px; flex-shrink:0; transition:transform .2s }
 .mpick.open .arr { transform:rotate(180deg) }
-
-/* Icon-only action buttons */
-.ibtn {
-  width:32px; height:32px; border-radius:7px;
-  background:transparent; border:1px solid var(--bd);
-  color:var(--tx); cursor:pointer; font-size:16px;
-  display:flex; align-items:center; justify-content:center;
-  transition:all .15s; flex-shrink:0;
-}
-.ibtn:hover        { background:var(--sf2) }
-.ibtn.red          { border-color:#ef444455 }
-.ibtn.red:hover    { background:rgba(239,68,68,.12); border-color:#ef4444 }
+.ibtn { width:32px; height:32px; border-radius:7px; background:transparent; border:1px solid var(--bd); color:var(--tx); cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; transition:all .15s; flex-shrink:0 }
+.ibtn:hover { background:var(--sf2) }
+.ibtn.red { border-color:#ef444455 }
+.ibtn.red:hover { background:rgba(239,68,68,.12); border-color:#ef4444 }
 
 /* ══ SHEET ════════════════════════════════════════════════════════════════════ */
-.ov {
-  position:fixed; inset:0; background:rgba(0,0,0,.55);
-  z-index:100; opacity:0; pointer-events:none; transition:opacity .25s;
-}
+.ov { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:100; opacity:0; pointer-events:none; transition:opacity .25s }
 .ov.on { opacity:1; pointer-events:all }
-
-.sheet {
-  position:fixed; bottom:0; left:0; right:0; z-index:101;
-  background:#1a1a1a; border-radius:18px 18px 0 0;
-  border-top:1px solid var(--bd);
-  transform:translateY(100%);
-  transition:transform .3s cubic-bezier(.4,0,.2,1);
-  max-height:80vh; display:flex; flex-direction:column;
-}
+.sheet { position:fixed; bottom:0; left:0; right:0; z-index:101; background:#1a1a1a; border-radius:18px 18px 0 0; border-top:1px solid var(--bd); transform:translateY(100%); transition:transform .3s cubic-bezier(.4,0,.2,1); max-height:80vh; display:flex; flex-direction:column }
 .sheet.on { transform:translateY(0) }
-
 .sh-bar  { width:34px; height:4px; background:var(--bd); border-radius:2px; margin:11px auto 0; flex-shrink:0 }
-.sh-head {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:12px 16px 9px; border-bottom:1px solid var(--bd); flex-shrink:0;
-}
+.sh-head { display:flex; align-items:center; justify-content:space-between; padding:12px 16px 9px; border-bottom:1px solid var(--bd); flex-shrink:0 }
 .sh-ttl  { font-size:15px; font-weight:700 }
-.sh-x    {
-  width:26px; height:26px; background:var(--sf); border:none;
-  border-radius:50%; color:var(--tx); cursor:pointer; font-size:14px;
-  display:flex; align-items:center; justify-content:center;
-}
+.sh-x    { width:26px; height:26px; background:var(--sf); border:none; border-radius:50%; color:var(--tx); cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center }
 .sh-x:hover { background:var(--sf2) }
 .sh-list { overflow-y:auto; padding:6px 9px 24px; flex:1 }
 .sh-list::-webkit-scrollbar { width:3px }
 .sh-list::-webkit-scrollbar-thumb { background:#444; border-radius:2px }
-
-.mi {
-  display:flex; align-items:center; gap:10px;
-  padding:10px 9px; border-radius:10px; cursor:pointer; transition:background .12s;
-}
-.mi:hover  { background:var(--sf) }
-.mi.sel    { background:rgba(25,195,125,.08) }
-.mi-ico    {
-  width:36px; height:36px; background:var(--sf);
-  border-radius:50%; display:flex; align-items:center; justify-content:center;
-  font-size:17px; flex-shrink:0;
-}
+.mi { display:flex; align-items:center; gap:10px; padding:10px 9px; border-radius:10px; cursor:pointer; transition:background .12s }
+.mi:hover { background:var(--sf) }
+.mi.sel   { background:rgba(25,195,125,.08) }
+.mi-ico   { width:36px; height:36px; background:var(--sf); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0 }
 .mi.sel .mi-ico { background:rgba(25,195,125,.15); border:1.5px solid var(--ac) }
-.mi-body   { flex:1; min-width:0 }
-.mi-name   { font-size:13.5px; font-weight:600; display:flex; align-items:center; gap:5px; flex-wrap:wrap }
-.tg  { font-size:9.5px; font-weight:700; border-radius:3px; padding:2px 5px }
+.mi-body  { flex:1; min-width:0 }
+.mi-name  { font-size:13.5px; font-weight:600; display:flex; align-items:center; gap:5px; flex-wrap:wrap }
+.tg { font-size:9.5px; font-weight:700; border-radius:3px; padding:2px 5px }
 .tg.c { background:rgba(25,195,125,.15); color:var(--ac) }
 .tg.v { background:rgba(171,104,255,.15); color:var(--ac2) }
-.mi-desc  { font-size:11px; color:var(--mu); margin-top:1px }
-.mi-meta  { display:flex; gap:5px; margin-top:3px }
+.mi-desc { font-size:11px; color:var(--mu); margin-top:1px }
+.mi-meta { display:flex; gap:5px; margin-top:3px }
 .pl  { font-size:9.5px; color:var(--mu); background:var(--sf); border-radius:3px; padding:2px 5px }
-.mi-chk   { color:var(--ac); font-size:16px; font-weight:700; opacity:0; flex-shrink:0 }
+.mi-chk  { color:var(--ac); font-size:16px; font-weight:700; opacity:0; flex-shrink:0 }
 .mi.sel .mi-chk { opacity:1 }
 
 /* ══ PAGES ════════════════════════════════════════════════════════════════════ */
@@ -152,11 +84,7 @@ body {
 .cw::-webkit-scrollbar { width:3px }
 .cw::-webkit-scrollbar-thumb { background:#444; border-radius:2px }
 
-#welcome {
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  min-height:calc(100vh - 140px); padding:24px 16px; text-align:center;
-  animation:fu .4s ease;
-}
+#welcome { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:calc(100vh - 140px); padding:24px 16px; text-align:center; animation:fu .4s ease }
 @keyframes fu { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
 .wi  { width:56px; height:56px; background:linear-gradient(135deg,rgba(25,195,125,.15),rgba(171,104,255,.15)); border:2px solid rgba(25,195,125,.3); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:14px }
 .wt  { font-size:21px; font-weight:700; margin-bottom:6px }
@@ -169,24 +97,28 @@ body {
 .row { display:flex; gap:9px; max-width:780px; margin:0 auto; padding:4px 14px; animation:fu .2s ease }
 .row.u { justify-content:flex-end }
 .row.a { justify-content:flex-start }
-.av {
-  width:28px; height:28px; border-radius:50%; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  font-size:13px; margin-top:3px;
-}
+.av { width:28px; height:28px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:13px; margin-top:3px }
 .av.aa { background:linear-gradient(135deg,#19c37d,#ab68ff); order:-1 }
 .av.ua { background:linear-gradient(135deg,#ab68ff,#6b3fa0) }
-.bbl {
-  max-width:78%; padding:9px 13px; border-radius:var(--r);
-  font-size:14px; line-height:1.7; word-break:break-word;
-}
+.bbl { max-width:78%; padding:9px 13px; border-radius:var(--r); font-size:14px; line-height:1.7; word-break:break-word }
 .bbl.u { background:var(--sf); border:1px solid var(--bd); border-bottom-left-radius:4px }
 .bbl.a { background:transparent; width:100%; max-width:100%; border-bottom-right-radius:4px }
-.mtag  { font-size:10.5px; color:var(--mu); margin-top:2px; padding-right:2px }
+.mtag { font-size:10.5px; color:var(--mu); margin-top:2px; padding-right:2px }
+
+/* ── Streaming cursor ────────────────────────────────────────────────────── */
+.cursor {
+  display:inline-block;
+  width:2px; height:1em;
+  background:var(--ac);
+  margin-right:2px;
+  vertical-align:text-bottom;
+  animation:blink .6s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
 .bbl.a h1,.bbl.a h2,.bbl.a h3 { color:var(--ac); margin:10px 0 4px; font-weight:600 }
 .bbl.a h1{font-size:16px} .bbl.a h2{font-size:15px} .bbl.a h3{font-size:13.5px}
-.bbl.a p { margin:4px 0 }
+.bbl.a p  { margin:4px 0 }
 .bbl.a code { background:var(--cbg); padding:2px 5px; border-radius:4px; font-family:'Fira Code',monospace; font-size:12px; color:#ff9e64; border:1px solid #333 }
 .bbl.a blockquote { border-right:3px solid var(--ac); padding-right:9px; margin:6px 0; color:var(--mu) }
 .bbl.a li { margin:3px 0 }
@@ -201,14 +133,15 @@ body {
 .cw2 pre { margin:0; padding:11px 13px; overflow-x:auto; font-size:12.5px; line-height:1.6 }
 .cw2 pre code { background:none!important; padding:0!important; border:none!important; color:#cdd6f4; font-family:'Fira Code',monospace }
 
-.vn  { background:rgba(171,104,255,.1); border:1px solid rgba(171,104,255,.3); border-radius:7px; padding:6px 10px; font-size:11px; color:var(--ac2); margin-bottom:6px; display:none }
+.vn { background:rgba(171,104,255,.1); border:1px solid rgba(171,104,255,.3); border-radius:7px; padding:6px 10px; font-size:11px; color:var(--ac2); margin-bottom:6px; display:none }
 .vn.on { display:block }
 
-#spin { display:none; max-width:780px; margin:0 auto; padding:6px 14px; gap:10px; align-items:center }
+/* Thinking indicator (دوران صغير بجانب الاسم) */
+#spin { display:none; max-width:780px; margin:0 auto; padding:5px 14px; gap:9px; align-items:center }
 #spin.on { display:flex }
-.ring { width:22px; height:22px; border:3px solid #333; border-top-color:var(--ac); border-radius:50%; animation:sp .7s linear infinite; flex-shrink:0 }
+.ring { width:20px; height:20px; border:2.5px solid #333; border-top-color:var(--ac); border-radius:50%; animation:sp .7s linear infinite; flex-shrink:0 }
 @keyframes sp { to{transform:rotate(360deg)} }
-.stx { color:var(--mu); font-size:12.5px }
+.stx { color:var(--mu); font-size:12px }
 
 #fsec { max-width:780px; margin:4px auto; padding:0 14px }
 .fb   { background:var(--sf); border:1px solid var(--bd); border-radius:var(--r); overflow:hidden }
@@ -221,9 +154,9 @@ body {
 .fi button:hover { background:rgba(25,195,125,.1) }
 
 /* ── Input ─────────────────────────────────────────────────────────────────── */
-.ia  { background:var(--bg); padding:7px 12px 12px; flex-shrink:0 }
-.iw  { max-width:700px; margin:0 auto }
-.ib  { background:var(--sf); border:1px solid var(--bd); border-radius:12px; padding:6px 6px 6px 11px; display:flex; align-items:flex-end; gap:5px; transition:border-color .15s }
+.ia { background:var(--bg); padding:7px 12px 12px; flex-shrink:0 }
+.iw { max-width:700px; margin:0 auto }
+.ib { background:var(--sf); border:1px solid var(--bd); border-radius:12px; padding:6px 6px 6px 11px; display:flex; align-items:flex-end; gap:5px; transition:border-color .15s }
 .ib:focus-within { border-color:#555 }
 .ib textarea { flex:1; background:transparent; color:var(--tx); border:none; outline:none; font-family:inherit; font-size:13.5px; line-height:1.6; resize:none; min-height:24px; max-height:150px; padding:2px 0 }
 .ib textarea::placeholder { color:var(--mu) }
@@ -244,9 +177,9 @@ body {
 .igw::-webkit-scrollbar { width:3px }
 .igw::-webkit-scrollbar-thumb { background:#444; border-radius:2px }
 .igi { max-width:660px; margin:0 auto }
-.ig-t  { font-size:18px; font-weight:700; margin-bottom:4px }
-.ig-s  { color:var(--mu); font-size:12px; margin-bottom:16px }
-.ig-f  { background:var(--sf); border:1px solid var(--bd); border-radius:var(--r); padding:13px; margin-bottom:13px }
+.ig-t { font-size:18px; font-weight:700; margin-bottom:4px }
+.ig-s { color:var(--mu); font-size:12px; margin-bottom:16px }
+.ig-f { background:var(--sf); border:1px solid var(--bd); border-radius:var(--r); padding:13px; margin-bottom:13px }
 .ig-f label { font-size:12px; color:var(--mu); display:block; margin-bottom:5px }
 .ig-ta { width:100%; background:var(--bg); color:var(--tx); border:1px solid var(--bd); border-radius:8px; padding:8px 11px; font-family:inherit; font-size:13px; resize:none; height:80px; outline:none; transition:border-color .15s }
 .ig-ta:focus { border-color:#555 }
@@ -259,43 +192,32 @@ body {
 .ig-sp  { display:none; flex-direction:column; align-items:center; padding:28px; gap:10px; color:var(--mu); font-size:12.5px }
 .ig-sp.on { display:flex }
 .ig-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:11px; padding-bottom:16px }
-.icard  { background:var(--sf); border:1px solid var(--bd); border-radius:var(--r); overflow:hidden; animation:fu .3s ease }
+.icard { background:var(--sf); border:1px solid var(--bd); border-radius:var(--r); overflow:hidden; animation:fu .3s ease }
 .icard img { width:100%; display:block; aspect-ratio:1; object-fit:cover; background:var(--bg) }
-.icft   { padding:8px 10px; display:flex; align-items:center; justify-content:space-between }
-.icp    { font-size:10.5px; color:var(--mu); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:66% }
-.icdl   { background:transparent; border:1px solid var(--ac); color:var(--ac); padding:3px 10px; border-radius:4px; cursor:pointer; font-size:10.5px; font-weight:600; text-decoration:none; display:inline-block; transition:all .15s }
+.icft { padding:8px 10px; display:flex; align-items:center; justify-content:space-between }
+.icp  { font-size:10.5px; color:var(--mu); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:66% }
+.icdl { background:transparent; border:1px solid var(--ac); color:var(--ac); padding:3px 10px; border-radius:4px; cursor:pointer; font-size:10.5px; font-weight:600; text-decoration:none; display:inline-block; transition:all .15s }
 .icdl:hover { background:rgba(25,195,125,.1) }
 
-@media(max-width:520px) {
-  .bbl{max-width:92%}
-  .mpick{max-width:100px}
-  .tab{padding:4px 8px;font-size:11px}
-}
+@media(max-width:520px) { .bbl{max-width:92%} .mpick{max-width:100px} .tab{padding:4px 8px;font-size:11px} }
 </style>
 </head>
 <body>
 
 <!-- ══ HEADER ════════════════════════════════════════════════════════════════ -->
 <div class="hdr">
-
   <div class="logo">🚀</div>
-
-  <!-- Mode tabs (center, flex:1) -->
   <div class="tabs">
-    <div class="tabs-inner">
+    <div class="tabs-in">
       <button class="tab on" id="tC" onclick="sw('c')">💬 محادثة</button>
       <button class="tab"    id="tI" onclick="sw('i')">🎨 صور</button>
     </div>
   </div>
-
-  <!-- Model picker (chat mode only) -->
   <button class="mpick" id="mp" onclick="openSh()">
     <span id="mb">🥇</span>
     <span class="mn" id="mn">Qwen3 Coder</span>
     <span class="arr">▾</span>
   </button>
-
-  <!-- Action icons -->
   <button class="ibtn" onclick="saveChat()"  title="حفظ">💾</button>
   <button class="ibtn" onclick="showSaved()" title="محفوظة">📂</button>
   <button class="ibtn red" onclick="clearChat()" title="مسح">🗑️</button>
@@ -334,9 +256,7 @@ body {
       <span class="stx" id="stx">يفكر...</span>
     </div>
   </div>
-
   <div id="fsec"></div>
-
   <div class="ia">
     <div class="iw">
       <div class="vn" id="vn">👁️ سيُستخدم تلقائياً موديل يدعم رؤية الصور</div>
@@ -366,7 +286,7 @@ body {
       <div class="ig-s">مجاني • بلا تسجيل • مشغّل بـ Pollinations AI + Flux</div>
       <div class="ig-f">
         <label>وصف الصورة (عربي أو إنجليزي)</label>
-        <textarea class="ig-ta" id="igp" placeholder="مثال: غروب الشمس على البحر، ألوان برتقالية..."></textarea>
+        <textarea class="ig-ta" id="igp" placeholder="مثال: غروب الشمس على البحر..."></textarea>
         <div class="ig-row">
           <select class="ig-sel" id="igs">
             <option value="1024x1024">مربع 1024×1024</option>
@@ -401,26 +321,25 @@ body {
 
 <!-- ══ SCRIPT ═════════════════════════════════════════════════════════════════ -->
 <script>
-// ── Models — injected safely by Jinja2 ────────────────────────────────────────
-// NOTE: this file must be served via FastAPI/uvicorn, not opened directly.
 const MODELS = {{ models | tojson }};
 
 let sel  = MODELS[0].id;
 let mode = 'c';
+let streaming = false;
 const pf = {};
 
-// DOM shortcuts
-const cw   = document.getElementById('cw');
-const msgs = document.getElementById('msgs');
-const sp_  = document.getElementById('spin');
-const stx  = document.getElementById('stx');
-const wel  = document.getElementById('welcome');
-const fsec = document.getElementById('fsec');
-const pt   = document.getElementById('pt');
-const sb   = document.getElementById('sb');
-const fii  = document.getElementById('fii');
-const fin  = document.getElementById('fin');
-const vn   = document.getElementById('vn');
+// DOM
+const cw_   = document.getElementById('cw');
+const msgs  = document.getElementById('msgs');
+const spin  = document.getElementById('spin');
+const stx   = document.getElementById('stx');
+const wel   = document.getElementById('welcome');
+const fsec  = document.getElementById('fsec');
+const pt    = document.getElementById('pt');
+const sb    = document.getElementById('sb');
+const fii   = document.getElementById('fii');
+const fin   = document.getElementById('fin');
+const vn    = document.getElementById('vn');
 
 // ── Page switch ───────────────────────────────────────────────────────────────
 function sw(m) {
@@ -429,7 +348,6 @@ function sw(m) {
   document.getElementById('pgI').classList.toggle('on', m==='i');
   document.getElementById('tC').classList.toggle('on',  m==='c');
   document.getElementById('tI').classList.toggle('on',  m==='i');
-  // hide model picker when in image mode
   document.getElementById('mp').style.display = m==='c' ? '' : 'none';
 }
 
@@ -439,27 +357,19 @@ function buildSh() {
   l.innerHTML = '';
   MODELS.forEach(m => {
     const d = document.createElement('div');
-    d.className = 'mi' + (m.id === sel ? ' sel' : '');
+    d.className = 'mi' + (m.id===sel ? ' sel' : '');
     d.innerHTML = `
       <div class="mi-ico">${m.badge}</div>
       <div class="mi-body">
-        <div class="mi-name">
-          ${m.name}
-          <span class="tg c">${m.tag}</span>
-          ${m.vision ? '<span class="tg v">👁️ يرى الصور</span>' : ''}
-        </div>
+        <div class="mi-name">${m.name}<span class="tg c">${m.tag}</span>${m.vision?'<span class="tg v">👁️ يرى الصور</span>':''}</div>
         <div class="mi-desc">${m.desc}</div>
-        <div class="mi-meta">
-          <span class="pl">📐 ${m.context}</span>
-          <span class="pl">⚡ ${m.speed}</span>
-        </div>
+        <div class="mi-meta"><span class="pl">📐 ${m.context}</span><span class="pl">⚡ ${m.speed}</span></div>
       </div>
       <div class="mi-chk">✓</div>`;
     d.onclick = () => pick(m);
     l.appendChild(d);
   });
 }
-
 function pick(m) {
   sel = m.id;
   document.getElementById('mb').textContent = m.badge;
@@ -467,12 +377,11 @@ function pick(m) {
   stx.textContent = m.name + ' يفكر...';
   buildSh(); closeSh();
 }
-
 function openSh()  { buildSh(); document.getElementById('ov').classList.add('on'); document.getElementById('sh').classList.add('on'); document.getElementById('mp').classList.add('open') }
 function closeSh() { document.getElementById('ov').classList.remove('on'); document.getElementById('sh').classList.remove('on'); document.getElementById('mp').classList.remove('open') }
 document.addEventListener('keydown', e => { if(e.key==='Escape') closeSh() });
 
-// ── File input ────────────────────────────────────────────────────────────────
+// ── File ──────────────────────────────────────────────────────────────────────
 fii.addEventListener('change', () => {
   const f = fii.files[0];
   fin.textContent = f ? f.name : '';
@@ -481,37 +390,23 @@ fii.addEventListener('change', () => {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function ar(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,150)+'px' }
-function kd(e)  { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()} }
+function kd(e)  { if(e.key==='Enter'&&!e.shiftKey&&!streaming){e.preventDefault();send()} }
 function sp(t)  { pt.value=t; pt.focus(); ar(pt) }
-function bot()  { cw.scrollTop=cw.scrollHeight }
+function bot()  { cw_.scrollTop=cw_.scrollHeight }
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
-
-// ── Add message ───────────────────────────────────────────────────────────────
-function addMsg(role, html, model) {
-  wel.style.display = 'none';
-  const r = document.createElement('div');
-  r.className = 'row ' + (role==='a' ? 'a' : 'u');
-  if(role==='a') {
-    r.innerHTML = `<div class="av aa">🤖</div><div><div class="bbl a">${html}</div>${model?`<div class="mtag">✦ ${esc(model)}</div>`:''}</div>`;
-  } else {
-    r.innerHTML = `<div class="bbl u">${esc(html)}</div><div class="av ua">👤</div>`;
-  }
-  msgs.appendChild(r); bot();
-}
 
 // ── Files ─────────────────────────────────────────────────────────────────────
 function showFiles(files) {
-  if(!files || !Object.keys(files).length) return;
+  if(!files||!Object.keys(files).length) return;
   Object.assign(pf, files);
-  let h = '<div class="fb"><div class="fbh">📁 ملفات جاهزة</div>';
+  let h='<div class="fb"><div class="fbh">📁 ملفات جاهزة</div>';
   for(const n of Object.keys(files))
-    h += `<div class="fi"><span>📄 ${esc(n)}</span><button onclick="dl('${esc(n)}')">💾 تحميل</button></div>`;
-  h += '</div>';
-  fsec.innerHTML = h;
+    h+=`<div class="fi"><span>📄 ${esc(n)}</span><button onclick="dl('${esc(n)}')">💾 تحميل</button></div>`;
+  h+='</div>';
+  fsec.innerHTML=h;
 }
-
 async function dl(name) {
-  const code = pf[name]; if(!code) return;
+  const code=pf[name]; if(!code) return;
   const fd=new FormData(); fd.append('filename',name); fd.append('code_content',code);
   const res=await fetch('/download',{method:'POST',body:fd});
   const blob=await res.blob();
@@ -519,7 +414,6 @@ async function dl(name) {
   const a=document.createElement('a'); a.href=url; a.download=name; a.click();
   URL.revokeObjectURL(url);
 }
-
 function cpy(btn,b64) {
   navigator.clipboard.writeText(atob(b64)).then(()=>{
     btn.textContent='✅ تم'; btn.classList.add('ok');
@@ -527,42 +421,132 @@ function cpy(btn,b64) {
   });
 }
 
-// ── Send ──────────────────────────────────────────────────────────────────────
+// ══ STREAMING SEND ════════════════════════════════════════════════════════════
 async function send() {
   const txt = pt.value.trim();
-  if(!txt || sb.disabled) return;
-  addMsg('u', txt);
-  pt.value=''; pt.style.height='auto';
-  sb.disabled=true; sp_.classList.add('on'); vn.classList.remove('on'); bot();
+  if(!txt || streaming) return;
 
-  const fd=new FormData();
-  fd.append('prompt', txt);
+  wel.style.display = 'none';
+  streaming = true;
+
+  // ── رسالة المستخدم ─────────────────────────────────────────────────────────
+  const uRow = document.createElement('div');
+  uRow.className = 'row u';
+  uRow.innerHTML = `<div class="bbl u">${esc(txt)}</div><div class="av ua">👤</div>`;
+  msgs.appendChild(uRow);
+
+  pt.value=''; pt.style.height='auto';
+  sb.disabled=true;
+  vn.classList.remove('on');
+  bot();
+
+  // ── إنشاء فقاعة AI فارغة ──────────────────────────────────────────────────
+  const aRow = document.createElement('div');
+  aRow.className = 'row a';
+  const bbl = document.createElement('div');
+  bbl.className = 'bbl a';
+
+  // cursor وامض
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  bbl.appendChild(cursor);
+
+  const mtag = document.createElement('div');
+  mtag.className = 'mtag';
+
+  aRow.appendChild(document.createElement('div')).className = 'av aa';
+  aRow.children[0].textContent = '🤖';
+
+  const wrap = document.createElement('div');
+  wrap.appendChild(bbl);
+  wrap.appendChild(mtag);
+  aRow.appendChild(wrap);
+  msgs.appendChild(aRow);
+
+  // spinner صغير أعلى الفقاعة
+  spin.classList.add('on');
+  bot();
+
+  // ── FormData ───────────────────────────────────────────────────────────────
+  const fd = new FormData();
+  fd.append('prompt',   txt);
   fd.append('model_id', sel);
-  if(fii.files[0]) { fd.append('file',fii.files[0]); fii.value=''; fin.textContent='' }
+  if(fii.files[0]) { fd.append('file', fii.files[0]); fii.value=''; fin.textContent='' }
+
+  let rawText = '';   // النص الخام المتراكم للعرض التدريجي
 
   try {
-    const res  = await fetch('/chat',{method:'POST',body:fd});
-    const data = await res.json();
-    sp_.classList.remove('on'); sb.disabled=false;
-    if(data.error) {
-      addMsg('a', `<p style="color:#ef4444">❌ ${esc(data.error)}</p>`);
-    } else {
-      const lbl = data.switched
-        ? data.used_model + ' ← تحويل تلقائي لدعم الصورة'
-        : data.used_model;
-      addMsg('a', data.ai_html, lbl);
-      if(data.files) showFiles(data.files);
+    const res = await fetch('/chat-stream', { method:'POST', body:fd });
+    const reader = res.body.getReader();
+    const dec    = new TextDecoder();
+    let   buf    = '';
+
+    spin.classList.remove('on');   // أخفِ spinner بمجرد بدء البث
+
+    while(true) {
+      const { done, value } = await reader.read();
+      if(done) break;
+
+      buf += dec.decode(value, { stream:true });
+      const lines = buf.split('\n');
+      buf = lines.pop();   // آخر سطر ناقص يُخزن للدورة القادمة
+
+      for(const line of lines) {
+        if(!line.startsWith('data:')) continue;
+        const data_str = line.slice(5).trim();
+        if(!data_str) continue;
+
+        try {
+          const ev = JSON.parse(data_str);
+
+          if(ev.token !== undefined) {
+            // ── token جديد: أضفه للنص الخام ──────────────────────────────────
+            rawText += ev.token;
+
+            // عرض تدريجي بسيط: الـ raw text كـ plain text مع الـ cursor
+            bbl.textContent = rawText;
+            bbl.appendChild(cursor);
+            bot();
+          }
+
+          if(ev.done) {
+            // ── اكتمل الرد: استبدل بـ HTML المنسّق ──────────────────────────
+            cursor.remove();
+            bbl.innerHTML = ev.html;
+
+            // اسم الموديل
+            const lbl = ev.switched
+              ? ev.used_model + ' ← تحويل تلقائي لدعم الصورة'
+              : ev.used_model;
+            mtag.textContent = '✦ ' + lbl;
+
+            if(ev.files) showFiles(ev.files);
+            bot();
+          }
+
+          if(ev.error) {
+            cursor.remove();
+            bbl.innerHTML = `<p style="color:#ef4444">❌ ${esc(ev.error)}</p>`;
+            bot();
+          }
+
+        } catch(_) { /* JSON parse error, skip */ }
+      }
     }
   } catch(e) {
-    sp_.classList.remove('on'); sb.disabled=false;
-    addMsg('a', `<p style="color:#ef4444">❌ خطأ: ${esc(String(e))}</p>`);
+    spin.classList.remove('on');
+    cursor.remove();
+    bbl.innerHTML = `<p style="color:#ef4444">❌ خطأ في الاتصال: ${esc(String(e))}</p>`;
+    bot();
   }
+
+  streaming = false;
+  sb.disabled = false;
   pt.focus();
 }
 
 // ── Image Gen ─────────────────────────────────────────────────────────────────
 function sip(t) { document.getElementById('igp').value=t }
-
 async function genImg() {
   const p=document.getElementById('igp').value.trim();
   if(!p){document.getElementById('ige').textContent='⚠️ اكتب وصف الصورة';return}
@@ -570,12 +554,10 @@ async function genImg() {
   const btn=document.getElementById('igb');
   const sp2=document.getElementById('igsp');
   btn.disabled=true; sp2.classList.add('on');
-
   const fd=new FormData();
   fd.append('prompt',p);
-  fd.append('size',  document.getElementById('igs').value);
-  fd.append('model', document.getElementById('igm').value);
-
+  fd.append('size',document.getElementById('igs').value);
+  fd.append('model',document.getElementById('igm').value);
   try {
     const res=await fetch('/generate-image',{method:'POST',body:fd});
     const data=await res.json();
@@ -597,11 +579,10 @@ async function clearChat() {
   if(!confirm('مسح المحادثة؟')) return;
   try{await fetch('/clear',{method:'POST'})}catch(_){}
   msgs.innerHTML=''; fsec.innerHTML='';
-  sp_.classList.remove('on'); sb.disabled=false;
+  spin.classList.remove('on'); sb.disabled=false; streaming=false;
   wel.style.display='flex';
   Object.keys(pf).forEach(k=>delete pf[k]);
 }
-
 function saveChat() {
   if(!msgs.children.length){alert('لا يوجد شيء للحفظ');return}
   const saved=JSON.parse(localStorage.getItem('leoai')||'[]');
@@ -611,7 +592,6 @@ function saveChat() {
   localStorage.setItem('leoai',JSON.stringify(saved));
   alert('✅ تم الحفظ');
 }
-
 function showSaved() {
   const saved=JSON.parse(localStorage.getItem('leoai')||'[]');
   if(!saved.length){alert('لا توجد محادثات');return}
@@ -622,9 +602,9 @@ function showSaved() {
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 buildSh();
-stx.textContent = MODELS[0].name + ' يفكر...';
 document.getElementById('mb').textContent = MODELS[0].badge;
 document.getElementById('mn').textContent = MODELS[0].name;
+stx.textContent = MODELS[0].name + ' يفكر...';
 </script>
 </body>
 </html>
