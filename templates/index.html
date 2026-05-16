@@ -125,9 +125,9 @@
 function go(e){document.getElementById('type').classList.add('on');document.getElementById('btn').disabled=true;document.getElementById('btn').textContent='...';return true}
 function kd(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();document.getElementById('form').submit()}}
 function setP(t){document.getElementById('p').value=t;document.getElementById('p').focus()}
-function clearChat(){fetch('/clear',{method:'POST'}).then(()=>location.reload())}
+function clearChat(){fetch('/clear',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'session_id=default'}).then(()=>location.reload())}
 function cpy(btn,b64){const code=atob(b64);navigator.clipboard.writeText(code).then(()=>{btn.textContent='✅ تم';btn.classList.add('ok');setTimeout(()=>{btn.textContent='📋 نسخ';btn.classList.remove('ok')},1500)})}
-function saveChat(){const chat=document.getElementById('chat').innerHTML;if(!chat.includes('bubble')){alert('لا يوجد شيء للحفظ');return}const saved=JSON.parse(localStorage.getItem('leoai')||'[]');saved.unshift({id:Date.now(),title:document.querySelector('.bubble-user')?.textContent?.slice(0,40)||'محادثة',date:new Date().toLocaleString('ar-SA'),html:chat});if(saved.length>15)saved.length=15;localStorage.setItem('leoai',JSON.stringify(saved));alert('✅ تم الحفظ')}
+function saveChat(){const chat=document.getElementById('chat');if(!chat.querySelector('.bubble')){alert('لا يوجد شيء للحفظ');return}const saved=JSON.parse(localStorage.getItem('leoai')||'[]');saved.unshift({id:Date.now(),title:chat.querySelector('.bubble-user')?.textContent?.substring(0,40)||'محادثة',date:new Date().toLocaleString('ar-SA'),html:chat.innerHTML});if(saved.length>15)saved.pop();localStorage.setItem('leoai',JSON.stringify(saved));alert('✅ تم الحفظ')}
 function showSaved(){const saved=JSON.parse(localStorage.getItem('leoai')||'[]');if(!saved.length){alert('لا توجد محادثات محفوظة');return}const list=saved.map((c,i)=>`${i+1}. ${c.title}... (${c.date})`).join('\n');const num=prompt('اختر رقم المحادثة:\n'+list+'\n\nاكتب الرقم:');if(num){const c=saved[parseInt(num)-1];if(c){document.getElementById('chat').innerHTML=c.html;}}}
 window.onload=function(){const c=document.getElementById('chat');c.scrollTop=c.scrollHeight}
 </script>
