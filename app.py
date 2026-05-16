@@ -6,9 +6,10 @@ import re
 import zipfile
 import tarfile
 import io
+import json
 import urllib.parse
 from fastapi import FastAPI, Request, Form, UploadFile, File
-from fastapi.responses import HTMLResponse, Response, JSONResponse
+from fastapi.responses import HTMLResponse, Response, JSONResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 
 logging.basicConfig(level=logging.INFO)
@@ -22,8 +23,7 @@ templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 chat_sessions = {}
 OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 
-# ─── الموديلات ───────────────────────────────────────────────────────────────
-# vision=True يعني الموديل يقرأ الصور ويفهمها
+# ─── الموديلات ────────────────────────────────────────────────────────────────
 MODELS = [
     {
         "id":      "qwen/qwen3-coder-480b-a35b-instruct:free",
@@ -58,7 +58,7 @@ MODELS = [
     {
         "id":      "google/gemma-4-31b-it:free",
         "name":    "Gemma 4 31B",
-        "desc":    "يقرأ الصور • 256K context • من Google",
+        "desc":    "يقرأ الصور • 256K context • Google",
         "badge":   "🌟",
         "context": "256K",
         "speed":   "متوسط",
@@ -68,7 +68,7 @@ MODELS = [
     {
         "id":      "nvidia/nemotron-nano-12b-v2-vl:free",
         "name":    "Nemotron VL 12B",
-        "desc":    "يقرأ الصور • متخصص في فهم المستندات",
+        "desc":    "يقرأ الصور • 300K context",
         "badge":   "🔬",
         "context": "300K",
         "speed":   "سريع",
@@ -107,12 +107,11 @@ MODELS = [
     },
 ]
 
-# موديلات vision مرتبة حسب الأفضلية (fallback تلقائي عند رفع صورة)
-VISION_MODELS_ORDERED = [m["id"] for m in MODELS if m["vision"]]
+VISION_IDS = [m["id"] for m in MODELS if m["vision"]]
 
 SYSTEM_PROMPT = (
-    "أنت مساعد برمجي متخصص. مهمتك هي مساعدة المستخدم في كتابة وتعديل وشرح الأكواد البرمجية، "
-    "وتحليل الصور المتعلقة بالبرمجة (screenshots، رسوم بيانية، أخطاء). "
+    "أنت مساعد برمجي متخصص. مهمتك مساعدة المستخدم في كتابة وتعديل وشرح الأكواد البرمجية "
+    "وتحليل الصور المتعلقة بالبرمجة. "
     "اكتب الكود دائماً داخل بلوكات Markdown. إذا كانت هناك عدة ملفات استخدم ### filename.ext قبل كل بلوك. "
     "كن دقيقاً ومختصراً. رد دائماً باللغة العربية."
 )
@@ -156,7 +155,7 @@ def markdown_to_html(text: str) -> str:
         b64     = base64.b64encode(code.encode("utf-8")).decode("utf-8")
         display = lang if lang else "code"
         html = (
-            '<div class="code-wrap"><div class="code-hdr">'
+            '<div class="cw2"><div class="ch">'
             f'<span>{display}</span>'
             f'<button onclick="cpy(this,\'{b64}\')">&#128203; نسخ</button>'
             '</div><pre><code>' + escaped + '</code></pre></div>'
@@ -183,11 +182,11 @@ def extract_files(text: str) -> dict:
 
 def guess_name(content: str) -> str:
     cl = content.lower().strip()
-    if cl.startswith("<!doctype") or cl.startswith("<html"):           return "index.html"
+    if cl.startswith("<!doctype") or cl.startswith("<html"):            return "index.html"
     elif "fastapi" in cl or "flask" in cl or cl.startswith("import "): return "app.py"
-    elif cl.startswith("const ") or "function " in cl:                 return "script.js"
-    elif "body {" in cl or ".class" in cl:                             return "style.css"
-    elif cl.startswith("{") or cl.startswith("["):                     return "data.json"
+    elif cl.startswith("const ") or "function " in cl:                  return "script.js"
+    elif "body {" in cl or ".class" in cl:                              return "style.css"
+    elif cl.startswith("{") or cl.startswith("["):                      return "data.json"
     return "code.txt"
 
 # ─── قراءة الملفات المضغوطة ───────────────────────────────────────────────────
@@ -232,7 +231,7 @@ def read_file_content(filename: str, raw_bytes: bytes, content_type: str) -> str
     except Exception:
         return f"(لم يمكن قراءة الملف: {filename})"
 
-# ─── توليد الصور – Pollinations (مجاني بلا مفتاح) ────────────────────────────
+# ─── توليد الصور ─────────────────────────────────────────────────────────────
 def build_image_url(prompt: str, width: int = 1024, height: int = 1024, model: str = "flux") -> str:
     encoded = urllib.parse.quote(prompt)
     seed    = abs(hash(prompt)) % 99999
@@ -248,10 +247,154 @@ async def home(request: Request):
         "default_model": MODELS[0]["id"],
     })
 
-
 @app.get("/models", response_class=JSONResponse)
 async def get_models():
     return JSONResponse(MODELS)
+
+
+# ─── STREAMING CHAT ────────────────────────────────────────────────────────────
+@app.post("/chat-stream")
+async def chat_stream(
+    request:  Request,
+    prompt:   str        = Form(...),
+    model_id: str        = Form(None),
+    file:     UploadFile = File(None),
+):
+    if not OPENROUTER_API_KEY:
+        async def err():
+            yield f"data: {json.dumps({'error': 'API key not set'})}\n\n"
+        return StreamingResponse(err(), media_type="text/event-stream")
+
+    # ── اختيار الموديل ────────────────────────────────────────────────────────
+    valid_ids  = [m["id"] for m in MODELS]
+    chosen     = model_id if model_id in valid_ids else MODELS[0]["id"]
+    has_image  = False
+    user_text  = prompt
+    image_part = None
+    switched   = False
+
+    if file and file.filename:
+        try:
+            raw = await file.read()
+            mt  = file.content_type or ""
+            if mt.startswith("image/"):
+                has_image  = True
+                b64        = base64.b64encode(raw).decode("utf-8")
+                image_part = {"type": "image_url", "image_url": {"url": f"data:{mt};base64,{b64}"}}
+            else:
+                user_text = f"{prompt}\n\n{read_file_content(file.filename, raw, mt)}"
+        except Exception as e:
+            logger.error(f"File error: {e}")
+
+    # تحويل تلقائي لموديل vision إذا كانت صورة
+    if has_image:
+        obj = next((m for m in MODELS if m["id"] == chosen), None)
+        if not (obj and obj["vision"]):
+            chosen   = VISION_IDS[0]
+            switched = True
+
+    # ترتيب المحاولات
+    if has_image:
+        ordered = VISION_IDS
+    else:
+        ordered = [chosen] + [mid for mid in valid_ids if mid != chosen]
+
+    # ── الجلسة ────────────────────────────────────────────────────────────────
+    sid = "default"
+    if sid not in chat_sessions:
+        chat_sessions[sid] = []
+    session = chat_sessions[sid]
+
+    msg_content = [{"type": "text", "text": user_text}, image_part] if image_part else user_text
+
+    headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json"}
+    msgs    = [{"role": "system", "content": SYSTEM_PROMPT}]
+    msgs.extend(session[-8:])
+    msgs.append({"role": "user", "content": msg_content})
+
+    # ── دالة streaming ─────────────────────────────────────────────────────────
+    async def streamer():
+        full_text  = ""
+        used_model = ordered[0]
+        last_err   = ""
+        succeeded  = False
+
+        for mid in ordered:
+            try:
+                resp = requests.post(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    headers=headers,
+                    json={
+                        "model":       mid,
+                        "messages":    msgs,
+                        "temperature": 0.5,
+                        "max_tokens":  3000,
+                        "stream":      True,        # ← streaming مفعّل
+                    },
+                    stream=True,
+                    timeout=40,
+                )
+
+                # فحص أولي للخطأ
+                if resp.status_code != 200:
+                    try:
+                        err_json = resp.json()
+                        last_err = err_json.get("error", {}).get("message", str(resp.status_code))
+                    except Exception:
+                        last_err = str(resp.status_code)
+                    continue
+
+                used_model = mid
+
+                # ── قراءة chunks ──────────────────────────────────────────────
+                for line in resp.iter_lines():
+                    if not line:
+                        continue
+                    line = line.decode("utf-8") if isinstance(line, bytes) else line
+                    if line.startswith("data:"):
+                        data_str = line[5:].strip()
+                        if data_str == "[DONE]":
+                            break
+                        try:
+                            chunk = json.loads(data_str)
+                            delta = chunk["choices"][0]["delta"].get("content", "")
+                            if delta:
+                                full_text += delta
+                                # أرسل الـ token للمتصفح
+                                yield f"data: {json.dumps({'token': delta})}\n\n"
+                        except Exception:
+                            continue
+
+                succeeded = True
+                break
+
+            except Exception as exc:
+                last_err = str(exc)
+                logger.warning(f"Stream model {mid} failed: {exc}")
+                continue
+
+        if not succeeded or not full_text:
+            full_text = f"عذراً، فشلت كل النماذج. الخطأ: {last_err}"
+            yield f"data: {json.dumps({'token': full_text})}\n\n"
+
+        # ── حفظ الجلسة وإرسال النهاية ─────────────────────────────────────────
+        session.append({"role": "user",      "content": prompt})
+        session.append({"role": "assistant", "content": full_text})
+
+        used_name = next((m["name"] for m in MODELS if m["id"] == used_model), used_model.split("/")[-1])
+        files_found = extract_files(full_text)
+        final_html  = markdown_to_html(full_text)
+
+        yield f"data: {json.dumps({'done': True, 'html': final_html, 'files': files_found, 'used_model': used_name, 'switched': switched})}\n\n"
+
+    return StreamingResponse(
+        streamer(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control":  "no-cache",
+            "X-Accel-Buffering": "no",
+        },
+    )
 
 
 @app.post("/generate-image", response_class=JSONResponse)
@@ -262,110 +405,6 @@ async def generate_image(prompt: str = Form(...), size: str = Form("1024x1024"),
         return JSONResponse({"url": url, "prompt": prompt})
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
-
-
-@app.post("/chat", response_class=JSONResponse)
-async def chat(
-    request:  Request,
-    prompt:   str        = Form(...),
-    model_id: str        = Form(None),
-    file:     UploadFile = File(None),
-):
-    if not OPENROUTER_API_KEY:
-        return JSONResponse({"error": "API key not set"}, status_code=500)
-
-    valid_ids = [m["id"] for m in MODELS]
-    chosen    = model_id if model_id in valid_ids else MODELS[0]["id"]
-
-    # ── معالجة الملف ────────────────────────────────────────────────────────
-    user_text      = prompt
-    image_content  = None
-    has_image      = False
-
-    if file and file.filename:
-        try:
-            raw = await file.read()
-            mt  = file.content_type or ""
-            if mt.startswith("image/"):
-                has_image = True
-                b64 = base64.b64encode(raw).decode("utf-8")
-                image_content = {"type": "image_url", "image_url": {"url": f"data:{mt};base64,{b64}"}}
-            else:
-                user_text = f"{prompt}\n\n{read_file_content(file.filename, raw, mt)}"
-        except Exception as e:
-            logger.error(f"File error: {e}")
-
-    # ── تحويل تلقائي لموديل vision إذا رُفعت صورة ──────────────────────────
-    switched = False
-    if has_image:
-        chosen_obj = next((m for m in MODELS if m["id"] == chosen), None)
-        if not (chosen_obj and chosen_obj["vision"]):
-            # ابحث عن أول موديل vision متاح
-            chosen  = VISION_MODELS_ORDERED[0] if VISION_MODELS_ORDERED else chosen
-            switched = True
-
-    # ترتيب المحاولات: الموديل المختار أولاً ثم البقية كـ fallback
-    if has_image:
-        # للصور: جرب فقط الموديلات التي تدعم vision
-        ordered = VISION_MODELS_ORDERED
-    else:
-        ordered = [chosen] + [mid for mid in valid_ids if mid != chosen]
-
-    # ── الجلسة ──────────────────────────────────────────────────────────────
-    sid = "default"
-    if sid not in chat_sessions:
-        chat_sessions[sid] = []
-    session = chat_sessions[sid]
-
-    # ── بناء الرسالة ─────────────────────────────────────────────────────────
-    if image_content:
-        msg_content = [{"type": "text", "text": user_text}, image_content]
-    else:
-        msg_content = user_text
-
-    headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}", "Content-Type": "application/json"}
-    msgs    = [{"role": "system", "content": SYSTEM_PROMPT}]
-    msgs.extend(session[-8:])
-    msgs.append({"role": "user", "content": msg_content})
-
-    ai_resp    = ""
-    used_model = ordered[0] if ordered else chosen
-    last_err   = ""
-
-    for mid in ordered:
-        try:
-            r = requests.post(
-                "https://openrouter.ai/api/v1/chat/completions",
-                headers=headers,
-                json={"model": mid, "messages": msgs, "temperature": 0.5, "max_tokens": 3000},
-                timeout=35,
-            )
-            j = r.json()
-            if "choices" in j and j["choices"]:
-                ai_resp    = j["choices"][0]["message"]["content"]
-                used_model = mid
-                break
-            elif "error" in j:
-                last_err = j["error"].get("message", "unknown")
-                logger.warning(f"Model {mid} error: {last_err}")
-        except Exception as exc:
-            last_err = str(exc)
-            logger.warning(f"Model {mid} exception: {exc}")
-
-    if not ai_resp:
-        ai_resp = f"عذراً، فشلت كل النماذج. الخطأ: {last_err}"
-
-    session.append({"role": "user",      "content": prompt})
-    session.append({"role": "assistant", "content": ai_resp})
-
-    used_name = next((m["name"] for m in MODELS if m["id"] == used_model), used_model.split("/")[-1])
-
-    return JSONResponse({
-        "ai_html":    markdown_to_html(ai_resp),
-        "files":      extract_files(ai_resp),
-        "used_model": used_name,
-        "switched":   switched,
-    })
 
 
 @app.post("/download")
@@ -379,7 +418,7 @@ async def download(filename: str = Form(...), code_content: str = Form(...)):
     }
     return Response(
         content=code_content,
-        media_type=mime_map.get(ext, "text/plain"),
+        media_type=mime_map.get(ext,"text/plain"),
         headers={"Content-Disposition": f"attachment; filename={filename}"},
     )
 
