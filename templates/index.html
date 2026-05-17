@@ -22,6 +22,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .logo{width:28px;height:28px;flex-shrink:0;
       background:linear-gradient(135deg,#19c37d,#ab68ff);
       border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
+.role-badge{font-size:9px;border-radius:4px;padding:2px 6px;font-weight:700;flex-shrink:0;white-space:nowrap}
+.role-badge.admin{background:rgba(25,195,125,.15);color:var(--ac)}
+.role-badge.guest{background:rgba(171,104,255,.15);color:var(--ac2)}
 .hdr-mid{flex:1;display:flex;justify-content:center;align-items:center;gap:4px;min-width:0}
 .tabs-in{display:flex;background:var(--sf);border:1px solid var(--bd);border-radius:7px;padding:2px;gap:2px}
 .tab{padding:4px 8px;border-radius:5px;border:none;background:transparent;color:var(--mu);
@@ -36,13 +39,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .mpick.open .arr{transform:rotate(180deg)}
 .ibtn{width:32px;height:32px;border-radius:7px;background:transparent;border:1px solid var(--bd);
       color:var(--tx);cursor:pointer;font-size:15px;display:flex;align-items:center;
-      justify-content:center;transition:all .15s;flex-shrink:0;position:relative}
+      justify-content:center;transition:all .15s;flex-shrink:0;text-decoration:none}
 .ibtn:active{background:var(--sf2)}
 .ibtn.red:active{background:rgba(239,68,68,.15)}
-.ibtn .badge{position:absolute;top:-4px;right:-4px;background:var(--ac);color:#111;
-             border-radius:50%;width:14px;height:14px;font-size:8px;font-weight:700;
-             display:none;align-items:center;justify-content:center}
-.ibtn .badge.show{display:flex}
 
 /* ── MODEL SHEET ─────────────────────────────────────────────────────────── */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}
@@ -59,6 +58,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .sh-x{width:26px;height:26px;background:var(--sf);border:none;border-radius:50%;
       color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
 .sh-list{overflow-y:auto;padding:6px 9px 28px;flex:1}
+.sh-list::-webkit-scrollbar{width:3px}
+.sh-list::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
 .mi{display:flex;align-items:center;gap:10px;padding:10px 9px;border-radius:10px;cursor:pointer}
 .mi:active{background:var(--sf)}
 .mi.sel{background:rgba(25,195,125,.08)}
@@ -70,40 +71,37 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .tg.c{background:rgba(25,195,125,.15);color:var(--ac)}
 .tg.v{background:rgba(171,104,255,.15);color:var(--ac2)}
 .tg.r{background:rgba(251,191,36,.15);color:#fbbf24}
+.tg.p{background:rgba(59,130,246,.15);color:#60a5fa}
 .mi-desc{font-size:10.5px;color:var(--mu);margin-top:1px}
 .mi-meta{display:flex;gap:5px;margin-top:3px}
 .pl{font-size:9px;color:var(--mu);background:var(--sf);border-radius:3px;padding:2px 5px}
 .mi-chk{color:var(--ac);font-size:16px;font-weight:700;opacity:0;flex-shrink:0}
 .mi.sel .mi-chk{opacity:1}
 
-/* ── PANEL (right slide) ─────────────────────────────────────────────────── */
-.panel-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;
-           opacity:0;pointer-events:none;transition:opacity .25s}
+/* ── PANEL ───────────────────────────────────────────────────────────────── */
+.panel-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s}
 .panel-ov.on{opacity:1;pointer-events:all}
-.panel{position:fixed;top:0;right:0;bottom:0;width:min(320px,90vw);
-       background:#181818;border-left:1px solid var(--bd);z-index:51;
-       transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
-       display:flex;flex-direction:column}
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(320px,90vw);background:#181818;
+       border-left:1px solid var(--bd);z-index:51;transform:translateX(100%);
+       transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
 .panel.on{transform:translateX(0)}
 .panel-head{display:flex;align-items:center;justify-content:space-between;
             padding:14px 14px 10px;border-bottom:1px solid var(--bd);flex-shrink:0}
 .panel-title{font-size:14px;font-weight:700}
 .panel-x{width:26px;height:26px;background:var(--sf);border:none;border-radius:50%;
          color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
-.panel-x:active{background:var(--sf2)}
 .panel-body{flex:1;overflow-y:auto;padding:8px}
 .panel-body::-webkit-scrollbar{width:3px}
 .panel-body::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
 .panel-footer{padding:8px;border-top:1px solid var(--bd);flex-shrink:0;display:flex;flex-direction:column;gap:5px}
-.pbtn{padding:9px;border:none;border-radius:8px;font-size:13px;font-weight:700;
-      cursor:pointer;text-align:center;transition:opacity .15s}
+.pbtn{padding:9px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:opacity .15s}
 .pbtn:active{opacity:.85}
 .pbtn.ac{background:var(--ac);color:#111}
 .pbtn.sec{background:var(--sf);color:var(--tx);border:1px solid var(--bd)}
 .pbtn.danger{background:transparent;color:var(--danger);border:1px solid rgba(239,68,68,.3)}
 
 /* Saved chat items */
-.sc-item{padding:9px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px;border:1px solid transparent}
+.sc-item{padding:9px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px}
 .sc-item:active{background:var(--sf)}
 .sc-item-hdr{display:flex;align-items:center;justify-content:space-between}
 .sc-item-title{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
@@ -115,97 +113,52 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 /* ══ GITHUB BROWSER ════════════════════════════════════════════════════════ */
 .page{display:none;flex:1;flex-direction:column;overflow:hidden}
 .page.on{display:flex}
-
-/* GitHub page layout */
 .gh-layout{display:flex;flex:1;overflow:hidden}
-.gh-sidebar{width:220px;flex-shrink:0;border-left:1px solid var(--bd);
-            overflow-y:auto;background:#181818;display:flex;flex-direction:column}
+.gh-sidebar{width:220px;flex-shrink:0;border-left:1px solid var(--bd);overflow-y:auto;background:#181818;display:flex;flex-direction:column}
 .gh-sidebar::-webkit-scrollbar{width:3px}
 .gh-sidebar::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
 .gh-main{flex:1;overflow:hidden;display:flex;flex-direction:column}
-
-/* Repo list */
 .gh-search{padding:8px;border-bottom:1px solid var(--bd);flex-shrink:0}
-.gh-search input{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);
-                 border-radius:7px;padding:7px 9px;font-size:12px;outline:none;font-family:inherit}
+.gh-search input{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:7px;padding:7px 9px;font-size:12px;outline:none;font-family:inherit}
 .gh-search input:focus{border-color:var(--ac)}
 .repo-item{padding:9px 10px;cursor:pointer;border-bottom:1px solid var(--bd);transition:background .12s}
 .repo-item:active{background:var(--sf)}
 .repo-item.active{background:rgba(25,195,125,.08);border-right:2px solid var(--ac)}
 .repo-name{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .repo-meta{font-size:10px;color:var(--mu);margin-top:2px;display:flex;gap:6px}
-.repo-private{background:rgba(245,158,11,.15);color:var(--warn);border-radius:3px;
-              padding:1px 4px;font-size:9px;font-weight:700}
+.repo-private{background:rgba(245,158,11,.15);color:var(--warn);border-radius:3px;padding:1px 4px;font-size:9px;font-weight:700}
 .repo-lang{color:var(--ac)}
 .repos-loading{text-align:center;color:var(--mu);padding:20px;font-size:12px}
-
-/* File tree */
-.gh-top{padding:8px 10px;border-bottom:1px solid var(--bd);flex-shrink:0;
-        display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.gh-repo-title{font-size:13px;font-weight:700;flex:1;min-width:0;
-               overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gh-top{padding:8px 10px;border-bottom:1px solid var(--bd);flex-shrink:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gh-repo-title{font-size:13px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gh-top-btns{display:flex;gap:5px;flex-shrink:0}
-.gh-btn{background:var(--sf);border:1px solid var(--bd);color:var(--tx);
-        padding:5px 10px;border-radius:7px;font-size:11.5px;font-weight:600;
-        cursor:pointer;transition:all .15s;white-space:nowrap}
+.gh-btn{background:var(--sf);border:1px solid var(--bd);color:var(--tx);padding:5px 10px;border-radius:7px;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap}
 .gh-btn:active{background:var(--sf2)}
 .gh-btn.ac{background:var(--ac);color:#111;border-color:var(--ac)}
-.gh-btn.ac:active{opacity:.85}
 .gh-btn.review{background:rgba(171,104,255,.15);color:var(--ac2);border-color:rgba(171,104,255,.4)}
-
-/* File tree list */
 .file-tree{flex:1;overflow-y:auto;padding:6px 0}
 .file-tree::-webkit-scrollbar{width:3px}
 .file-tree::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
-.file-tree-empty{text-align:center;color:var(--mu);padding:30px 10px;font-size:12px}
-
-.tree-item{display:flex;align-items:center;gap:7px;padding:5px 10px;
-           cursor:pointer;transition:background .1s;user-select:none}
+.fv-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--mu);font-size:13px;text-align:center;gap:8px;padding:20px}
+.fv-icon{font-size:36px}
+.tree-item{display:flex;align-items:center;gap:7px;padding:5px 10px;cursor:pointer;transition:background .1s;user-select:none}
 .tree-item:active{background:var(--sf)}
-.tree-item.selected{background:rgba(25,195,125,.08)}
-.tree-item.checked .ti-check{opacity:1}
-.ti-check{width:16px;height:16px;border:1.5px solid var(--bd);border-radius:3px;
-          flex-shrink:0;display:flex;align-items:center;justify-content:center;
-          font-size:10px;color:var(--ac);opacity:0;transition:all .15s}
+.ti-check{width:16px;height:16px;border:1.5px solid var(--bd);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ac);opacity:0;transition:all .15s}
 .tree-item.checked .ti-check{opacity:1;background:rgba(25,195,125,.15);border-color:var(--ac)}
 .ti-icon{font-size:13px;flex-shrink:0}
 .ti-name{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
 .ti-name.code{color:var(--tx)}
 .ti-name.other{color:var(--mu)}
 .ti-size{font-size:10px;color:var(--mu);flex-shrink:0}
-
-/* File viewer */
-.file-viewer{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.fv-head{padding:8px 10px;border-bottom:1px solid var(--bd);flex-shrink:0;
-         display:flex;align-items:center;gap:7px}
-.fv-path{font-size:11.5px;color:var(--mu);font-family:monospace;flex:1;
-         overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fv-btns{display:flex;gap:5px;flex-shrink:0}
-.fv-body{flex:1;overflow:auto;padding:12px}
-.fv-body::-webkit-scrollbar{width:4px}
-.fv-body::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
-.fv-body pre{font-family:'Fira Code',monospace;font-size:12px;line-height:1.6;
-             color:#cdd6f4;white-space:pre;tab-size:2}
-.fv-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
-          height:100%;color:var(--mu);font-size:13px;text-align:center;gap:8px;padding:20px}
-.fv-empty .fv-icon{font-size:36px}
-
-/* Selected files bar */
-.sel-bar{background:rgba(25,195,125,.07);border-top:1px solid rgba(25,195,125,.2);
-         padding:7px 10px;display:none;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.sel-bar{background:rgba(25,195,125,.07);border-top:1px solid rgba(25,195,125,.2);padding:7px 10px;display:none;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
 .sel-bar.show{display:flex}
 .sel-bar-count{font-size:12px;color:var(--ac);font-weight:600}
 .sel-bar-btns{display:flex;gap:6px;margin-right:auto}
-
-/* Review result panel */
-.review-panel{position:fixed;inset:0;background:var(--bg);z-index:200;
-              display:none;flex-direction:column}
+.review-panel{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column}
 .review-panel.show{display:flex}
-.rp-head{background:#171717;border-bottom:1px solid var(--bd);padding:10px 12px;
-         display:flex;align-items:center;gap:8px;flex-shrink:0}
+.rp-head{background:#171717;border-bottom:1px solid var(--bd);padding:10px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0}
 .rp-title{font-size:14px;font-weight:700;flex:1}
-.rp-close{background:var(--sf);border:1px solid var(--bd);color:var(--tx);
-          padding:6px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600}
+.rp-close{background:var(--sf);border:1px solid var(--bd);color:var(--tx);padding:6px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600}
 .rp-body{flex:1;overflow-y:auto;padding:14px}
 .rp-body::-webkit-scrollbar{width:4px}
 .rp-body::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
@@ -230,8 +183,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .row{display:flex;gap:8px;padding:3px 10px;animation:fu .2s ease}
 .row.u{justify-content:flex-end}
 .row.a{justify-content:flex-start}
-.av{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;
-    justify-content:center;font-size:12px;margin-top:3px}
+.av{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:3px}
 .av.aa{background:linear-gradient(135deg,#19c37d,#ab68ff);order:-1}
 .av.ua{background:linear-gradient(135deg,#ab68ff,#6b3fa0)}
 .bbl{max-width:86%;padding:9px 12px;border-radius:var(--r);font-size:13.5px;line-height:1.75;word-break:break-word}
@@ -239,76 +191,56 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .bbl.a{background:transparent;width:100%;max-width:100%}
 .mtag{font-size:10px;color:var(--mu);margin-top:2px}
 .mact{display:flex;gap:8px;margin-top:5px;flex-wrap:wrap}
-.mac-btn{background:transparent;border:none;color:var(--mu);font-size:11px;cursor:pointer;
-         display:flex;align-items:center;gap:3px;padding:0}
+.mac-btn{background:transparent;border:none;color:var(--mu);font-size:11px;cursor:pointer;display:flex;align-items:center;gap:3px;padding:0}
 .mac-btn:active{color:var(--ac)}
-.cursor{display:inline-block;width:2px;height:1em;background:var(--ac);
-        margin-right:1px;vertical-align:text-bottom;animation:blink .5s step-end infinite}
+.cursor{display:inline-block;width:2px;height:1em;background:var(--ac);margin-right:1px;vertical-align:text-bottom;animation:blink .5s step-end infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .bbl.a h1,.bbl.a h2,.bbl.a h3{color:var(--ac);margin:10px 0 4px;font-weight:600}
 .bbl.a h1{font-size:15px}.bbl.a h2{font-size:14px}.bbl.a h3{font-size:13px}
 .bbl.a p{margin:4px 0}
-.bbl.a code{background:var(--cbg);padding:2px 5px;border-radius:4px;
-            font-family:'Fira Code',monospace;font-size:11.5px;color:#ff9e64;border:1px solid #333}
+.bbl.a code{background:var(--cbg);padding:2px 5px;border-radius:4px;font-family:'Fira Code',monospace;font-size:11.5px;color:#ff9e64;border:1px solid #333}
 .bbl.a blockquote{border-right:3px solid var(--ac);padding-right:9px;margin:6px 0;color:var(--mu)}
 .bbl.a li{margin:3px 0}
 .bbl.a strong{color:#fff}
 .cw2{background:var(--cbg);border-radius:9px;margin:8px 0;border:1px solid var(--bd);overflow:hidden}
-.ch{display:flex;justify-content:space-between;align-items:center;
-    padding:6px 11px;background:var(--chdr);border-bottom:1px solid var(--bd)}
+.ch{display:flex;justify-content:space-between;align-items:center;padding:6px 11px;background:var(--chdr);border-bottom:1px solid var(--bd)}
 .ch span{color:var(--mu);font-size:11px;font-family:monospace;font-weight:600}
 .ch-btns{display:flex;gap:5px}
-.ch button{background:transparent;color:var(--mu);border:1px solid var(--bd);
-           padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10.5px}
+.ch button{background:transparent;color:var(--mu);border:1px solid var(--bd);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10.5px}
 .ch button:active{background:var(--sf2);color:var(--tx)}
 .ch button.ok{color:var(--ac);border-color:var(--ac)}
 .cw2 pre{margin:0;padding:11px 12px;overflow-x:auto;font-size:12px;line-height:1.6}
-.cw2 pre code{background:none!important;padding:0!important;border:none!important;
-              color:#cdd6f4;font-family:'Fira Code',monospace}
-.vn{background:rgba(171,104,255,.1);border:1px solid rgba(171,104,255,.3);
-    border-radius:7px;padding:6px 10px;font-size:11px;color:var(--ac2);margin-bottom:6px;display:none}
+.cw2 pre code{background:none!important;padding:0!important;border:none!important;color:#cdd6f4;font-family:'Fira Code',monospace}
+.vn{background:rgba(171,104,255,.1);border:1px solid rgba(171,104,255,.3);border-radius:7px;padding:6px 10px;font-size:11px;color:var(--ac2);margin-bottom:6px;display:none}
 .vn.on{display:block}
 #spin{display:none;padding:5px 12px;gap:9px;align-items:center}
 #spin.on{display:flex}
-.ring{width:20px;height:20px;border:2.5px solid #333;border-top-color:var(--ac);
-      border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
+.ring{width:20px;height:20px;border:2.5px solid #333;border-top-color:var(--ac);border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
 @keyframes sp{to{transform:rotate(360deg)}}
 .stx{color:var(--mu);font-size:12px}
 #fsec{padding:0 10px}
 .fb{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin:4px 0}
-.fbh{display:flex;align-items:center;justify-content:space-between;
-     padding:7px 11px;border-bottom:1px solid var(--bd);font-size:12px}
+.fbh{display:flex;align-items:center;justify-content:space-between;padding:7px 11px;border-bottom:1px solid var(--bd);font-size:12px}
 .fbh span{color:var(--ac);font-weight:600}
-.fbh-dl{background:transparent;border:1px solid var(--ac);color:var(--ac);
-        padding:3px 9px;border-radius:5px;cursor:pointer;font-size:10.5px;font-weight:600}
-.fi{display:flex;justify-content:space-between;align-items:center;
-    padding:7px 11px;border-bottom:1px solid var(--bd)}
+.fbh-dl{background:transparent;border:1px solid var(--ac);color:var(--ac);padding:3px 9px;border-radius:5px;cursor:pointer;font-size:10.5px;font-weight:600}
+.fi{display:flex;justify-content:space-between;align-items:center;padding:7px 11px;border-bottom:1px solid var(--bd)}
 .fi:last-child{border-bottom:none}
 .fi span{font-size:12px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
-.fi button{background:transparent;border:1px solid var(--ac);color:var(--ac);
-           padding:4px 9px;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600}
+.fi button{background:transparent;border:1px solid var(--ac);color:var(--ac);padding:4px 9px;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600}
 .attach-bar{display:flex;flex-wrap:wrap;gap:5px;padding:0 0 6px;max-height:76px;overflow-y:auto}
-.atch{display:flex;align-items:center;gap:4px;background:var(--sf);border:1px solid var(--bd);
-      border-radius:6px;padding:3px 7px;font-size:11px;color:var(--mu);max-width:140px}
+.atch{display:flex;align-items:center;gap:4px;background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:3px 7px;font-size:11px;color:var(--mu);max-width:140px}
 .atch-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
 .atch-del{background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:12px;padding:0}
-.ia{background:var(--bg);padding:5px 10px 10px;flex-shrink:0;
-    padding-bottom:max(10px,env(safe-area-inset-bottom))}
+.ia{background:var(--bg);padding:5px 10px 10px;flex-shrink:0;padding-bottom:max(10px,env(safe-area-inset-bottom))}
 .iw{max-width:700px;margin:0 auto}
-.ib{background:var(--sf);border:1px solid var(--bd);border-radius:12px;
-    padding:7px 7px 7px 11px;display:flex;align-items:flex-end;gap:5px}
+.ib{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:7px 7px 7px 11px;display:flex;align-items:flex-end;gap:5px}
 .ib:focus-within{border-color:#555}
-.ib textarea{flex:1;background:transparent;color:var(--tx);border:none;outline:none;
-             font-family:inherit;font-size:14px;line-height:1.55;resize:none;
-             min-height:22px;max-height:140px;padding:2px 0}
+.ib textarea{flex:1;background:transparent;color:var(--tx);border:none;outline:none;font-family:inherit;font-size:14px;line-height:1.55;resize:none;min-height:22px;max-height:140px;padding:2px 0}
 .ib textarea::placeholder{color:var(--mu)}
 .ib-btns{display:flex;flex-direction:column;gap:3px}
-.att-btn{width:30px;height:30px;background:transparent;border:1px solid var(--bd);
-         border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-         font-size:14px;color:var(--mu)}
+.att-btn{width:30px;height:30px;background:transparent;border:1px solid var(--bd);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--mu)}
 .att-btn:active{border-color:var(--ac);color:var(--ac)}
-.snd{width:30px;height:30px;background:var(--ac);border:none;border-radius:7px;
-     cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.snd{width:30px;height:30px;background:var(--ac);border:none;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .snd:active{opacity:.85}
 .snd svg{width:13px;height:13px;fill:#111}
 .snd.stop{background:var(--danger);animation:pulse 1.2s ease-in-out infinite}
@@ -323,15 +255,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .ig-s{color:var(--mu);font-size:11.5px;margin-bottom:14px}
 .ig-f{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:12px;margin-bottom:12px}
 .ig-f label{font-size:12px;color:var(--mu);display:block;margin-bottom:5px}
-.ig-ta{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);
-       border-radius:8px;padding:8px 10px;font-family:inherit;font-size:13px;
-       resize:none;height:76px;outline:none}
+.ig-ta{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:13px;resize:none;height:76px;outline:none}
 .ig-ta:focus{border-color:#555}
 .ig-row{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
-.ig-sel{background:var(--bg);color:var(--tx);border:1px solid var(--bd);
-        border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;outline:none;flex:1}
-.ig-btn{background:var(--ac2);color:#fff;border:none;padding:7px 16px;border-radius:8px;
-        cursor:pointer;font-size:13px;font-weight:700}
+.ig-sel{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;outline:none;flex:1}
+.ig-btn{background:var(--ac2);color:#fff;border:none;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700}
 .ig-btn:active{opacity:.85}
 .ig-btn:disabled{background:#444;cursor:not-allowed}
 .ig-err{color:var(--danger);font-size:11.5px;padding:5px 0}
@@ -342,9 +270,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .icard img{width:100%;display:block;aspect-ratio:1;object-fit:cover;background:var(--bg)}
 .icft{padding:7px 9px;display:flex;align-items:center;justify-content:space-between}
 .icp{font-size:10px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:62%}
-.icdl{background:transparent;border:1px solid var(--ac);color:var(--ac);padding:3px 8px;
-      border-radius:4px;cursor:pointer;font-size:10px;font-weight:600;text-decoration:none}
-
+.icdl{background:transparent;border:1px solid var(--ac);color:var(--ac);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10px;font-weight:600;text-decoration:none}
 @media(min-width:600px){.gh-sidebar{width:260px}}
 </style>
 </head>
@@ -353,11 +279,20 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 <!-- ══ HEADER ════════════════════════════════════════════════════════════════ -->
 <div class="hdr">
   <div class="logo">🚀</div>
+  <!-- Role badge -->
+  {% if is_admin %}
+  <span class="role-badge admin">ADMIN</span>
+  {% else %}
+  <span class="role-badge guest">GUEST</span>
+  {% endif %}
+
   <div class="hdr-mid">
     <div class="tabs-in">
       <button class="tab on" id="tC" onclick="sw('c')">💬</button>
-      <button class="tab"    id="tG" onclick="sw('g')">🐙 GitHub</button>
-      <button class="tab"    id="tI" onclick="sw('i')">🎨</button>
+      {% if is_admin %}
+      <button class="tab" id="tG" onclick="sw('g')">🐙 GitHub</button>
+      {% endif %}
+      <button class="tab" id="tI" onclick="sw('i')">🎨</button>
     </div>
     <button class="mpick" id="mp" onclick="openSh()">
       <span id="mb">🥇</span>
@@ -365,8 +300,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
       <span class="arr">▾</span>
     </button>
   </div>
+
   <button class="ibtn" onclick="openPanel('chats')" title="المحادثات">📋</button>
   <button class="ibtn red" onclick="clearChat()" title="مسح">🗑️</button>
+  <a href="/logout" class="ibtn" title="خروج">🚪</a>
 </div>
 
 <!-- ══ MODEL SHEET ════════════════════════════════════════════════════════════ -->
@@ -397,12 +334,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
     <span class="rp-title" id="rp-title">🔍 مراجعة الكود</span>
     <button class="rp-close" onclick="closeReview()">✕ إغلاق</button>
   </div>
-  <div class="rp-body" id="rp-body">
-    <div style="display:flex;flex-direction:column;align-items:center;padding:40px;gap:12px;color:var(--mu)">
-      <div class="ring" style="width:32px;height:32px;border-width:3px"></div>
-      <span>جاري تحليل الكود...</span>
-    </div>
-  </div>
+  <div class="rp-body" id="rp-body"></div>
 </div>
 
 <!-- ══ PAGE: CHAT ════════════════════════════════════════════════════════════ -->
@@ -411,14 +343,21 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
     <div id="welcome">
       <div class="wi">🤖</div>
       <div class="wt">مرحباً، أنا Leo-AI</div>
-      <div class="ws">مساعد برمجة احترافي • اضغط 🐙 GitHub لمراجعة ملفاتك</div>
+      {% if is_admin %}
+      <div class="ws">مساعد برمجة احترافي • اضغط 🐙 GitHub لمراجعة مشاريعك</div>
+      {% else %}
+      <div class="ws">مساعد برمجة جاهز لمساعدتك • اكتب سؤالك أو ارفع ملفاً</div>
+      {% endif %}
       <div class="chips">
-        <span class="chip" onclick="sp('ابنِ موقع portfolio احترافي')">🌐 موقع</span>
+        <span class="chip" onclick="sp('ابنِ موقع portfolio احترافي HTML+CSS+JS')">🌐 موقع</span>
         <span class="chip" onclick="sp('صمم API بـ FastAPI مع SQLite')">⚡ API</span>
-        <span class="chip" onclick="sp('بوت تيليجرام Python')">🤖 بوت</span>
+        <span class="chip" onclick="sp('اكتب بوت تيليجرام Python')">🤖 بوت</span>
         <span class="chip" onclick="sp('Docker Compose لـ FastAPI + PostgreSQL')">🐳 Docker</span>
-        <span class="chip" onclick="sw('g')">🐙 استعرض GitHub</span>
         <span class="chip" onclick="sp('راجع هذا الكود وابحث عن الأخطاء')">🔍 مراجعة</span>
+        <span class="chip" onclick="sp('React + TypeScript + Tailwind')">⚛️ React</span>
+        {% if is_admin %}
+        <span class="chip" onclick="sw('g')">🐙 GitHub Browser</span>
+        {% endif %}
       </div>
     </div>
     <div id="msgs"></div>
@@ -430,8 +369,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
       <div class="vn" id="vn">👁️ سيُستخدم موديل يدعم رؤية الصور تلقائياً</div>
       <div class="attach-bar" id="attach-bar"></div>
       <div class="ib">
-        <textarea id="pt" placeholder="اكتب طلبك..." rows="1"
-          onkeydown="kd(event)" oninput="ar(this)"></textarea>
+        <textarea id="pt" placeholder="اكتب طلبك..." rows="1" onkeydown="kd(event)" oninput="ar(this)"></textarea>
         <div class="ib-btns">
           <label class="att-btn" for="fii"><span id="att-ico">📎</span></label>
           <input type="file" id="fii" multiple style="display:none"
@@ -443,60 +381,51 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
           </button>
         </div>
       </div>
-      <div class="hint">Enter إرسال • Shift+Enter سطر جديد</div>
+      <div class="hint">Enter إرسال • Shift+Enter سطر جديد • 📎 حتى 25 مرفق</div>
     </div>
   </div>
 </div>
 
-<!-- ══ PAGE: GITHUB ════════════════════════════════════════════════════════════ -->
+<!-- ══ PAGE: GITHUB (admin only) ══════════════════════════════════════════════ -->
+{% if is_admin %}
 <div class="page" id="pgG">
   <div class="gh-layout">
-
-    <!-- Sidebar: repo list -->
     <div class="gh-sidebar">
       <div class="gh-search">
         <input id="repo-search" placeholder="🔍 ابحث في الـ repos..." oninput="filterRepos(this.value)">
       </div>
-      <div id="repo-list">
-        <div class="repos-loading">⏳ جاري تحميل الـ repos...</div>
-      </div>
+      <div id="repo-list"><div class="repos-loading">⏳ جاري التحميل...</div></div>
     </div>
-
-    <!-- Main: file tree + viewer -->
     <div class="gh-main">
-      <!-- Top bar -->
       <div class="gh-top" id="gh-top" style="display:none">
         <span class="gh-repo-title" id="gh-repo-title">—</span>
         <div class="gh-top-btns">
           <button class="gh-btn" onclick="selectAllCode()">☑️ تحديد الكل</button>
           <button class="gh-btn" onclick="clearSelection()">✕ إلغاء</button>
           <button class="gh-btn review" onclick="startReview()">🔍 مراجعة</button>
-          <button class="gh-btn ac" onclick="loadToChat()">💬 تحميل للمحادثة</button>
+          <button class="gh-btn ac" onclick="loadToChat()">💬 للمحادثة</button>
         </div>
       </div>
-
-      <!-- Selected files bar -->
       <div class="sel-bar" id="sel-bar">
-        <span class="sel-bar-count" id="sel-count">0 ملف محدد</span>
+        <span class="sel-bar-count" id="sel-count">0 ملف</span>
         <div class="sel-bar-btns">
-          <button class="gh-btn review" onclick="startReview()">🔍 مراجعة الكود المحدد</button>
-          <button class="gh-btn ac" onclick="loadToChat()">💬 تحميل للمحادثة</button>
+          <button class="gh-btn review" onclick="startReview()">🔍 مراجعة المحدد</button>
+          <button class="gh-btn ac" onclick="loadToChat()">💬 للمحادثة</button>
         </div>
       </div>
-
-      <!-- Content: tree or file viewer -->
       <div id="gh-content" style="flex:1;overflow:hidden;display:flex;flex-direction:column">
         <div class="fv-empty">
           <div class="fv-icon">🐙</div>
-          <span>اختر مستودعاً من اليسار لعرض ملفاته</span>
+          <span>اختر مستودعاً من اليسار</span>
           {% if not has_github_token %}
-          <span style="color:var(--danger);font-size:11px">⚠️ GITHUB_TOKEN غير موجود — لن تظهر الـ repos الخاصة</span>
+          <span style="color:var(--danger);font-size:11px">⚠️ GITHUB_TOKEN غير موجود</span>
           {% endif %}
         </div>
       </div>
     </div>
   </div>
 </div>
+{% endif %}
 
 <!-- ══ PAGE: IMAGE GEN ════════════════════════════════════════════════════════ -->
 <div class="page" id="pgI">
@@ -522,9 +451,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 
 <!-- ══ SCRIPT ══════════════════════════════════════════════════════════════════ -->
 <script>
-const MODELS = {{ models | tojson }};
-const SID    = "default";
-const MAX_AT = 25;
+const MODELS   = {{ models | tojson }};
+const ROLE     = "{{ role }}";
+const IS_ADMIN = ROLE === "admin";
+const SID      = "default";
+const MAX_AT   = 25;
 
 let sel          = MODELS[0].id;
 let streaming    = false;
@@ -532,34 +463,47 @@ let ctrl         = null;
 let pendingFiles = [];
 const pf         = {};
 
-// GitHub state
-let allRepos     = [];
-let currentRepo  = null;   // {owner, repo, branch}
-let currentTree  = [];     // all files
-let selectedPaths= new Set();
-let viewingFile  = null;
+// GitHub state (admin only)
+let allRepos      = [];
+let currentRepo   = null;
+let currentTree   = [];
+let selectedPaths = new Set();
+let viewingFile   = null;
 
-/* ── Streaming ───────────────────────────────────────────────────────────── */
+/* ── DOM ─────────────────────────────────────────────────────────────────── */
+const cw_   = document.getElementById('cw');
+const msgs  = document.getElementById('msgs');
+const spin  = document.getElementById('spin');
+const stxEl = document.getElementById('stx');
+const wel   = document.getElementById('welcome');
+const fsec  = document.getElementById('fsec');
+const pt    = document.getElementById('pt');
+const sb    = document.getElementById('sb');
+const fii   = document.getElementById('fii');
+const vn    = document.getElementById('vn');
+const icoS  = document.getElementById('ico-s');
+const icoX  = document.getElementById('ico-x');
+const abar  = document.getElementById('attach-bar');
+
+/* ── Stream control ──────────────────────────────────────────────────────── */
 function setStreaming(v){
-  streaming=v;
-  document.getElementById('sb').classList.toggle('stop',v);
-  document.getElementById('ico-s').style.display=v?'none':'';
-  document.getElementById('ico-x').style.display=v?'':'none';
+  streaming=v;sb.classList.toggle('stop',v);
+  icoS.style.display=v?'none':'';icoX.style.display=v?'':'none';
 }
 function toggleSend(){streaming?stopStream():send()}
-async function stopStream(){
-  if(ctrl)ctrl.abort();
-  try{await fetch('/stop',{method:'POST'})}catch(_){}
-}
+async function stopStream(){if(ctrl)ctrl.abort();try{const fd=new FormData();fd.append('sid',SID);await fetch('/stop',{method:'POST',body:fd})}catch(_){}}
 
 /* ── Page switch ─────────────────────────────────────────────────────────── */
 function sw(m){
-  ['c','g','i'].forEach(x=>{
-    document.getElementById('pg'+x.toUpperCase()).classList.toggle('on',m===x);
-    document.getElementById('t'+x.toUpperCase()).classList.toggle('on',m===x);
+  const pages=IS_ADMIN?['c','g','i']:['c','i'];
+  pages.forEach(x=>{
+    const pg=document.getElementById('pg'+x.toUpperCase());
+    const tb=document.getElementById('t'+x.toUpperCase());
+    if(pg)pg.classList.toggle('on',m===x);
+    if(tb)tb.classList.toggle('on',m===x);
   });
   document.getElementById('mp').style.display=m==='c'?'':'none';
-  if(m==='g'&&!allRepos.length)loadRepos();
+  if(m==='g'&&IS_ADMIN&&!allRepos.length)loadRepos();
 }
 
 /* ── Model sheet ─────────────────────────────────────────────────────────── */
@@ -567,8 +511,7 @@ function tagCls(m){return m.vision?'v':m.strength==='reasoning'?'r':m.strength==
 function buildSh(){
   const l=document.getElementById('shl');l.innerHTML='';
   MODELS.forEach(m=>{
-    const d=document.createElement('div');
-    d.className='mi'+(m.id===sel?' sel':'');
+    const d=document.createElement('div');d.className='mi'+(m.id===sel?' sel':'');
     d.innerHTML=`<div class="mi-ico">${m.badge}</div>
       <div class="mi-body">
         <div class="mi-name">${m.name}<span class="tg ${tagCls(m)}">${m.tag}</span></div>
@@ -578,7 +521,7 @@ function buildSh(){
     d.onclick=()=>pick(m);l.appendChild(d);
   });
 }
-function pick(m){sel=m.id;document.getElementById('mb').textContent=m.badge;document.getElementById('mn').textContent=m.name.split(' ').slice(0,2).join(' ');document.getElementById('stx').textContent=m.name+' يفكر...';buildSh();closeSh()}
+function pick(m){sel=m.id;document.getElementById('mb').textContent=m.badge;document.getElementById('mn').textContent=m.name.split(' ').slice(0,2).join(' ');stxEl.textContent=m.name+' يفكر...';buildSh();closeSh()}
 function openSh(){buildSh();document.getElementById('ov').classList.add('on');document.getElementById('sh').classList.add('on');document.getElementById('mp').classList.add('open')}
 function closeSh(){document.getElementById('ov').classList.remove('on');document.getElementById('sh').classList.remove('on');document.getElementById('mp').classList.remove('open')}
 
@@ -588,349 +531,58 @@ function openPanel(n){closePanel();activePanel=n;document.getElementById('panel-
 function closePanel(){if(activePanel){document.getElementById('panel-'+activePanel).classList.remove('on');activePanel=null}document.getElementById('panel-ov').classList.remove('on')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSh();closePanel();closeReview()}});
 
-/* ══ GITHUB BROWSER ════════════════════════════════════════════════════════ */
-async function loadRepos(){
-  document.getElementById('repo-list').innerHTML='<div class="repos-loading">⏳ جاري التحميل...</div>';
-  try{
-    const r=await fetch('/github/repos');
-    const d=await r.json();
-    if(d.error){document.getElementById('repo-list').innerHTML=`<div class="repos-loading" style="color:var(--danger)">❌ ${esc(d.error)}</div>`;return}
-    allRepos=d;
-    renderRepos(d);
-  }catch(e){document.getElementById('repo-list').innerHTML=`<div class="repos-loading" style="color:var(--danger)">❌ ${esc(String(e))}</div>`}
-}
-
-function renderRepos(repos){
-  if(!repos.length){document.getElementById('repo-list').innerHTML='<div class="repos-loading">لا توجد مستودعات</div>';return}
-  document.getElementById('repo-list').innerHTML=repos.map((r,i)=>`
-    <div class="repo-item" onclick="loadRepo('${esc(r.full_name.split('/')[0])}','${esc(r.name)}','${esc(r.default_branch)}')" id="ri-${i}">
-      <div class="repo-name">${esc(r.name)} ${r.private?'<span class="repo-private">خاص</span>':''}</div>
-      <div class="repo-meta">
-        <span class="repo-lang">${esc(r.language)}</span>
-        <span>⭐ ${r.stars}</span>
-        <span>${r.updated_at}</span>
-      </div>
-    </div>`).join('');
-}
-
-function filterRepos(q){
-  if(!q.trim()){renderRepos(allRepos);return}
-  renderRepos(allRepos.filter(r=>r.name.toLowerCase().includes(q.toLowerCase())||r.description.toLowerCase().includes(q.toLowerCase())));
-}
-
-async function loadRepo(owner,repo,branch='main'){
-  currentRepo={owner,repo,branch};
-  selectedPaths.clear();
-  updateSelBar();
-
-  const top=document.getElementById('gh-top');
-  top.style.display='flex';
-  document.getElementById('gh-repo-title').textContent=`${owner}/${repo}`;
-
-  const content=document.getElementById('gh-content');
-  content.innerHTML='<div class="fv-empty"><div class="ring" style="width:28px;height:28px;border-width:3px"></div><span>جاري تحميل الملفات...</span></div>';
-
-  try{
-    const r=await fetch(`/github/tree?owner=${owner}&repo=${repo}&branch=${branch}`);
-    const d=await r.json();
-    if(d.error){content.innerHTML=`<div class="fv-empty"><span style="color:var(--danger)">❌ ${esc(d.error)}</span></div>`;return}
-    currentTree=d.files;
-    branch=d.branch;
-    currentRepo.branch=branch;
-    renderTree(d.files);
-  }catch(e){content.innerHTML=`<div class="fv-empty"><span style="color:var(--danger)">❌ ${esc(String(e))}</span></div>`}
-}
-
-function fileIcon(path){
-  const ext=path.split('.').pop().toLowerCase();
-  const map={py:'🐍',js:'🟨',ts:'🔷',tsx:'🔷',jsx:'🟨',html:'🌐',css:'🎨',json:'📋',
-             md:'📝',sh:'⚙️',go:'🐹',rs:'🦀',java:'☕',cpp:'⚡',c:'⚡',
-             vue:'💚',php:'🐘',rb:'💎',sql:'🗄️',yml:'⚙️',yaml:'⚙️',
-             toml:'⚙️',env:'🔑',dockerfile:'🐳',tf:'🟣'};
-  return map[ext]||'📄';
-}
-
-function renderTree(files){
-  if(!files.length){
-    document.getElementById('gh-content').innerHTML='<div class="fv-empty"><span>لا توجد ملفات كود</span></div>';
-    return;
-  }
-  const div=document.createElement('div');
-  div.className='file-tree';
-  files.forEach(f=>{
-    const item=document.createElement('div');
-    item.className='tree-item';
-    item.dataset.path=f.path;
-    item.innerHTML=`
-      <div class="ti-check">✓</div>
-      <span class="ti-icon">${fileIcon(f.path)}</span>
-      <span class="ti-name ${f.is_code?'code':'other'}">${esc(f.path)}</span>
-      <span class="ti-size">${f.size>1000?Math.round(f.size/1000)+'K':f.size+'B'}</span>`;
-    item.onclick=(e)=>toggleFile(f.path,item,e);
-    div.appendChild(item);
-  });
-
-  const content=document.getElementById('gh-content');
-  content.innerHTML='';
-  content.appendChild(div);
-}
-
-function toggleFile(path,item,e){
-  if(selectedPaths.has(path)){selectedPaths.delete(path);item.classList.remove('checked')}
-  else{selectedPaths.add(path);item.classList.add('checked')}
-  updateSelBar();
-
-  // Single click → view file
-  if(!e.shiftKey&&selectedPaths.size<=1){
-    viewFile(path);
-  }
-}
-
-function selectAllCode(){
-  document.querySelectorAll('.tree-item').forEach(item=>{
-    const path=item.dataset.path;
-    const f=currentTree.find(x=>x.path===path);
-    if(f&&f.is_code){selectedPaths.add(path);item.classList.add('checked')}
-  });
-  updateSelBar();
-}
-
-function clearSelection(){
-  selectedPaths.clear();
-  document.querySelectorAll('.tree-item.checked').forEach(el=>el.classList.remove('checked'));
-  updateSelBar();
-}
-
-function updateSelBar(){
-  const bar=document.getElementById('sel-bar');
-  const cnt=document.getElementById('sel-count');
-  cnt.textContent=`${selectedPaths.size} ملف محدد`;
-  bar.classList.toggle('show',selectedPaths.size>0);
-}
-
-async function viewFile(path){
-  if(!currentRepo)return;
-  const {owner,repo,branch}=currentRepo;
-  const content=document.getElementById('gh-content');
-
-  // Add file viewer
-  let viewer=document.getElementById('file-viewer-el');
-  if(!viewer){
-    viewer=document.createElement('div');
-    viewer.id='file-viewer-el';
-    viewer.className='file-viewer';
-    viewer.style.cssText='position:fixed;bottom:0;left:0;right:0;top:52px;z-index:30;background:var(--bg);border-top:1px solid var(--bd)';
-    document.body.appendChild(viewer);
-  }
-  viewer.style.display='flex';
-  viewer.innerHTML=`
-    <div class="fv-head">
-      <span class="fv-path">${esc(path)}</span>
-      <div class="fv-btns">
-        <button class="gh-btn" onclick="copyFileContent()">📋 نسخ</button>
-        <button class="gh-btn review" onclick="reviewSingleFile('${esc(path)}')">🔍 مراجعة</button>
-        <button class="gh-btn" onclick="askAboutFile('${esc(path)}')">💬 اسأل عنه</button>
-        <button class="gh-btn" onclick="closeFileViewer()" style="border-color:var(--danger);color:var(--danger)">✕</button>
-      </div>
-    </div>
-    <div class="fv-body" id="fv-body">
-      <div style="color:var(--mu);font-size:12px">⏳ جاري التحميل...</div>
-    </div>`;
-
-  try{
-    const r=await fetch(`/github/file?owner=${owner}&repo=${repo}&path=${encodeURIComponent(path)}&branch=${branch}`);
-    const d=await r.json();
-    if(d.error){document.getElementById('fv-body').innerHTML=`<span style="color:var(--danger)">❌ ${esc(d.error)}</span>`;return}
-    viewingFile={path,content:d.content};
-    const ext=path.split('.').pop();
-    const escaped=esc(d.content);
-    document.getElementById('fv-body').innerHTML=`
-      <div style="margin-bottom:8px;font-size:11px;color:var(--mu)">${d.lines} سطر • ${Math.round(d.size/1024*10)/10}KB ${d.truncated?'• (مقتطع)':''}</div>
-      <pre>${escaped}</pre>`;
-  }catch(e){
-    document.getElementById('fv-body').innerHTML=`<span style="color:var(--danger)">❌ ${esc(String(e))}</span>`;
-  }
-}
-
-function closeFileViewer(){
-  const v=document.getElementById('file-viewer-el');
-  if(v)v.style.display='none';
-}
-
-function copyFileContent(){
-  if(viewingFile)navigator.clipboard.writeText(viewingFile.content).then(()=>alert('✅ تم نسخ الملف'));
-}
-
-async function reviewSingleFile(path){
-  selectedPaths.clear();
-  selectedPaths.add(path);
-  closeFileViewer();
-  startReview();
-}
-
-function askAboutFile(path){
-  closeFileViewer();
-  sw('c');
-  const p=document.getElementById('pt');
-  p.value=`اسألك عن ملف ${path} من مستودع ${currentRepo?.owner}/${currentRepo?.repo}: `;
-  ar(p); p.focus();
-  // Load file to memory
-  if(currentRepo&&viewingFile){
-    const sid='default';
-    // Add to memory via fetch
-    const content=viewingFile.content;
-    fetch('/project/add',{method:'POST',body:Object.assign(new FormData(),{files:new File([content],path),sid})});
-  }
-}
-
-/* ── Code Review ─────────────────────────────────────────────────────────── */
-async function startReview(){
-  if(!currentRepo){alert('اختر مستودعاً أولاً');return}
-  if(!selectedPaths.size){alert('حدد ملفات للمراجعة أولاً');return}
-
-  const panel=document.getElementById('review-panel');
-  const body =document.getElementById('rp-body');
-  const title=document.getElementById('rp-title');
-
-  panel.classList.add('show');
-  title.textContent=`🔍 مراجعة ${selectedPaths.size} ملف — ${currentRepo.owner}/${currentRepo.repo}`;
-  body.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;padding:40px;gap:12px;color:var(--mu)"><div class="ring" style="width:32px;height:32px;border-width:3px;border-top-color:var(--ac2)"></div><span>جاري تحليل الكود... قد يستغرق دقيقة</span></div>`;
-
-  const {owner,repo,branch}=currentRepo;
-  const fd=new FormData();
-  fd.append('owner',  owner);
-  fd.append('repo',   repo);
-  fd.append('branch', branch);
-  fd.append('paths',  Array.from(selectedPaths).join(','));
-  fd.append('model_id',sel);
-
-  try{
-    const res=await fetch('/github/review',{method:'POST',body:fd});
-    if(!res.ok)throw new Error(`HTTP ${res.status}`);
-
-    const reader=res.body.getReader();
-    const dec=new TextDecoder();
-    let buf='';
-    let rawText='';
-    let gotFirst=false;
-
-    body.innerHTML='<div id="review-content" class="bbl a" style="padding:0"></div>';
-    const rc=document.getElementById('review-content');
-    const cursor=document.createElement('span');
-    cursor.className='cursor';
-    rc.appendChild(cursor);
-
-    while(true){
-      const{done,value}=await reader.read();
-      if(done)break;
-      buf+=dec.decode(value,{stream:true});
-      const lines=buf.split('\n');buf=lines.pop();
-      for(const line of lines){
-        if(!line.startsWith('data:'))continue;
-        const ds=line.slice(5).trim();if(!ds)continue;
-        try{
-          const ev=JSON.parse(ds);
-          if(ev.token!==undefined){rawText+=ev.token;rc.textContent=rawText;rc.appendChild(cursor)}
-          if(ev.done){cursor.remove();rc.innerHTML=ev.html}
-        }catch(_){}
-      }
-    }
-  }catch(e){
-    body.innerHTML=`<p style="color:var(--danger);padding:20px">❌ ${esc(String(e))}</p>`;
-  }
-}
-
-function closeReview(){document.getElementById('review-panel').classList.remove('show')}
-
-async function loadToChat(){
-  if(!currentRepo||!selectedPaths.size){alert('حدد ملفات أولاً');return}
-  const {owner,repo,branch}=currentRepo;
-  const fd=new FormData();
-  fd.append('owner',  owner);
-  fd.append('repo',   repo);
-  fd.append('branch', branch);
-  fd.append('paths',  Array.from(selectedPaths).join(','));
-  fd.append('sid',    SID);
-  try{
-    const r=await fetch('/github/load-to-memory',{method:'POST',body:fd});
-    const d=await r.json();
-    if(d.error){alert('❌ '+d.error);return}
-    sw('c');
-    document.getElementById('pt').value=`لقد قمت بتحميل ${d.added.length} ملف من ${owner}/${repo} إلى الذاكرة. ماذا تريد أن تعمل عليها؟`;
-    ar(document.getElementById('pt'));
-    document.getElementById('pt').focus();
-  }catch(e){alert('❌ '+e)}
-}
-
 /* ── Helpers ─────────────────────────────────────────────────────────────── */
 function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,140)+'px'}
 function kd(e){if(e.key==='Enter'&&!e.shiftKey&&!streaming){e.preventDefault();send()}}
-function sp(t){document.getElementById('pt').value=t;document.getElementById('pt').focus();ar(document.getElementById('pt'))}
-function bot(){document.getElementById('cw').scrollTop=document.getElementById('cw').scrollHeight}
+function sp(t){pt.value=t;pt.focus();ar(pt)}
+function bot(){cw_.scrollTop=cw_.scrollHeight}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function fileIcon(path){const ext=path.split('.').pop().toLowerCase();const map={py:'🐍',js:'🟨',ts:'🔷',tsx:'🔷',jsx:'🟨',html:'🌐',css:'🎨',json:'📋',md:'📝',sh:'⚙️',go:'🐹',rs:'🦀',java:'☕',cpp:'⚡',c:'⚡',vue:'💚',php:'🐘',rb:'💎',sql:'🗄️',yml:'⚙️',yaml:'⚙️',toml:'⚙️',pdf:'📕',zip:'📦'};return map[ext]||'📄'}
 
 /* ── Attachments ─────────────────────────────────────────────────────────── */
 function addFiles(input){
   const avail=MAX_AT-pendingFiles.length;
   Array.from(input.files).slice(0,avail).forEach(f=>pendingFiles.push(f));
   input.value='';renderAbar();
-  document.getElementById('vn').classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')));
+  vn.classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')));
 }
-function removeFile(i){pendingFiles.splice(i,1);renderAbar();document.getElementById('vn').classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')))}
+function removeFile(i){pendingFiles.splice(i,1);renderAbar();vn.classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')))}
 function renderAbar(){
-  const ab=document.getElementById('attach-bar');ab.innerHTML='';
+  abar.innerHTML='';
   if(!pendingFiles.length){document.getElementById('att-ico').innerHTML='📎';return}
   document.getElementById('att-ico').innerHTML=`📎<span class="att-count">${pendingFiles.length}</span>`;
-  pendingFiles.forEach((f,i)=>{
-    const el=document.createElement('div');el.className='atch';
-    el.innerHTML=`<span>${fileIcon(f.name)}</span><span class="atch-name">${esc(f.name)}</span><button class="atch-del" onclick="removeFile(${i})">✕</button>`;
-    ab.appendChild(el);
-  });
+  pendingFiles.forEach((f,i)=>{const el=document.createElement('div');el.className='atch';el.innerHTML=`<span>${fileIcon(f.name)}</span><span class="atch-name">${esc(f.name)}</span><button class="atch-del" onclick="removeFile(${i})">✕</button>`;abar.appendChild(el)});
 }
 
 /* ── Files panel ─────────────────────────────────────────────────────────── */
 function showFiles(filesB64){
   if(!filesB64||!Object.keys(filesB64).length)return;
-  Object.assign(pf,filesB64);
-  const names=Object.keys(filesB64);
+  Object.assign(pf,filesB64);const names=Object.keys(filesB64);
   let h=`<div class="fb"><div class="fbh"><span>📁 ملفات (${names.length})</span><button class="fbh-dl" onclick="dlZip()">📦 ZIP</button></div>`;
   names.forEach(n=>h+=`<div class="fi"><span>${fileIcon(n)} ${esc(n)}</span><button onclick="dlFile('${esc(n)}')">💾</button></div>`);
-  h+='</div>';
-  document.getElementById('fsec').innerHTML=h;
+  h+='</div>';fsec.innerHTML=h;
 }
 async function dlFile(name){
   const b64=pf[name];if(!b64)return;
   const fd=new FormData();fd.append('filename',name);fd.append('code_b64',b64);
   const blob=await(await fetch('/download',{method:'POST',body:fd})).blob();
-  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:name});
-  a.click();URL.revokeObjectURL(a.href);
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:name});a.click();URL.revokeObjectURL(a.href);
 }
 async function dlZip(){
   const blob=await(await fetch(`/download/zip/${SID}`)).blob();
-  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:'leo-ai.zip'});
-  a.click();URL.revokeObjectURL(a.href);
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:'leo-ai.zip'});a.click();URL.revokeObjectURL(a.href);
 }
 function cpy(btn,b64){navigator.clipboard.writeText(atob(b64)).then(()=>{btn.textContent='✅ تم';btn.classList.add('ok');setTimeout(()=>{btn.textContent='📋 نسخ';btn.classList.remove('ok')},1500)})}
-function explainCode(btn,b64){document.getElementById('pt').value=`اشرح هذا الكود:\n\`\`\`\n${atob(b64)}\n\`\`\``;ar(document.getElementById('pt'));sw('c');send()}
+function explainCode(btn,b64){pt.value=`اشرح هذا الكود:\n\`\`\`\n${atob(b64)}\n\`\`\``;ar(pt);sw('c');send()}
 function cpyFull(btn,rawB64){navigator.clipboard.writeText(atob(rawB64)).then(()=>{btn.textContent='✅';setTimeout(()=>btn.textContent='📄 نسخ',1500)})}
 
 /* ══ STREAMING SEND ════════════════════════════════════════════════════════ */
 async function send(){
-  const txt=document.getElementById('pt').value.trim();
-  if(!txt||streaming)return;
-  document.getElementById('welcome').style.display='none';
-  setStreaming(true);
-  const cw_=document.getElementById('cw');
-  const msgs=document.getElementById('msgs');
-  const spin=document.getElementById('spin');
-
+  const txt=pt.value.trim();if(!txt||streaming)return;
+  wel.style.display='none';setStreaming(true);
   const uRow=document.createElement('div');uRow.className='row u';
   uRow.innerHTML=`<div class="bbl u">${esc(txt)}${pendingFiles.length?`<br><span style="font-size:10px;color:var(--mu)">📎 ${pendingFiles.length} مرفق</span>`:''}</div><div class="av ua">👤</div>`;
-  msgs.appendChild(uRow);
-  document.getElementById('pt').value='';document.getElementById('pt').style.height='auto';
-  document.getElementById('vn').classList.remove('on');
-  cw_.scrollTop=cw_.scrollHeight;
-
+  msgs.appendChild(uRow);pt.value='';pt.style.height='auto';vn.classList.remove('on');bot();
   const aRow=document.createElement('div');aRow.className='row a';
   const avEl=Object.assign(document.createElement('div'),{className:'av aa',textContent:'🤖'});
   const wrap=document.createElement('div');wrap.style.flex='1';
@@ -939,88 +591,185 @@ async function send(){
   const mtag=Object.assign(document.createElement('div'),{className:'mtag'});
   const mact=Object.assign(document.createElement('div'),{className:'mact'});
   bbl.appendChild(cursor);wrap.append(bbl,mtag,mact);aRow.append(avEl,wrap);msgs.appendChild(aRow);
-  spin.classList.add('on');cw_.scrollTop=cw_.scrollHeight;
-
-  const fd=new FormData();
-  fd.append('prompt',txt);fd.append('model_id',sel);fd.append('sid',SID);
+  spin.classList.add('on');bot();
+  const fd=new FormData();fd.append('prompt',txt);fd.append('model_id',sel);fd.append('sid',SID);
   pendingFiles.forEach(f=>fd.append('files',f));pendingFiles=[];renderAbar();
-
-  ctrl=new AbortController();
-  let rawText='';let gotFirst=false;let fullRaw='';
+  ctrl=new AbortController();let rawText='';let gotFirst=false;let fullRaw='';
   try{
     const res=await fetch('/chat-stream',{method:'POST',body:fd,signal:ctrl.signal});
     if(!res.ok)throw new Error(`HTTP ${res.status}`);
     const reader=res.body.getReader();const dec=new TextDecoder();let buf='';
     while(true){
       const{done,value}=await reader.read();if(done)break;
-      buf+=dec.decode(value,{stream:true});
-      const lines=buf.split('\n');buf=lines.pop();
+      buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();
       for(const line of lines){
-        if(!line.startsWith('data:'))continue;
-        const ds=line.slice(5).trim();if(!ds)continue;
+        if(!line.startsWith('data:'))continue;const ds=line.slice(5).trim();if(!ds)continue;
         try{
           const ev=JSON.parse(ds);
           if(ev.first&&!gotFirst){gotFirst=true;spin.classList.remove('on')}
-          if(ev.token!==undefined){if(!gotFirst){gotFirst=true;spin.classList.remove('on')}rawText+=ev.token;fullRaw=rawText;bbl.textContent=rawText;bbl.appendChild(cursor);cw_.scrollTop=cw_.scrollHeight}
+          if(ev.token!==undefined){if(!gotFirst){gotFirst=true;spin.classList.remove('on')}rawText+=ev.token;fullRaw=rawText;bbl.textContent=rawText;bbl.appendChild(cursor);bot()}
           if(ev.done){cursor.remove();bbl.innerHTML=ev.html;fullRaw=ev.raw||rawText;
             mtag.textContent=`✦ ${ev.switched?ev.used_model+' ← تحويل تلقائي':ev.used_model}`;
             const rb=btoa(unescape(encodeURIComponent(fullRaw)));
             mact.innerHTML=`<button class="mac-btn" onclick="cpyFull(this,'${rb}')">📄 نسخ</button>`;
-            if(ev.files)showFiles(ev.files);cw_.scrollTop=cw_.scrollHeight}
-          if(ev.error){cursor.remove();bbl.innerHTML=`<p style="color:var(--danger)">❌ ${esc(ev.error)}</p>`;cw_.scrollTop=cw_.scrollHeight}
+            if(ev.files)showFiles(ev.files);bot()}
+          if(ev.error){cursor.remove();bbl.innerHTML=`<p style="color:var(--danger)">❌ ${esc(ev.error)}</p>`;bot()}
         }catch(_){}
       }
     }
   }catch(e){
     spin.classList.remove('on');cursor.remove();
-    bbl.innerHTML=e.name==='AbortError'
-      ?`<p style="color:var(--mu)">⏹ تم الإيقاف</p>`
-      :`<p style="color:var(--danger)">❌ ${esc(String(e))}</p>`;
-    cw_.scrollTop=cw_.scrollHeight;
+    bbl.innerHTML=e.name==='AbortError'?`<p style="color:var(--mu)">⏹ تم الإيقاف</p>`:`<p style="color:var(--danger)">❌ ${esc(String(e))}</p>`;bot();
   }
-  setStreaming(false);ctrl=null;document.getElementById('pt').focus();
+  setStreaming(false);ctrl=null;pt.focus();
 }
 
-/* ── Saved chats ─────────────────────────────────────────────────────────── */
-function getSaved(){return JSON.parse(localStorage.getItem('leoai')||'[]')}
-function setSaved(v){localStorage.setItem('leoai',JSON.stringify(v))}
+/* ══ GITHUB BROWSER (admin only) ══════════════════════════════════════════ */
+async function loadRepos(){
+  if(!IS_ADMIN)return;
+  document.getElementById('repo-list').innerHTML='<div class="repos-loading">⏳ جاري التحميل...</div>';
+  try{
+    const r=await fetch('/github/repos');const d=await r.json();
+    if(d.error){document.getElementById('repo-list').innerHTML=`<div class="repos-loading" style="color:var(--danger)">❌ ${esc(d.error)}</div>`;return}
+    allRepos=d;renderRepos(d);
+  }catch(e){document.getElementById('repo-list').innerHTML=`<div class="repos-loading" style="color:var(--danger)">❌ ${esc(String(e))}</div>`}
+}
+function renderRepos(repos){
+  if(!repos.length){document.getElementById('repo-list').innerHTML='<div class="repos-loading">لا توجد مستودعات</div>';return}
+  document.getElementById('repo-list').innerHTML=repos.map((r,i)=>`
+    <div class="repo-item" onclick="loadRepo('${esc(r.full_name.split('/')[0])}','${esc(r.name)}','${esc(r.default_branch)}')" id="ri-${i}">
+      <div class="repo-name">${esc(r.name)} ${r.private?'<span class="repo-private">خاص</span>':''}</div>
+      <div class="repo-meta"><span class="repo-lang">${esc(r.language)}</span><span>⭐ ${r.stars}</span><span>${r.updated_at}</span></div>
+    </div>`).join('');
+}
+function filterRepos(q){if(!q.trim()){renderRepos(allRepos);return}renderRepos(allRepos.filter(r=>r.name.toLowerCase().includes(q.toLowerCase())||r.description.toLowerCase().includes(q.toLowerCase())))}
+async function loadRepo(owner,repo,branch='main'){
+  currentRepo={owner,repo,branch};selectedPaths.clear();updateSelBar();
+  document.getElementById('gh-top').style.display='flex';
+  document.getElementById('gh-repo-title').textContent=`${owner}/${repo}`;
+  const content=document.getElementById('gh-content');
+  content.innerHTML='<div class="fv-empty"><div class="ring" style="width:28px;height:28px;border-width:3px"></div><span>جاري التحميل...</span></div>';
+  try{
+    const r=await fetch(`/github/tree?owner=${owner}&repo=${repo}&branch=${branch}`);const d=await r.json();
+    if(d.error){content.innerHTML=`<div class="fv-empty"><span style="color:var(--danger)">❌ ${esc(d.error)}</span></div>`;return}
+    currentTree=d.files;currentRepo.branch=d.branch;renderTree(d.files);
+  }catch(e){content.innerHTML=`<div class="fv-empty"><span style="color:var(--danger)">❌ ${esc(String(e))}</span></div>`}
+}
+function renderTree(files){
+  if(!files.length){document.getElementById('gh-content').innerHTML='<div class="fv-empty"><span>لا توجد ملفات كود</span></div>';return}
+  const div=document.createElement('div');div.className='file-tree';
+  files.forEach(f=>{
+    const item=document.createElement('div');item.className='tree-item';item.dataset.path=f.path;
+    item.innerHTML=`<div class="ti-check">✓</div><span class="ti-icon">${fileIcon(f.path)}</span><span class="ti-name ${f.is_code?'code':'other'}">${esc(f.path)}</span><span class="ti-size">${f.size>1000?Math.round(f.size/1000)+'K':f.size+'B'}</span>`;
+    item.onclick=(e)=>toggleFile(f.path,item,e);div.appendChild(item);
+  });
+  const content=document.getElementById('gh-content');content.innerHTML='';content.appendChild(div);
+}
+function toggleFile(path,item,e){
+  if(selectedPaths.has(path)){selectedPaths.delete(path);item.classList.remove('checked')}
+  else{selectedPaths.add(path);item.classList.add('checked')}
+  updateSelBar();if(!e.shiftKey&&selectedPaths.size<=1)viewFile(path);
+}
+function selectAllCode(){document.querySelectorAll('.tree-item').forEach(item=>{const f=currentTree.find(x=>x.path===item.dataset.path);if(f&&f.is_code){selectedPaths.add(f.path);item.classList.add('checked')}});updateSelBar()}
+function clearSelection(){selectedPaths.clear();document.querySelectorAll('.tree-item.checked').forEach(el=>el.classList.remove('checked'));updateSelBar()}
+function updateSelBar(){const bar=document.getElementById('sel-bar');document.getElementById('sel-count').textContent=`${selectedPaths.size} ملف محدد`;bar.classList.toggle('show',selectedPaths.size>0)}
+async function viewFile(path){
+  if(!currentRepo)return;const{owner,repo,branch}=currentRepo;
+  let viewer=document.getElementById('file-viewer-el');
+  if(!viewer){viewer=document.createElement('div');viewer.id='file-viewer-el';viewer.style.cssText='position:fixed;bottom:0;left:0;right:0;top:52px;z-index:30;background:var(--bg);border-top:1px solid var(--bd);display:flex;flex-direction:column';document.body.appendChild(viewer)}
+  viewer.style.display='flex';
+  viewer.innerHTML=`<div style="padding:8px 10px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px;flex-shrink:0">
+    <span style="font-size:11.5px;color:var(--mu);font-family:monospace;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(path)}</span>
+    <button class="gh-btn" onclick="copyFileContent()">📋 نسخ</button>
+    <button class="gh-btn review" onclick="reviewSingleFile('${esc(path)}')">🔍 مراجعة</button>
+    <button class="gh-btn" onclick="askAboutFile('${esc(path)}')">💬 اسأل</button>
+    <button class="gh-btn" onclick="closeFileViewer()" style="border-color:var(--danger);color:var(--danger)">✕</button>
+  </div>
+  <div id="fv-body" style="flex:1;overflow:auto;padding:12px"><div style="color:var(--mu);font-size:12px">⏳ جاري التحميل...</div></div>`;
+  try{
+    const r=await fetch(`/github/file?owner=${owner}&repo=${repo}&path=${encodeURIComponent(path)}&branch=${branch}`);const d=await r.json();
+    if(d.error){document.getElementById('fv-body').innerHTML=`<span style="color:var(--danger)">❌ ${esc(d.error)}</span>`;return}
+    viewingFile={path,content:d.content};
+    document.getElementById('fv-body').innerHTML=`<div style="margin-bottom:8px;font-size:11px;color:var(--mu)">${d.lines} سطر • ${Math.round(d.size/1024*10)/10}KB ${d.truncated?'• (مقتطع)':''}</div><pre style="font-family:'Fira Code',monospace;font-size:12px;line-height:1.6;color:#cdd6f4;white-space:pre;tab-size:2">${esc(d.content)}</pre>`;
+  }catch(e){document.getElementById('fv-body').innerHTML=`<span style="color:var(--danger)">❌ ${esc(String(e))}</span>`}
+}
+function closeFileViewer(){const v=document.getElementById('file-viewer-el');if(v)v.style.display='none'}
+function copyFileContent(){if(viewingFile)navigator.clipboard.writeText(viewingFile.content).then(()=>alert('✅ تم نسخ الملف'))}
+async function reviewSingleFile(path){selectedPaths.clear();selectedPaths.add(path);closeFileViewer();startReview()}
+function askAboutFile(path){closeFileViewer();sw('c');pt.value=`اشرح لي ملف ${path} واذكر الوظيفة الرئيسية وأي مشاكل تراها:`;ar(pt);pt.focus()}
+
+async function startReview(){
+  if(!currentRepo){alert('اختر مستودعاً أولاً');return}
+  if(!selectedPaths.size){alert('حدد ملفات للمراجعة');return}
+  const panel=document.getElementById('review-panel');const body=document.getElementById('rp-body');const title=document.getElementById('rp-title');
+  panel.classList.add('show');title.textContent=`🔍 مراجعة ${selectedPaths.size} ملف — ${currentRepo.owner}/${currentRepo.repo}`;
+  body.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;padding:40px;gap:12px;color:var(--mu)"><div class="ring" style="width:32px;height:32px;border-width:3px;border-top-color:var(--ac2)"></div><span>جاري تحليل الكود...</span></div>`;
+  const{owner,repo,branch}=currentRepo;
+  const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch);fd.append('paths',Array.from(selectedPaths).join(','));fd.append('model_id',sel);
+  try{
+    const res=await fetch('/github/review',{method:'POST',body:fd});
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const reader=res.body.getReader();const dec=new TextDecoder();let buf='';let rawText='';
+    body.innerHTML='<div id="review-content" class="bbl a" style="padding:0"></div>';
+    const rc=document.getElementById('review-content');const cursor=document.createElement('span');cursor.className='cursor';rc.appendChild(cursor);
+    while(true){
+      const{done,value}=await reader.read();if(done)break;
+      buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();
+      for(const line of lines){
+        if(!line.startsWith('data:'))continue;const ds=line.slice(5).trim();if(!ds)continue;
+        try{const ev=JSON.parse(ds);if(ev.token!==undefined){rawText+=ev.token;rc.textContent=rawText;rc.appendChild(cursor)}if(ev.done){cursor.remove();rc.innerHTML=ev.html}}catch(_){}
+      }
+    }
+  }catch(e){body.innerHTML=`<p style="color:var(--danger);padding:20px">❌ ${esc(String(e))}</p>`}
+}
+function closeReview(){document.getElementById('review-panel').classList.remove('show')}
+async function loadToChat(){
+  if(!currentRepo||!selectedPaths.size){alert('حدد ملفات أولاً');return}
+  const{owner,repo,branch}=currentRepo;
+  const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch);fd.append('paths',Array.from(selectedPaths).join(','));fd.append('sid',SID);
+  try{
+    const r=await fetch('/github/load-to-memory',{method:'POST',body:fd});const d=await r.json();
+    if(d.error){alert('❌ '+d.error);return}
+    sw('c');pt.value=`تم تحميل ${d.added.length} ملف من ${owner}/${repo} للذاكرة. كيف أساعدك؟`;ar(pt);pt.focus();
+  }catch(e){alert('❌ '+e)}
+}
+
+/* ══ SAVED CHATS ════════════════════════════════════════════════════════════ */
+function getSaved(){return JSON.parse(localStorage.getItem('leoai_'+ROLE)||'[]')}
+function setSaved(v){localStorage.setItem('leoai_'+ROLE,JSON.stringify(v))}
 function renderSC(){
   const saved=getSaved();const list=document.getElementById('sc-list');
   if(!saved.length){list.innerHTML='<div class="sc-empty">لا توجد محادثات</div>';return}
-  list.innerHTML=saved.map((c,i)=>`<div class="sc-item" onclick="loadChat(${i})"><div class="sc-item-hdr"><span class="sc-item-title">${esc(c.title)}</span><button class="sc-item-del" onclick="event.stopPropagation();delChat(${i})">🗑️</button></div><div class="sc-item-date">${c.date}</div></div>`).join('');
+  list.innerHTML=saved.map((c,i)=>`<div class="sc-item" onclick="loadChat(${i})">
+    <div class="sc-item-hdr"><span class="sc-item-title">${esc(c.title)}</span>
+    <button class="sc-item-del" onclick="event.stopPropagation();delChat(${i})">🗑️</button></div>
+    <div class="sc-item-date">${c.date}</div></div>`).join('');
 }
-function loadChat(i){const c=getSaved()[i];if(!c)return;document.getElementById('welcome').style.display='none';document.getElementById('msgs').innerHTML=c.html;document.getElementById('cw').scrollTop=document.getElementById('cw').scrollHeight;closePanel()}
+function loadChat(i){const c=getSaved()[i];if(!c)return;wel.style.display='none';msgs.innerHTML=c.html;bot();closePanel()}
 function delChat(i){const s=getSaved();s.splice(i,1);setSaved(s);renderSC()}
 function saveChat(){
-  const msgs=document.getElementById('msgs');if(!msgs.children.length){alert('لا يوجد شيء');return}
+  if(!msgs.children.length){alert('لا يوجد شيء للحفظ');return}
   const saved=getSaved();const first=msgs.querySelector('.bbl.u');
   saved.unshift({id:Date.now(),title:(first?.textContent||'محادثة').slice(0,50),date:new Date().toLocaleString('ar-SA'),html:msgs.innerHTML});
   if(saved.length>30)saved.pop();setSaved(saved);renderSC();alert('✅ تم الحفظ');
 }
 async function shareChat(){
-  const msgs=document.getElementById('msgs');if(!msgs.children.length){alert('لا يوجد شيء');return}
+  if(!msgs.children.length){alert('لا يوجد شيء');return}
   const first=msgs.querySelector('.bbl.u');
   const fd=new FormData();fd.append('html',msgs.innerHTML);fd.append('title',(first?.textContent||'محادثة').slice(0,50));
   try{const r=await fetch('/share',{method:'POST',body:fd});const d=await r.json();const url=window.location.origin+d.url;await navigator.clipboard.writeText(url);alert(`✅ تم نسخ الرابط:\n${url}`)}catch(e){alert('❌ '+e)}
 }
 async function clearChat(){
-  if(!confirm('مسح المحادثة؟'))return;
-  if(streaming)await stopStream();
-  const fd=new FormData();fd.append('sid',SID);
-  try{await fetch('/clear',{method:'POST',body:fd})}catch(_){}
-  document.getElementById('msgs').innerHTML='';document.getElementById('fsec').innerHTML='';
-  document.getElementById('spin').classList.remove('on');setStreaming(false);ctrl=null;
-  pendingFiles=[];renderAbar();document.getElementById('welcome').style.display='flex';
-  Object.keys(pf).forEach(k=>delete pf[k]);
+  if(!confirm('مسح المحادثة؟'))return;if(streaming)await stopStream();
+  const fd=new FormData();fd.append('sid',SID);try{await fetch('/clear',{method:'POST',body:fd})}catch(_){}
+  msgs.innerHTML='';fsec.innerHTML='';spin.classList.remove('on');setStreaming(false);ctrl=null;
+  pendingFiles=[];renderAbar();wel.style.display='flex';Object.keys(pf).forEach(k=>delete pf[k]);
 }
 
 /* ── Image Gen ───────────────────────────────────────────────────────────── */
 async function genImg(){
-  const p=document.getElementById('igp').value.trim();
-  if(!p){document.getElementById('ige').textContent='⚠️ اكتب وصف';return}
-  document.getElementById('ige').textContent='';
-  const btn=document.getElementById('igb'),sp2=document.getElementById('igsp');
-  btn.disabled=true;sp2.classList.add('on');
+  const p=document.getElementById('igp').value.trim();if(!p){document.getElementById('ige').textContent='⚠️ اكتب وصف';return}
+  document.getElementById('ige').textContent='';const btn=document.getElementById('igb'),sp2=document.getElementById('igsp');btn.disabled=true;sp2.classList.add('on');
   const fd=new FormData();fd.append('prompt',p);fd.append('size',document.getElementById('igs').value);fd.append('model',document.getElementById('igm').value);
   try{const data=await(await fetch('/generate-image',{method:'POST',body:fd})).json();sp2.classList.remove('on');btn.disabled=false;if(data.error){document.getElementById('ige').textContent='❌ '+data.error;return}
     const card=document.createElement('div');card.className='icard';
@@ -1034,7 +783,7 @@ document.getElementById('igp').addEventListener('keydown',e=>{if(e.key==='Enter'
 buildSh();
 document.getElementById('mb').textContent=MODELS[0].badge;
 document.getElementById('mn').textContent=MODELS[0].name.split(' ').slice(0,2).join(' ');
-document.getElementById('stx').textContent=MODELS[0].name+' يفكر...';
+stxEl.textContent=MODELS[0].name+' يفكر...';
 </script>
 </body>
 </html>
