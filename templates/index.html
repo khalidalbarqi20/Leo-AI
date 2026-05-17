@@ -16,34 +16,34 @@ html,body{height:100%;overflow:hidden}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);
      display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
 
-/* ── HEADER ──────────────────────────────────────────────────────────────── */
-.hdr{background:#171717;border-bottom:1px solid var(--bd);height:52px;padding:0 8px;
-     display:flex;align-items:center;gap:5px;flex-shrink:0;z-index:20}
-.logo{width:28px;height:28px;flex-shrink:0;
-      background:linear-gradient(135deg,#19c37d,#ab68ff);
-      border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
-.role-badge{font-size:9px;border-radius:4px;padding:2px 6px;font-weight:700;flex-shrink:0;white-space:nowrap}
+/* ══ HEADER ══════════════════════════════════════════════════════════════════ */
+.hdr{background:#171717;border-bottom:1px solid var(--bd);height:52px;padding:0 6px;
+     display:flex;align-items:center;gap:4px;flex-shrink:0;z-index:20;overflow:hidden}
+.logo{width:26px;height:26px;flex-shrink:0;background:linear-gradient(135deg,#19c37d,#ab68ff);
+      border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px}
+.role-badge{font-size:9px;border-radius:4px;padding:2px 5px;font-weight:700;flex-shrink:0;white-space:nowrap}
 .role-badge.admin{background:rgba(25,195,125,.15);color:var(--ac)}
 .role-badge.guest{background:rgba(171,104,255,.15);color:var(--ac2)}
-.hdr-mid{flex:1;display:flex;justify-content:center;align-items:center;gap:4px;min-width:0}
-.tabs-in{display:flex;background:var(--sf);border:1px solid var(--bd);border-radius:7px;padding:2px;gap:2px}
-.tab{padding:4px 8px;border-radius:5px;border:none;background:transparent;color:var(--mu);
-     font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.hdr-mid{flex:1;display:flex;justify-content:center;align-items:center;gap:3px;min-width:0;overflow:hidden}
+.tabs-in{display:flex;background:var(--sf);border:1px solid var(--bd);border-radius:7px;padding:2px;gap:1px;flex-shrink:0}
+.tab{padding:4px 7px;border-radius:5px;border:none;background:transparent;color:var(--mu);
+     font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
 .tab.on{background:var(--sf2);color:var(--tx)}
 .mpick{display:flex;align-items:center;gap:3px;background:var(--sf);border:1px solid var(--bd);
-       border-radius:7px;padding:4px 7px;cursor:pointer;font-size:11px;color:var(--tx);
-       max-width:105px;flex-shrink:0}
+       border-radius:7px;padding:4px 6px;cursor:pointer;font-size:10.5px;color:var(--tx);
+       max-width:90px;flex-shrink:1;min-width:0}
 .mpick:active{border-color:var(--ac)}
-.mpick .mn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.mpick .mn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;min-width:0;flex:1}
 .mpick .arr{color:var(--mu);font-size:9px;flex-shrink:0;transition:transform .2s}
 .mpick.open .arr{transform:rotate(180deg)}
-.ibtn{width:32px;height:32px;border-radius:7px;background:transparent;border:1px solid var(--bd);
-      color:var(--tx);cursor:pointer;font-size:15px;display:flex;align-items:center;
-      justify-content:center;transition:all .15s;flex-shrink:0;text-decoration:none}
+.hbts{display:flex;gap:3px;flex-shrink:0}
+.ibtn{width:30px;height:30px;border-radius:7px;background:transparent;border:1px solid var(--bd);
+      color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;
+      justify-content:center;flex-shrink:0;text-decoration:none}
 .ibtn:active{background:var(--sf2)}
 .ibtn.red:active{background:rgba(239,68,68,.15)}
 
-/* ── MODEL SHEET ─────────────────────────────────────────────────────────── */
+/* ══ MODEL SHEET ══════════════════════════════════════════════════════════════ */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}
 .ov.on{opacity:1;pointer-events:all}
 .sheet{position:fixed;bottom:0;left:0;right:0;z-index:101;background:#1a1a1a;
@@ -52,11 +52,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
        max-height:82vh;display:flex;flex-direction:column}
 .sheet.on{transform:translateY(0)}
 .sh-bar{width:34px;height:4px;background:var(--bd);border-radius:2px;margin:11px auto 0;flex-shrink:0}
-.sh-head{display:flex;align-items:center;justify-content:space-between;
-         padding:12px 16px 9px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.sh-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 9px;border-bottom:1px solid var(--bd);flex-shrink:0}
 .sh-ttl{font-size:15px;font-weight:700}
-.sh-x{width:26px;height:26px;background:var(--sf);border:none;border-radius:50%;
-      color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.sh-x{width:26px;height:26px;background:var(--sf);border:none;border-radius:50%;color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
 .sh-list{overflow-y:auto;padding:6px 9px 28px;flex:1}
 .sh-list::-webkit-scrollbar{width:3px}
 .sh-list::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
@@ -78,29 +76,24 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .mi-chk{color:var(--ac);font-size:16px;font-weight:700;opacity:0;flex-shrink:0}
 .mi.sel .mi-chk{opacity:1}
 
-/* ── PANEL ───────────────────────────────────────────────────────────────── */
+/* ══ PANEL (saved chats) ══════════════════════════════════════════════════════ */
 .panel-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s}
 .panel-ov.on{opacity:1;pointer-events:all}
-.panel{position:fixed;top:0;right:0;bottom:0;width:min(320px,90vw);background:#181818;
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(300px,88vw);background:#181818;
        border-left:1px solid var(--bd);z-index:51;transform:translateX(100%);
        transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
 .panel.on{transform:translateX(0)}
-.panel-head{display:flex;align-items:center;justify-content:space-between;
-            padding:14px 14px 10px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:13px 13px 9px;border-bottom:1px solid var(--bd);flex-shrink:0}
 .panel-title{font-size:14px;font-weight:700}
-.panel-x{width:26px;height:26px;background:var(--sf);border:none;border-radius:50%;
-         color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.panel-x{width:26px;height:26px;background:var(--sf);border:none;border-radius:50%;color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
 .panel-body{flex:1;overflow-y:auto;padding:8px}
 .panel-body::-webkit-scrollbar{width:3px}
 .panel-body::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
 .panel-footer{padding:8px;border-top:1px solid var(--bd);flex-shrink:0;display:flex;flex-direction:column;gap:5px}
-.pbtn{padding:9px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:opacity .15s}
+.pbtn{padding:9px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;text-align:center}
 .pbtn:active{opacity:.85}
 .pbtn.ac{background:var(--ac);color:#111}
 .pbtn.sec{background:var(--sf);color:var(--tx);border:1px solid var(--bd)}
-.pbtn.danger{background:transparent;color:var(--danger);border:1px solid rgba(239,68,68,.3)}
-
-/* Saved chat items */
 .sc-item{padding:9px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px}
 .sc-item:active{background:var(--sf)}
 .sc-item-hdr{display:flex;align-items:center;justify-content:space-between}
@@ -110,85 +103,151 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .sc-item-date{font-size:10px;color:var(--mu);margin-top:2px}
 .sc-empty{text-align:center;color:var(--mu);font-size:12px;padding:20px 10px}
 
-/* ══ GITHUB BROWSER ════════════════════════════════════════════════════════ */
+/* ══ PAGES ════════════════════════════════════════════════════════════════════ */
 .page{display:none;flex:1;flex-direction:column;overflow:hidden}
 .page.on{display:flex}
-.gh-layout{display:flex;flex:1;overflow:hidden}
-.gh-sidebar{width:220px;flex-shrink:0;border-left:1px solid var(--bd);overflow-y:auto;background:#181818;display:flex;flex-direction:column}
-.gh-sidebar::-webkit-scrollbar{width:3px}
-.gh-sidebar::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
-.gh-main{flex:1;overflow:hidden;display:flex;flex-direction:column}
-.gh-search{padding:8px;border-bottom:1px solid var(--bd);flex-shrink:0}
-.gh-search input{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:7px;padding:7px 9px;font-size:12px;outline:none;font-family:inherit}
-.gh-search input:focus{border-color:var(--ac)}
-.repo-item{padding:9px 10px;cursor:pointer;border-bottom:1px solid var(--bd);transition:background .12s}
-.repo-item:active{background:var(--sf)}
-.repo-item.active{background:rgba(25,195,125,.08);border-right:2px solid var(--ac)}
-.repo-name{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.repo-meta{font-size:10px;color:var(--mu);margin-top:2px;display:flex;gap:6px}
-.repo-private{background:rgba(245,158,11,.15);color:var(--warn);border-radius:3px;padding:1px 4px;font-size:9px;font-weight:700}
-.repo-lang{color:var(--ac)}
-.repos-loading{text-align:center;color:var(--mu);padding:20px;font-size:12px}
-.gh-top{padding:8px 10px;border-bottom:1px solid var(--bd);flex-shrink:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.gh-repo-title{font-size:13px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.gh-top-btns{display:flex;gap:5px;flex-shrink:0}
-.gh-btn{background:var(--sf);border:1px solid var(--bd);color:var(--tx);padding:5px 10px;border-radius:7px;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap}
-.gh-btn:active{background:var(--sf2)}
-.gh-btn.ac{background:var(--ac);color:#111;border-color:var(--ac)}
-.gh-btn.review{background:rgba(171,104,255,.15);color:var(--ac2);border-color:rgba(171,104,255,.4)}
-.file-tree{flex:1;overflow-y:auto;padding:6px 0}
-.file-tree::-webkit-scrollbar{width:3px}
-.file-tree::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
-.fv-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--mu);font-size:13px;text-align:center;gap:8px;padding:20px}
-.fv-icon{font-size:36px}
-.tree-item{display:flex;align-items:center;gap:7px;padding:5px 10px;cursor:pointer;transition:background .1s;user-select:none}
-.tree-item:active{background:var(--sf)}
-.ti-check{width:16px;height:16px;border:1.5px solid var(--bd);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ac);opacity:0;transition:all .15s}
-.tree-item.checked .ti-check{opacity:1;background:rgba(25,195,125,.15);border-color:var(--ac)}
-.ti-icon{font-size:13px;flex-shrink:0}
-.ti-name{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.ti-name.code{color:var(--tx)}
-.ti-name.other{color:var(--mu)}
-.ti-size{font-size:10px;color:var(--mu);flex-shrink:0}
-.sel-bar{background:rgba(25,195,125,.07);border-top:1px solid rgba(25,195,125,.2);padding:7px 10px;display:none;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
+
+/* ══ GITHUB — قائمة واحدة تتبدل ══════════════════════════════════════════════ */
+.gh-page{display:flex;flex:1;flex-direction:column;overflow:hidden}
+
+/* شريط العنوان العلوي للـ GitHub */
+.gh-topbar{
+  background:#171717;border-bottom:1px solid var(--bd);
+  padding:8px 10px;flex-shrink:0;
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+}
+.gh-back{
+  background:transparent;border:1px solid var(--bd);color:var(--tx);
+  padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;gap:4px;flex-shrink:0;
+}
+.gh-back:active{background:var(--sf)}
+.gh-title{font-size:13px;font-weight:700;flex:1;min-width:0;
+          overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gh-sub{font-size:10px;color:var(--mu);width:100%;margin-top:-4px}
+
+/* أزرار الأكشن فوق قائمة الملفات */
+.gh-actions{
+  display:flex;gap:6px;padding:7px 10px;
+  border-bottom:1px solid var(--bd);flex-shrink:0;
+  flex-wrap:wrap;background:var(--bg);
+}
+.gha-btn{
+  flex:1;min-width:0;
+  padding:8px 6px;border:1px solid var(--bd);border-radius:8px;
+  background:var(--sf);color:var(--tx);font-size:11px;font-weight:600;
+  cursor:pointer;text-align:center;white-space:nowrap;
+}
+.gha-btn:active{background:var(--sf2)}
+.gha-btn.ac{background:var(--ac);color:#111;border-color:var(--ac)}
+.gha-btn.review{background:rgba(171,104,255,.15);color:var(--ac2);border-color:rgba(171,104,255,.4)}
+.gha-btn.load{background:rgba(25,195,125,.12);color:var(--ac);border-color:rgba(25,195,125,.4)}
+
+/* شريط الذاكرة */
+.mem-bar{
+  background:rgba(25,195,125,.07);border-bottom:1px solid rgba(25,195,125,.15);
+  padding:6px 10px;flex-shrink:0;
+  display:none;align-items:center;gap:6px;font-size:11px;
+}
+.mem-bar.show{display:flex}
+.mem-count{background:rgba(25,195,125,.2);color:var(--ac);border-radius:4px;
+           padding:1px 7px;font-weight:700;flex-shrink:0}
+.mem-label{color:var(--mu);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mem-clear{background:transparent;border:1px solid var(--bd);color:var(--mu);
+           padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;flex-shrink:0}
+.mem-go{background:var(--ac);color:#111;border:none;
+        padding:3px 9px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0}
+
+/* شريط التحديد */
+.sel-bar{background:rgba(25,195,125,.06);border-bottom:1px solid rgba(25,195,125,.15);
+         padding:6px 10px;display:none;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap}
 .sel-bar.show{display:flex}
-.sel-bar-count{font-size:12px;color:var(--ac);font-weight:600}
-.sel-bar-btns{display:flex;gap:6px;margin-right:auto}
+.sel-count{font-size:11.5px;color:var(--ac);font-weight:600;flex-shrink:0}
+
+/* قائمة موحدة */
+.gh-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.gh-list::-webkit-scrollbar{width:3px}
+.gh-list::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+
+/* عنصر الـ repo */
+.repo-item{display:flex;align-items:center;gap:10px;padding:11px 12px;
+           border-bottom:1px solid var(--bd);cursor:pointer;transition:background .1s}
+.repo-item:active{background:var(--sf)}
+.ri-icon{width:34px;height:34px;background:var(--sf);border-radius:8px;
+         display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ri-body{flex:1;min-width:0}
+.ri-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.ri-prv{background:rgba(245,158,11,.15);color:var(--warn);border-radius:3px;
+        padding:1px 4px;font-size:8.5px;font-weight:700;flex-shrink:0}
+.ri-meta{font-size:10px;color:var(--mu);margin-top:2px;display:flex;gap:8px}
+.ri-lang{color:var(--ac)}
+.ri-arr{color:var(--mu);font-size:14px;flex-shrink:0}
+
+/* عنصر الملف */
+.file-item{display:flex;align-items:center;gap:8px;padding:8px 12px;
+           border-bottom:1px solid var(--bd);cursor:pointer;transition:background .1s}
+.file-item:active{background:var(--sf)}
+.file-item.checked{background:rgba(25,195,125,.06)}
+.fi-check{width:18px;height:18px;border:1.5px solid var(--bd);border-radius:4px;
+          flex-shrink:0;display:flex;align-items:center;justify-content:center;
+          font-size:10px;color:var(--ac)}
+.file-item.checked .fi-check{background:rgba(25,195,125,.15);border-color:var(--ac)}
+.fi-check-inner{opacity:0;transition:opacity .15s}
+.file-item.checked .fi-check-inner{opacity:1}
+.fi-icon{font-size:15px;flex-shrink:0}
+.fi-name{font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fi-name.code{color:var(--tx)}
+.fi-name.other{color:var(--mu)}
+.fi-size{font-size:10px;color:var(--mu);flex-shrink:0}
+.fi-mem{font-size:8px;background:rgba(25,195,125,.15);color:var(--ac);
+        border-radius:3px;padding:1px 4px;flex-shrink:0}
+
+/* لودينج ورسائل */
+.gh-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;
+            flex:1;gap:12px;color:var(--mu);font-size:12.5px;padding:30px}
+.gh-empty{text-align:center;color:var(--mu);font-size:12.5px;padding:40px 20px}
+.gh-search{padding:8px 10px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.gh-search input{width:100%;background:var(--sf);color:var(--tx);border:1px solid var(--bd);
+                 border-radius:8px;padding:8px 11px;font-size:13px;outline:none;font-family:inherit}
+.gh-search input:focus{border-color:var(--ac)}
+
+/* review panel */
 .review-panel{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column}
 .review-panel.show{display:flex}
 .rp-head{background:#171717;border-bottom:1px solid var(--bd);padding:10px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0}
-.rp-title{font-size:14px;font-weight:700;flex:1}
-.rp-close{background:var(--sf);border:1px solid var(--bd);color:var(--tx);padding:6px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600}
+.rp-title{font-size:13.5px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rp-close{background:var(--sf);border:1px solid var(--bd);color:var(--tx);padding:5px 11px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;flex-shrink:0}
 .rp-body{flex:1;overflow-y:auto;padding:14px}
 .rp-body::-webkit-scrollbar{width:4px}
 .rp-body::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
 
-/* ── CHAT ─────────────────────────────────────────────────────────────────── */
+/* ══ CHAT ═════════════════════════════════════════════════════════════════════ */
 .cw{flex:1;overflow-y:auto;scroll-behavior:smooth;padding:4px 0 8px;-webkit-overflow-scrolling:touch}
 .cw::-webkit-scrollbar{width:3px}
 .cw::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
 #welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;
          min-height:calc(100svh - 160px);padding:20px 14px;text-align:center;animation:fu .4s ease}
 @keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.wi{width:56px;height:56px;background:linear-gradient(135deg,rgba(25,195,125,.15),rgba(171,104,255,.15));
+.wi{width:54px;height:54px;background:linear-gradient(135deg,rgba(25,195,125,.15),rgba(171,104,255,.15));
     border:2px solid rgba(25,195,125,.3);border-radius:50%;display:flex;align-items:center;
-    justify-content:center;font-size:24px;margin-bottom:12px}
-.wt{font-size:19px;font-weight:700;margin-bottom:5px}
-.ws{color:var(--mu);font-size:12px;margin-bottom:18px;line-height:1.7;max-width:340px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:500px}
-.chip{background:var(--sf);border:1px solid var(--bd);padding:7px 12px;border-radius:16px;
+    justify-content:center;font-size:23px;margin-bottom:12px}
+.wt{font-size:18px;font-weight:700;margin-bottom:5px}
+.ws{color:var(--mu);font-size:12px;margin-bottom:16px;line-height:1.7;max-width:320px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:480px}
+.chip{background:var(--sf);border:1px solid var(--bd);padding:6px 11px;border-radius:15px;
       font-size:11.5px;cursor:pointer;color:var(--mu);user-select:none}
 .chip:active{border-color:var(--ac);color:var(--ac);background:rgba(25,195,125,.07)}
 #msgs{padding:4px 0}
-.row{display:flex;gap:8px;padding:3px 10px;animation:fu .2s ease}
+.row{display:flex;gap:8px;padding:3px 10px;animation:fu .2s ease;width:100%}
 .row.u{justify-content:flex-end}
 .row.a{justify-content:flex-start}
 .av{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:3px}
 .av.aa{background:linear-gradient(135deg,#19c37d,#ab68ff);order:-1}
 .av.ua{background:linear-gradient(135deg,#ab68ff,#6b3fa0)}
-.bbl{max-width:86%;padding:9px 12px;border-radius:var(--r);font-size:13.5px;line-height:1.75;word-break:break-word}
-.bbl.u{background:var(--sf);border:1px solid var(--bd);border-bottom-left-radius:4px}
-.bbl.a{background:transparent;width:100%;max-width:100%}
+.bbl{padding:9px 12px;border-radius:var(--r);font-size:13.5px;line-height:1.75;word-break:break-word}
+.bbl.u{max-width:82%;background:var(--sf);border:1px solid var(--bd);border-bottom-left-radius:4px}
+.bbl.a{flex:1;min-width:0;max-width:100%;background:transparent}
+.ai-wrap{flex:1;min-width:0;display:flex;flex-direction:column}
 .mtag{font-size:10px;color:var(--mu);margin-top:2px}
 .mact{display:flex;gap:8px;margin-top:5px;flex-wrap:wrap}
 .mac-btn{background:transparent;border:none;color:var(--mu);font-size:11px;cursor:pointer;display:flex;align-items:center;gap:3px;padding:0}
@@ -202,7 +261,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .bbl.a blockquote{border-right:3px solid var(--ac);padding-right:9px;margin:6px 0;color:var(--mu)}
 .bbl.a li{margin:3px 0}
 .bbl.a strong{color:#fff}
-.cw2{background:var(--cbg);border-radius:9px;margin:8px 0;border:1px solid var(--bd);overflow:hidden}
+.cw2{background:var(--cbg);border-radius:9px;margin:8px 0;border:1px solid var(--bd);overflow:hidden;
+     width:calc(100vw - 20px);max-width:100%}
 .ch{display:flex;justify-content:space-between;align-items:center;padding:6px 11px;background:var(--chdr);border-bottom:1px solid var(--bd)}
 .ch span{color:var(--mu);font-size:11px;font-family:monospace;font-weight:600}
 .ch-btns{display:flex;gap:5px}
@@ -223,12 +283,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .fbh{display:flex;align-items:center;justify-content:space-between;padding:7px 11px;border-bottom:1px solid var(--bd);font-size:12px}
 .fbh span{color:var(--ac);font-weight:600}
 .fbh-dl{background:transparent;border:1px solid var(--ac);color:var(--ac);padding:3px 9px;border-radius:5px;cursor:pointer;font-size:10.5px;font-weight:600}
-.fi{display:flex;justify-content:space-between;align-items:center;padding:7px 11px;border-bottom:1px solid var(--bd)}
-.fi:last-child{border-bottom:none}
-.fi span{font-size:12px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
-.fi button{background:transparent;border:1px solid var(--ac);color:var(--ac);padding:4px 9px;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600}
-.attach-bar{display:flex;flex-wrap:wrap;gap:5px;padding:0 0 6px;max-height:76px;overflow-y:auto}
-.atch{display:flex;align-items:center;gap:4px;background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:3px 7px;font-size:11px;color:var(--mu);max-width:140px}
+.ffi{display:flex;justify-content:space-between;align-items:center;padding:7px 11px;border-bottom:1px solid var(--bd)}
+.ffi:last-child{border-bottom:none}
+.ffi span{font-size:11.5px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
+.ffi button{background:transparent;border:1px solid var(--ac);color:var(--ac);padding:3px 8px;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600}
+.attach-bar{display:flex;flex-wrap:wrap;gap:5px;padding:0 0 6px;max-height:72px;overflow-y:auto}
+.atch{display:flex;align-items:center;gap:4px;background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:3px 7px;font-size:11px;color:var(--mu);max-width:135px}
 .atch-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
 .atch-del{background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:12px;padding:0}
 .ia{background:var(--bg);padding:5px 10px 10px;flex-shrink:0;padding-bottom:max(10px,env(safe-area-inset-bottom))}
@@ -247,19 +307,17 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}60%{box-shadow:0 0 0 6px rgba(239,68,68,0)}}
 .att-count{font-size:8px;background:var(--ac);color:#111;border-radius:3px;padding:1px 3px;font-weight:700}
 .hint{text-align:center;font-size:10px;color:#555;margin-top:4px}
-
-/* ── IMAGE GEN ───────────────────────────────────────────────────────────── */
 .igw{flex:1;overflow-y:auto;padding:14px 10px 0}
-.igi{max-width:640px;margin:0 auto}
+.igi{max-width:100%;margin:0 auto}
 .ig-t{font-size:17px;font-weight:700;margin-bottom:4px}
 .ig-s{color:var(--mu);font-size:11.5px;margin-bottom:14px}
 .ig-f{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:12px;margin-bottom:12px}
 .ig-f label{font-size:12px;color:var(--mu);display:block;margin-bottom:5px}
 .ig-ta{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:13px;resize:none;height:76px;outline:none}
 .ig-ta:focus{border-color:#555}
-.ig-row{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
-.ig-sel{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;outline:none;flex:1}
-.ig-btn{background:var(--ac2);color:#fff;border:none;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700}
+.ig-row{display:flex;gap:6px;margin-top:9px;flex-wrap:nowrap}
+.ig-sel{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:7px;padding:7px 6px;font-size:11.5px;cursor:pointer;outline:none;flex:1;min-width:0}
+.ig-btn{background:var(--ac2);color:#fff;border:none;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;flex-shrink:0}
 .ig-btn:active{opacity:.85}
 .ig-btn:disabled{background:#444;cursor:not-allowed}
 .ig-err{color:var(--danger);font-size:11.5px;padding:5px 0}
@@ -271,42 +329,33 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .icft{padding:7px 9px;display:flex;align-items:center;justify-content:space-between}
 .icp{font-size:10px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:62%}
 .icdl{background:transparent;border:1px solid var(--ac);color:var(--ac);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10px;font-weight:600;text-decoration:none}
-@media(min-width:600px){.gh-sidebar{width:260px}}
 </style>
 </head>
 <body>
 
-<!-- ══ HEADER ════════════════════════════════════════════════════════════════ -->
+<!-- HEADER -->
 <div class="hdr">
   <div class="logo">🚀</div>
-  <!-- Role badge -->
-  {% if is_admin %}
-  <span class="role-badge admin">ADMIN</span>
-  {% else %}
-  <span class="role-badge guest">GUEST</span>
-  {% endif %}
-
+  {% if is_admin %}<span class="role-badge admin">ADMIN</span>
+  {% else %}<span class="role-badge guest">GUEST</span>{% endif %}
   <div class="hdr-mid">
     <div class="tabs-in">
       <button class="tab on" id="tC" onclick="sw('c')">💬</button>
-      {% if is_admin %}
-      <button class="tab" id="tG" onclick="sw('g')">🐙 GitHub</button>
-      {% endif %}
+      {% if is_admin %}<button class="tab" id="tG" onclick="sw('g')">🐙</button>{% endif %}
       <button class="tab" id="tI" onclick="sw('i')">🎨</button>
     </div>
     <button class="mpick" id="mp" onclick="openSh()">
-      <span id="mb">🥇</span>
-      <span class="mn" id="mn">Qwen3</span>
-      <span class="arr">▾</span>
+      <span id="mb">🥇</span><span class="mn" id="mn">Qwen3</span><span class="arr">▾</span>
     </button>
   </div>
-
-  <button class="ibtn" onclick="openPanel('chats')" title="المحادثات">📋</button>
-  <button class="ibtn red" onclick="clearChat()" title="مسح">🗑️</button>
-  <a href="/logout" class="ibtn" title="خروج">🚪</a>
+  <div class="hbts">
+    <button class="ibtn" onclick="openPanel('chats')">📋</button>
+    <button class="ibtn red" onclick="clearChat()">🗑️</button>
+    <a href="/logout" class="ibtn">🚪</a>
+  </div>
 </div>
 
-<!-- ══ MODEL SHEET ════════════════════════════════════════════════════════════ -->
+<!-- MODEL SHEET -->
 <div class="ov" id="ov" onclick="closeSh()"></div>
 <div class="sheet" id="sh">
   <div class="sh-bar"></div>
@@ -314,7 +363,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   <div class="sh-list" id="shl"></div>
 </div>
 
-<!-- ══ PANEL ══════════════════════════════════════════════════════════════════ -->
+<!-- PANEL -->
 <div class="panel-ov" id="panel-ov" onclick="closePanel()"></div>
 <div class="panel" id="panel-chats">
   <div class="panel-head">
@@ -328,7 +377,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   </div>
 </div>
 
-<!-- ══ REVIEW PANEL ════════════════════════════════════════════════════════════ -->
+<!-- REVIEW PANEL -->
 <div class="review-panel" id="review-panel">
   <div class="rp-head">
     <span class="rp-title" id="rp-title">🔍 مراجعة الكود</span>
@@ -337,16 +386,16 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   <div class="rp-body" id="rp-body"></div>
 </div>
 
-<!-- ══ PAGE: CHAT ════════════════════════════════════════════════════════════ -->
+<!-- PAGE: CHAT -->
 <div class="page on" id="pgC">
   <div class="cw" id="cw">
     <div id="welcome">
       <div class="wi">🤖</div>
       <div class="wt">مرحباً، أنا Leo-AI</div>
       {% if is_admin %}
-      <div class="ws">مساعد برمجة احترافي • اضغط 🐙 GitHub لمراجعة مشاريعك</div>
+      <div class="ws">مساعد برمجة احترافي • اضغط 🐙 لاستعراض GitHub</div>
       {% else %}
-      <div class="ws">مساعد برمجة جاهز لمساعدتك • اكتب سؤالك أو ارفع ملفاً</div>
+      <div class="ws">مساعد برمجة جاهز لمساعدتك</div>
       {% endif %}
       <div class="chips">
         <span class="chip" onclick="sp('ابنِ موقع portfolio احترافي HTML+CSS+JS')">🌐 موقع</span>
@@ -355,9 +404,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
         <span class="chip" onclick="sp('Docker Compose لـ FastAPI + PostgreSQL')">🐳 Docker</span>
         <span class="chip" onclick="sp('راجع هذا الكود وابحث عن الأخطاء')">🔍 مراجعة</span>
         <span class="chip" onclick="sp('React + TypeScript + Tailwind')">⚛️ React</span>
-        {% if is_admin %}
-        <span class="chip" onclick="sw('g')">🐙 GitHub Browser</span>
-        {% endif %}
+        {% if is_admin %}<span class="chip" onclick="sw('g')">🐙 GitHub</span>{% endif %}
       </div>
     </div>
     <div id="msgs"></div>
@@ -381,53 +428,64 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
           </button>
         </div>
       </div>
-      <div class="hint">Enter إرسال • Shift+Enter سطر جديد • 📎 حتى 25 مرفق</div>
+      <div class="hint">Enter إرسال • Shift+Enter سطر جديد</div>
     </div>
   </div>
 </div>
 
-<!-- ══ PAGE: GITHUB (admin only) ══════════════════════════════════════════════ -->
+<!-- PAGE: GITHUB -->
 {% if is_admin %}
 <div class="page" id="pgG">
-  <div class="gh-layout">
-    <div class="gh-sidebar">
-      <div class="gh-search">
-        <input id="repo-search" placeholder="🔍 ابحث في الـ repos..." oninput="filterRepos(this.value)">
-      </div>
-      <div id="repo-list"><div class="repos-loading">⏳ جاري التحميل...</div></div>
+  <div class="gh-page">
+
+    <!-- Top bar — يتغير حسب الحالة -->
+    <div class="gh-topbar" id="gh-topbar">
+      <span class="gh-title" id="gh-title">🐙 مستودعاتك</span>
     </div>
-    <div class="gh-main">
-      <div class="gh-top" id="gh-top" style="display:none">
-        <span class="gh-repo-title" id="gh-repo-title">—</span>
-        <div class="gh-top-btns">
-          <button class="gh-btn" onclick="selectAllCode()">☑️ تحديد الكل</button>
-          <button class="gh-btn" onclick="clearSelection()">✕ إلغاء</button>
-          <button class="gh-btn review" onclick="startReview()">🔍 مراجعة</button>
-          <button class="gh-btn ac" onclick="loadToChat()">💬 للمحادثة</button>
-        </div>
-      </div>
-      <div class="sel-bar" id="sel-bar">
-        <span class="sel-bar-count" id="sel-count">0 ملف</span>
-        <div class="sel-bar-btns">
-          <button class="gh-btn review" onclick="startReview()">🔍 مراجعة المحدد</button>
-          <button class="gh-btn ac" onclick="loadToChat()">💬 للمحادثة</button>
-        </div>
-      </div>
-      <div id="gh-content" style="flex:1;overflow:hidden;display:flex;flex-direction:column">
-        <div class="fv-empty">
-          <div class="fv-icon">🐙</div>
-          <span>اختر مستودعاً من اليسار</span>
-          {% if not has_github_token %}
-          <span style="color:var(--danger);font-size:11px">⚠️ GITHUB_TOKEN غير موجود</span>
-          {% endif %}
-        </div>
+
+    <!-- أزرار الأكشن — تظهر فقط عند عرض ملفات repo -->
+    <div id="gh-actions" style="display:none">
+      <div class="gh-actions">
+        <button class="gha-btn load" id="btn-load-full" onclick="loadFullRepo()">⚡ تحميل الكل للذاكرة</button>
+        <button class="gha-btn" onclick="selectAllCode()">☑️ تحديد الكل</button>
+        <button class="gha-btn" onclick="clearSel()">✕ إلغاء</button>
+        <button class="gha-btn review" onclick="startReview()">🔍 مراجعة</button>
+        <button class="gha-btn ac" onclick="loadToChat()">💬 للمحادثة</button>
       </div>
     </div>
+
+    <!-- شريط الذاكرة -->
+    <div class="mem-bar" id="mem-bar">
+      <span>📁</span>
+      <span class="mem-count" id="mem-count">0</span>
+      <span class="mem-label" id="mem-label">ملف في الذاكرة</span>
+      <button class="mem-clear" onclick="clearProjMem()">مسح</button>
+      <button class="mem-go" onclick="goToChat()">💬 محادثة</button>
+    </div>
+
+    <!-- شريط التحديد -->
+    <div class="sel-bar" id="sel-bar">
+      <span class="sel-count" id="sel-count">0 ملف محدد</span>
+    </div>
+
+    <!-- بحث — يظهر فقط في قائمة repos -->
+    <div class="gh-search" id="gh-search">
+      <input id="repo-search" placeholder="🔍 ابحث في مستودعاتك..." oninput="filterRepos(this.value)">
+    </div>
+
+    <!-- القائمة الرئيسية -->
+    <div class="gh-list" id="gh-list">
+      <div class="gh-loading">
+        <div class="ring"></div>
+        <span>جاري تحميل المستودعات...</span>
+      </div>
+    </div>
+
   </div>
 </div>
 {% endif %}
 
-<!-- ══ PAGE: IMAGE GEN ════════════════════════════════════════════════════════ -->
+<!-- PAGE: IMAGE GEN -->
 <div class="page" id="pgI">
   <div class="igw">
     <div class="igi">
@@ -437,7 +495,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
         <label>وصف الصورة</label>
         <textarea class="ig-ta" id="igp" placeholder="مثال: غروب الشمس على البحر..."></textarea>
         <div class="ig-row">
-          <select class="ig-sel" id="igs"><option value="1024x1024">مربع 1024×1024</option><option value="1280x720">أفقي</option><option value="720x1280">عمودي</option></select>
+          <select class="ig-sel" id="igs"><option value="1024x1024">مربع</option><option value="1280x720">أفقي</option><option value="720x1280">عمودي</option></select>
           <select class="ig-sel" id="igm"><option value="flux">Flux</option><option value="flux-realism">Realism</option><option value="flux-anime">Anime</option></select>
           <button class="ig-btn" id="igb" onclick="genImg()">✨ توليد</button>
         </div>
@@ -449,7 +507,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   </div>
 </div>
 
-<!-- ══ SCRIPT ══════════════════════════════════════════════════════════════════ -->
 <script>
 const MODELS   = {{ models | tojson }};
 const ROLE     = "{{ role }}";
@@ -463,12 +520,13 @@ let ctrl         = null;
 let pendingFiles = [];
 const pf         = {};
 
-// GitHub state (admin only)
+// GitHub state
 let allRepos      = [];
-let currentRepo   = null;
+let currentRepo   = null;   // {owner, repo, branch}
 let currentTree   = [];
 let selectedPaths = new Set();
-let viewingFile   = null;
+let projMemFiles  = [];
+let ghView        = 'repos'; // 'repos' | 'files'
 
 /* ── DOM ─────────────────────────────────────────────────────────────────── */
 const cw_   = document.getElementById('cw');
@@ -485,18 +543,15 @@ const icoS  = document.getElementById('ico-s');
 const icoX  = document.getElementById('ico-x');
 const abar  = document.getElementById('attach-bar');
 
-/* ── Stream control ──────────────────────────────────────────────────────── */
-function setStreaming(v){
-  streaming=v;sb.classList.toggle('stop',v);
-  icoS.style.display=v?'none':'';icoX.style.display=v?'':'none';
-}
+/* ── Stream ──────────────────────────────────────────────────────────────── */
+function setStreaming(v){streaming=v;sb.classList.toggle('stop',v);icoS.style.display=v?'none':'';icoX.style.display=v?'':'none'}
 function toggleSend(){streaming?stopStream():send()}
 async function stopStream(){if(ctrl)ctrl.abort();try{const fd=new FormData();fd.append('sid',SID);await fetch('/stop',{method:'POST',body:fd})}catch(_){}}
 
 /* ── Page switch ─────────────────────────────────────────────────────────── */
 function sw(m){
-  const pages=IS_ADMIN?['c','g','i']:['c','i'];
-  pages.forEach(x=>{
+  const all=IS_ADMIN?['c','g','i']:['c','i'];
+  all.forEach(x=>{
     const pg=document.getElementById('pg'+x.toUpperCase());
     const tb=document.getElementById('t'+x.toUpperCase());
     if(pg)pg.classList.toggle('on',m===x);
@@ -512,12 +567,7 @@ function buildSh(){
   const l=document.getElementById('shl');l.innerHTML='';
   MODELS.forEach(m=>{
     const d=document.createElement('div');d.className='mi'+(m.id===sel?' sel':'');
-    d.innerHTML=`<div class="mi-ico">${m.badge}</div>
-      <div class="mi-body">
-        <div class="mi-name">${m.name}<span class="tg ${tagCls(m)}">${m.tag}</span></div>
-        <div class="mi-desc">${m.desc}</div>
-        <div class="mi-meta"><span class="pl">📐 ${m.context}</span><span class="pl">⚡ ${m.speed}</span></div>
-      </div><div class="mi-chk">✓</div>`;
+    d.innerHTML=`<div class="mi-ico">${m.badge}</div><div class="mi-body"><div class="mi-name">${m.name}<span class="tg ${tagCls(m)}">${m.tag}</span></div><div class="mi-desc">${m.desc}</div><div class="mi-meta"><span class="pl">📐 ${m.context}</span><span class="pl">⚡ ${m.speed}</span></div></div><div class="mi-chk">✓</div>`;
     d.onclick=()=>pick(m);l.appendChild(d);
   });
 }
@@ -537,55 +587,31 @@ function kd(e){if(e.key==='Enter'&&!e.shiftKey&&!streaming){e.preventDefault();s
 function sp(t){pt.value=t;pt.focus();ar(pt)}
 function bot(){cw_.scrollTop=cw_.scrollHeight}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function fileIcon(path){const ext=path.split('.').pop().toLowerCase();const map={py:'🐍',js:'🟨',ts:'🔷',tsx:'🔷',jsx:'🟨',html:'🌐',css:'🎨',json:'📋',md:'📝',sh:'⚙️',go:'🐹',rs:'🦀',java:'☕',cpp:'⚡',c:'⚡',vue:'💚',php:'🐘',rb:'💎',sql:'🗄️',yml:'⚙️',yaml:'⚙️',toml:'⚙️',pdf:'📕',zip:'📦'};return map[ext]||'📄'}
+function fileIcon(path){const ext=path.split('.').pop().toLowerCase();const m={py:'🐍',js:'🟨',ts:'🔷',tsx:'🔷',jsx:'🟨',html:'🌐',css:'🎨',json:'📋',md:'📝',sh:'⚙️',go:'🐹',rs:'🦀',java:'☕',cpp:'⚡',c:'⚡',vue:'💚',php:'🐘',rb:'💎',sql:'🗄️',yml:'⚙️',yaml:'⚙️',toml:'⚙️',pdf:'📕',zip:'📦'};return m[ext]||'📄'}
 
 /* ── Attachments ─────────────────────────────────────────────────────────── */
-function addFiles(input){
-  const avail=MAX_AT-pendingFiles.length;
-  Array.from(input.files).slice(0,avail).forEach(f=>pendingFiles.push(f));
-  input.value='';renderAbar();
-  vn.classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')));
-}
+function addFiles(input){Array.from(input.files).slice(0,MAX_AT-pendingFiles.length).forEach(f=>pendingFiles.push(f));input.value='';renderAbar();vn.classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')))}
 function removeFile(i){pendingFiles.splice(i,1);renderAbar();vn.classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')))}
-function renderAbar(){
-  abar.innerHTML='';
-  if(!pendingFiles.length){document.getElementById('att-ico').innerHTML='📎';return}
-  document.getElementById('att-ico').innerHTML=`📎<span class="att-count">${pendingFiles.length}</span>`;
-  pendingFiles.forEach((f,i)=>{const el=document.createElement('div');el.className='atch';el.innerHTML=`<span>${fileIcon(f.name)}</span><span class="atch-name">${esc(f.name)}</span><button class="atch-del" onclick="removeFile(${i})">✕</button>`;abar.appendChild(el)});
-}
+function renderAbar(){abar.innerHTML='';if(!pendingFiles.length){document.getElementById('att-ico').innerHTML='📎';return}document.getElementById('att-ico').innerHTML=`📎<span class="att-count">${pendingFiles.length}</span>`;pendingFiles.forEach((f,i)=>{const el=document.createElement('div');el.className='atch';el.innerHTML=`<span>${fileIcon(f.name)}</span><span class="atch-name">${esc(f.name)}</span><button class="atch-del" onclick="removeFile(${i})">✕</button>`;abar.appendChild(el)})}
 
 /* ── Files panel ─────────────────────────────────────────────────────────── */
-function showFiles(filesB64){
-  if(!filesB64||!Object.keys(filesB64).length)return;
-  Object.assign(pf,filesB64);const names=Object.keys(filesB64);
-  let h=`<div class="fb"><div class="fbh"><span>📁 ملفات (${names.length})</span><button class="fbh-dl" onclick="dlZip()">📦 ZIP</button></div>`;
-  names.forEach(n=>h+=`<div class="fi"><span>${fileIcon(n)} ${esc(n)}</span><button onclick="dlFile('${esc(n)}')">💾</button></div>`);
-  h+='</div>';fsec.innerHTML=h;
-}
-async function dlFile(name){
-  const b64=pf[name];if(!b64)return;
-  const fd=new FormData();fd.append('filename',name);fd.append('code_b64',b64);
-  const blob=await(await fetch('/download',{method:'POST',body:fd})).blob();
-  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:name});a.click();URL.revokeObjectURL(a.href);
-}
-async function dlZip(){
-  const blob=await(await fetch(`/download/zip/${SID}`)).blob();
-  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:'leo-ai.zip'});a.click();URL.revokeObjectURL(a.href);
-}
+function showFiles(filesB64){if(!filesB64||!Object.keys(filesB64).length)return;Object.assign(pf,filesB64);const names=Object.keys(filesB64);let h=`<div class="fb"><div class="fbh"><span>📁 ملفات (${names.length})</span><button class="fbh-dl" onclick="dlZip()">📦 ZIP</button></div>`;names.forEach(n=>h+=`<div class="ffi"><span>${fileIcon(n)} ${esc(n)}</span><button onclick="dlFile('${esc(n)}')">💾</button></div>`);h+='</div>';fsec.innerHTML=h}
+async function dlFile(name){const b64=pf[name];if(!b64)return;const fd=new FormData();fd.append('filename',name);fd.append('code_b64',b64);const blob=await(await fetch('/download',{method:'POST',body:fd})).blob();const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:name});a.click();URL.revokeObjectURL(a.href)}
+async function dlZip(){const blob=await(await fetch(`/download/zip/${SID}`)).blob();const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:'leo-ai.zip'});a.click();URL.revokeObjectURL(a.href)}
 function cpy(btn,b64){navigator.clipboard.writeText(atob(b64)).then(()=>{btn.textContent='✅ تم';btn.classList.add('ok');setTimeout(()=>{btn.textContent='📋 نسخ';btn.classList.remove('ok')},1500)})}
 function explainCode(btn,b64){pt.value=`اشرح هذا الكود:\n\`\`\`\n${atob(b64)}\n\`\`\``;ar(pt);sw('c');send()}
 function cpyFull(btn,rawB64){navigator.clipboard.writeText(atob(rawB64)).then(()=>{btn.textContent='✅';setTimeout(()=>btn.textContent='📄 نسخ',1500)})}
 
-/* ══ STREAMING SEND ════════════════════════════════════════════════════════ */
+/* ══ STREAMING ════════════════════════════════════════════════════════════ */
 async function send(){
   const txt=pt.value.trim();if(!txt||streaming)return;
   wel.style.display='none';setStreaming(true);
   const uRow=document.createElement('div');uRow.className='row u';
-  uRow.innerHTML=`<div class="bbl u">${esc(txt)}${pendingFiles.length?`<br><span style="font-size:10px;color:var(--mu)">📎 ${pendingFiles.length} مرفق</span>`:''}</div><div class="av ua">👤</div>`;
+  uRow.innerHTML=`<div class="bbl u">${esc(txt)}${pendingFiles.length?`<br><span style="font-size:10px;color:var(--mu)">📎 ${pendingFiles.length}</span>`:''}</div><div class="av ua">👤</div>`;
   msgs.appendChild(uRow);pt.value='';pt.style.height='auto';vn.classList.remove('on');bot();
   const aRow=document.createElement('div');aRow.className='row a';
   const avEl=Object.assign(document.createElement('div'),{className:'av aa',textContent:'🤖'});
-  const wrap=document.createElement('div');wrap.style.flex='1';
+  const wrap=document.createElement('div');wrap.className='ai-wrap';
   const bbl=Object.assign(document.createElement('div'),{className:'bbl a'});
   const cursor=Object.assign(document.createElement('span'),{className:'cursor'});
   const mtag=Object.assign(document.createElement('div'),{className:'mtag'});
@@ -594,7 +620,7 @@ async function send(){
   spin.classList.add('on');bot();
   const fd=new FormData();fd.append('prompt',txt);fd.append('model_id',sel);fd.append('sid',SID);
   pendingFiles.forEach(f=>fd.append('files',f));pendingFiles=[];renderAbar();
-  ctrl=new AbortController();let rawText='';let gotFirst=false;let fullRaw='';
+  ctrl=new AbortController();let rawText='';let gotFirst=false;
   try{
     const res=await fetch('/chat-stream',{method:'POST',body:fd,signal:ctrl.signal});
     if(!res.ok)throw new Error(`HTTP ${res.status}`);
@@ -607,122 +633,207 @@ async function send(){
         try{
           const ev=JSON.parse(ds);
           if(ev.first&&!gotFirst){gotFirst=true;spin.classList.remove('on')}
-          if(ev.token!==undefined){if(!gotFirst){gotFirst=true;spin.classList.remove('on')}rawText+=ev.token;fullRaw=rawText;bbl.textContent=rawText;bbl.appendChild(cursor);bot()}
-          if(ev.done){cursor.remove();bbl.innerHTML=ev.html;fullRaw=ev.raw||rawText;
-            mtag.textContent=`✦ ${ev.switched?ev.used_model+' ← تحويل تلقائي':ev.used_model}`;
-            const rb=btoa(unescape(encodeURIComponent(fullRaw)));
+          if(ev.token!==undefined){if(!gotFirst){gotFirst=true;spin.classList.remove('on')}rawText+=ev.token;bbl.textContent=rawText;bbl.appendChild(cursor);bot()}
+          if(ev.done){cursor.remove();bbl.innerHTML=ev.html;
+            mtag.textContent=`✦ ${ev.switched?ev.used_model+' ← تحويل':ev.used_model}`;
+            const rb=btoa(unescape(encodeURIComponent(ev.raw||rawText)));
             mact.innerHTML=`<button class="mac-btn" onclick="cpyFull(this,'${rb}')">📄 نسخ</button>`;
             if(ev.files)showFiles(ev.files);bot()}
           if(ev.error){cursor.remove();bbl.innerHTML=`<p style="color:var(--danger)">❌ ${esc(ev.error)}</p>`;bot()}
         }catch(_){}
       }
     }
-  }catch(e){
-    spin.classList.remove('on');cursor.remove();
-    bbl.innerHTML=e.name==='AbortError'?`<p style="color:var(--mu)">⏹ تم الإيقاف</p>`:`<p style="color:var(--danger)">❌ ${esc(String(e))}</p>`;bot();
-  }
+  }catch(e){spin.classList.remove('on');cursor.remove();bbl.innerHTML=e.name==='AbortError'?`<p style="color:var(--mu)">⏹ تم الإيقاف</p>`:`<p style="color:var(--danger)">❌ ${esc(String(e))}</p>`;bot()}
   setStreaming(false);ctrl=null;pt.focus();
 }
 
-/* ══ GITHUB BROWSER (admin only) ══════════════════════════════════════════ */
+/* ══ GITHUB — قائمة تتبدل ══════════════════════════════════════════════════ */
+
+function ghSetView(v){
+  ghView=v;
+  const actionsEl=document.getElementById('gh-actions');
+  const searchEl =document.getElementById('gh-search');
+  actionsEl.style.display = v==='files' ? 'block' : 'none';
+  searchEl.style.display  = v==='repos' ? 'block' : 'none';
+}
+
+/* تحميل قائمة repos */
 async function loadRepos(){
-  if(!IS_ADMIN)return;
-  document.getElementById('repo-list').innerHTML='<div class="repos-loading">⏳ جاري التحميل...</div>';
+  ghSetView('repos');
+  document.getElementById('gh-title').textContent='🐙 مستودعاتك';
+  document.getElementById('gh-list').innerHTML=`<div class="gh-loading"><div class="ring"></div><span>جاري التحميل...</span></div>`;
   try{
     const r=await fetch('/github/repos');const d=await r.json();
-    if(d.error){document.getElementById('repo-list').innerHTML=`<div class="repos-loading" style="color:var(--danger)">❌ ${esc(d.error)}</div>`;return}
-    allRepos=d;renderRepos(d);
-  }catch(e){document.getElementById('repo-list').innerHTML=`<div class="repos-loading" style="color:var(--danger)">❌ ${esc(String(e))}</div>`}
+    if(d.error){document.getElementById('gh-list').innerHTML=`<div class="gh-empty" style="color:var(--danger)">❌ ${esc(d.error)}</div>`;return}
+    allRepos=d;renderReposList(d);
+  }catch(e){document.getElementById('gh-list').innerHTML=`<div class="gh-empty" style="color:var(--danger)">❌ ${esc(String(e))}</div>`}
 }
-function renderRepos(repos){
-  if(!repos.length){document.getElementById('repo-list').innerHTML='<div class="repos-loading">لا توجد مستودعات</div>';return}
-  document.getElementById('repo-list').innerHTML=repos.map((r,i)=>`
-    <div class="repo-item" onclick="loadRepo('${esc(r.full_name.split('/')[0])}','${esc(r.name)}','${esc(r.default_branch)}')" id="ri-${i}">
-      <div class="repo-name">${esc(r.name)} ${r.private?'<span class="repo-private">خاص</span>':''}</div>
-      <div class="repo-meta"><span class="repo-lang">${esc(r.language)}</span><span>⭐ ${r.stars}</span><span>${r.updated_at}</span></div>
-    </div>`).join('');
+
+function renderReposList(repos){
+  if(!repos.length){document.getElementById('gh-list').innerHTML='<div class="gh-empty">لا توجد مستودعات</div>';return}
+  const frag=document.createDocumentFragment();
+  repos.forEach(r=>{
+    const div=document.createElement('div');div.className='repo-item';
+    const icon=r.language==='Python'?'🐍':r.language==='JavaScript'?'🟨':r.language==='TypeScript'?'🔷':r.language==='HTML'?'🌐':'📦';
+    div.innerHTML=`<div class="ri-icon">${icon}</div>
+      <div class="ri-body">
+        <div class="ri-name">${esc(r.name)} ${r.private?'<span class="ri-prv">خاص</span>':''}</div>
+        <div class="ri-meta"><span class="ri-lang">${esc(r.language)}</span><span>⭐ ${r.stars}</span><span>${r.updated_at}</span></div>
+      </div>
+      <span class="ri-arr">›</span>`;
+    div.onclick=()=>loadRepo(r.full_name.split('/')[0], r.name, r.default_branch);
+    frag.appendChild(div);
+  });
+  const list=document.getElementById('gh-list');list.innerHTML='';list.appendChild(frag);
 }
-function filterRepos(q){if(!q.trim()){renderRepos(allRepos);return}renderRepos(allRepos.filter(r=>r.name.toLowerCase().includes(q.toLowerCase())||r.description.toLowerCase().includes(q.toLowerCase())))}
+
+function filterRepos(q){
+  if(!q.trim()){renderReposList(allRepos);return}
+  renderReposList(allRepos.filter(r=>r.name.toLowerCase().includes(q.toLowerCase())||r.description.toLowerCase().includes(q.toLowerCase())));
+}
+
+/* تحميل ملفات repo */
 async function loadRepo(owner,repo,branch='main'){
-  currentRepo={owner,repo,branch};selectedPaths.clear();updateSelBar();
-  document.getElementById('gh-top').style.display='flex';
-  document.getElementById('gh-repo-title').textContent=`${owner}/${repo}`;
-  const content=document.getElementById('gh-content');
-  content.innerHTML='<div class="fv-empty"><div class="ring" style="width:28px;height:28px;border-width:3px"></div><span>جاري التحميل...</span></div>';
+  currentRepo={owner,repo,branch};
+  selectedPaths.clear();updateSelBar();
+  ghSetView('files');
+
+  // عنوان مع زر رجوع
+  document.getElementById('gh-title').innerHTML=
+    `<button class="gh-back" onclick="backToRepos()">‹ رجوع</button> ${esc(repo)}`;
+
+  document.getElementById('gh-list').innerHTML=`<div class="gh-loading"><div class="ring"></div><span>جاري جلب الملفات...</span></div>`;
   try{
     const r=await fetch(`/github/tree?owner=${owner}&repo=${repo}&branch=${branch}`);const d=await r.json();
-    if(d.error){content.innerHTML=`<div class="fv-empty"><span style="color:var(--danger)">❌ ${esc(d.error)}</span></div>`;return}
-    currentTree=d.files;currentRepo.branch=d.branch;renderTree(d.files);
-  }catch(e){content.innerHTML=`<div class="fv-empty"><span style="color:var(--danger)">❌ ${esc(String(e))}</span></div>`}
+    if(d.error){document.getElementById('gh-list').innerHTML=`<div class="gh-empty" style="color:var(--danger)">❌ ${esc(d.error)}</div>`;return}
+    currentTree=d.files;currentRepo.branch=d.branch;
+    renderFilesList(d.files);
+  }catch(e){document.getElementById('gh-list').innerHTML=`<div class="gh-empty" style="color:var(--danger)">❌ ${esc(String(e))}</div>`}
 }
-function renderTree(files){
-  if(!files.length){document.getElementById('gh-content').innerHTML='<div class="fv-empty"><span>لا توجد ملفات كود</span></div>';return}
-  const div=document.createElement('div');div.className='file-tree';
+
+function backToRepos(){
+  ghSetView('repos');
+  document.getElementById('gh-title').textContent='🐙 مستودعاتك';
+  selectedPaths.clear();updateSelBar();
+  currentRepo=null;currentTree=[];
+  renderReposList(allRepos);
+}
+
+function renderFilesList(files){
+  if(!files.length){document.getElementById('gh-list').innerHTML='<div class="gh-empty">لا توجد ملفات كود</div>';return}
+  const frag=document.createDocumentFragment();
   files.forEach(f=>{
-    const item=document.createElement('div');item.className='tree-item';item.dataset.path=f.path;
-    item.innerHTML=`<div class="ti-check">✓</div><span class="ti-icon">${fileIcon(f.path)}</span><span class="ti-name ${f.is_code?'code':'other'}">${esc(f.path)}</span><span class="ti-size">${f.size>1000?Math.round(f.size/1000)+'K':f.size+'B'}</span>`;
-    item.onclick=(e)=>toggleFile(f.path,item,e);div.appendChild(item);
+    const inMem=projMemFiles.some(k=>k.endsWith(f.path));
+    const isChecked=selectedPaths.has(f.path);
+    const div=document.createElement('div');
+    div.className='file-item'+(isChecked?' checked':'');div.dataset.path=f.path;
+    div.innerHTML=`
+      <div class="fi-check"><span class="fi-check-inner">✓</span></div>
+      <span class="fi-icon">${fileIcon(f.path)}</span>
+      <span class="fi-name ${f.is_code?'code':'other'}">${esc(f.path)}</span>
+      <span class="fi-size">${f.size>1000?Math.round(f.size/1000)+'K':f.size+'B'}</span>
+      ${inMem?'<span class="fi-mem">في الذاكرة</span>':''}`;
+    div.onclick=()=>toggleFile(f.path,div);
+    frag.appendChild(div);
   });
-  const content=document.getElementById('gh-content');content.innerHTML='';content.appendChild(div);
+  const list=document.getElementById('gh-list');list.innerHTML='';list.appendChild(frag);
 }
-function toggleFile(path,item,e){
+
+function toggleFile(path,item){
   if(selectedPaths.has(path)){selectedPaths.delete(path);item.classList.remove('checked')}
   else{selectedPaths.add(path);item.classList.add('checked')}
-  updateSelBar();if(!e.shiftKey&&selectedPaths.size<=1)viewFile(path);
+  updateSelBar();
 }
-function selectAllCode(){document.querySelectorAll('.tree-item').forEach(item=>{const f=currentTree.find(x=>x.path===item.dataset.path);if(f&&f.is_code){selectedPaths.add(f.path);item.classList.add('checked')}});updateSelBar()}
-function clearSelection(){selectedPaths.clear();document.querySelectorAll('.tree-item.checked').forEach(el=>el.classList.remove('checked'));updateSelBar()}
-function updateSelBar(){const bar=document.getElementById('sel-bar');document.getElementById('sel-count').textContent=`${selectedPaths.size} ملف محدد`;bar.classList.toggle('show',selectedPaths.size>0)}
-async function viewFile(path){
-  if(!currentRepo)return;const{owner,repo,branch}=currentRepo;
-  let viewer=document.getElementById('file-viewer-el');
-  if(!viewer){viewer=document.createElement('div');viewer.id='file-viewer-el';viewer.style.cssText='position:fixed;bottom:0;left:0;right:0;top:52px;z-index:30;background:var(--bg);border-top:1px solid var(--bd);display:flex;flex-direction:column';document.body.appendChild(viewer)}
-  viewer.style.display='flex';
-  viewer.innerHTML=`<div style="padding:8px 10px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px;flex-shrink:0">
-    <span style="font-size:11.5px;color:var(--mu);font-family:monospace;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(path)}</span>
-    <button class="gh-btn" onclick="copyFileContent()">📋 نسخ</button>
-    <button class="gh-btn review" onclick="reviewSingleFile('${esc(path)}')">🔍 مراجعة</button>
-    <button class="gh-btn" onclick="askAboutFile('${esc(path)}')">💬 اسأل</button>
-    <button class="gh-btn" onclick="closeFileViewer()" style="border-color:var(--danger);color:var(--danger)">✕</button>
-  </div>
-  <div id="fv-body" style="flex:1;overflow:auto;padding:12px"><div style="color:var(--mu);font-size:12px">⏳ جاري التحميل...</div></div>`;
-  try{
-    const r=await fetch(`/github/file?owner=${owner}&repo=${repo}&path=${encodeURIComponent(path)}&branch=${branch}`);const d=await r.json();
-    if(d.error){document.getElementById('fv-body').innerHTML=`<span style="color:var(--danger)">❌ ${esc(d.error)}</span>`;return}
-    viewingFile={path,content:d.content};
-    document.getElementById('fv-body').innerHTML=`<div style="margin-bottom:8px;font-size:11px;color:var(--mu)">${d.lines} سطر • ${Math.round(d.size/1024*10)/10}KB ${d.truncated?'• (مقتطع)':''}</div><pre style="font-family:'Fira Code',monospace;font-size:12px;line-height:1.6;color:#cdd6f4;white-space:pre;tab-size:2">${esc(d.content)}</pre>`;
-  }catch(e){document.getElementById('fv-body').innerHTML=`<span style="color:var(--danger)">❌ ${esc(String(e))}</span>`}
-}
-function closeFileViewer(){const v=document.getElementById('file-viewer-el');if(v)v.style.display='none'}
-function copyFileContent(){if(viewingFile)navigator.clipboard.writeText(viewingFile.content).then(()=>alert('✅ تم نسخ الملف'))}
-async function reviewSingleFile(path){selectedPaths.clear();selectedPaths.add(path);closeFileViewer();startReview()}
-function askAboutFile(path){closeFileViewer();sw('c');pt.value=`اشرح لي ملف ${path} واذكر الوظيفة الرئيسية وأي مشاكل تراها:`;ar(pt);pt.focus()}
 
+function selectAllCode(){
+  currentTree.forEach(f=>{
+    if(!f.is_code)return;
+    selectedPaths.add(f.path);
+    const el=document.querySelector(`.file-item[data-path="${CSS.escape(f.path)}"]`);
+    if(el)el.classList.add('checked');
+  });
+  updateSelBar();
+}
+
+function clearSel(){
+  selectedPaths.clear();
+  document.querySelectorAll('.file-item.checked').forEach(el=>el.classList.remove('checked'));
+  updateSelBar();
+}
+
+function updateSelBar(){
+  const bar=document.getElementById('sel-bar');
+  document.getElementById('sel-count').textContent=`${selectedPaths.size} ملف محدد`;
+  bar.classList.toggle('show',selectedPaths.size>0);
+}
+
+/* تحميل المشروع كاملاً */
+async function loadFullRepo(){
+  if(!currentRepo)return;
+  const btn=document.getElementById('btn-load-full');
+  btn.textContent='⏳ جاري...';btn.disabled=true;
+  const{owner,repo,branch}=currentRepo;
+  const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch);fd.append('sid',SID);
+  try{
+    const r=await fetch('/github/load-repo-full',{method:'POST',body:fd});const d=await r.json();
+    if(d.error){alert('❌ '+d.error);btn.textContent='⚡ تحميل الكل للذاكرة';btn.disabled=false;return}
+    projMemFiles=d.files||[];updateMemBar(d);
+    // تحديث قائمة الملفات
+    if(currentTree.length)renderFilesList(currentTree);
+    btn.textContent='✅ تم التحميل';
+    setTimeout(()=>{btn.textContent='⚡ تحميل الكل للذاكرة';btn.disabled=false},2000);
+  }catch(e){alert('❌ '+e);btn.textContent='⚡ تحميل الكل للذاكرة';btn.disabled=false}
+}
+
+function updateMemBar(d){
+  const bar=document.getElementById('mem-bar');
+  if(!d||!d.added){bar.classList.remove('show');return}
+  bar.classList.add('show');
+  document.getElementById('mem-count').textContent=d.added;
+  document.getElementById('mem-label').textContent=`ملف من ${d.repo}`;
+}
+
+async function clearProjMem(){
+  if(!confirm('مسح ذاكرة المشروع؟'))return;
+  const fd=new FormData();fd.append('sid',SID);
+  await fetch('/project/clear',{method:'POST',body:fd});
+  projMemFiles=[];document.getElementById('mem-bar').classList.remove('show');
+  if(currentTree.length)renderFilesList(currentTree);
+}
+
+function goToChat(){
+  sw('c');
+  pt.value=`قمت بتحميل كامل ملفات مشروع ${currentRepo?.repo} للذاكرة. راجعها وأخبرني بأبرز المشاكل والتحسينات المقترحة.`;
+  ar(pt);pt.focus();
+}
+
+/* مراجعة الكود */
 async function startReview(){
-  if(!currentRepo){alert('اختر مستودعاً أولاً');return}
-  if(!selectedPaths.size){alert('حدد ملفات للمراجعة');return}
-  const panel=document.getElementById('review-panel');const body=document.getElementById('rp-body');const title=document.getElementById('rp-title');
-  panel.classList.add('show');title.textContent=`🔍 مراجعة ${selectedPaths.size} ملف — ${currentRepo.owner}/${currentRepo.repo}`;
-  body.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;padding:40px;gap:12px;color:var(--mu)"><div class="ring" style="width:32px;height:32px;border-width:3px;border-top-color:var(--ac2)"></div><span>جاري تحليل الكود...</span></div>`;
+  if(!currentRepo){alert('اختر مستودعاً');return}
+  if(!selectedPaths.size){alert('حدد ملفات للمراجعة أولاً');return}
+  const panel=document.getElementById('review-panel');const body=document.getElementById('rp-body');
+  document.getElementById('rp-title').textContent=`🔍 مراجعة ${selectedPaths.size} ملف — ${currentRepo.repo}`;
+  panel.classList.add('show');
+  body.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;padding:40px;gap:12px;color:var(--mu)"><div class="ring" style="width:30px;height:30px;border-width:3px;border-top-color:var(--ac2)"></div><span>جاري تحليل الكود...</span></div>`;
   const{owner,repo,branch}=currentRepo;
   const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch);fd.append('paths',Array.from(selectedPaths).join(','));fd.append('model_id',sel);
   try{
-    const res=await fetch('/github/review',{method:'POST',body:fd});
-    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const res=await fetch('/github/review',{method:'POST',body:fd});if(!res.ok)throw new Error(`HTTP ${res.status}`);
     const reader=res.body.getReader();const dec=new TextDecoder();let buf='';let rawText='';
-    body.innerHTML='<div id="review-content" class="bbl a" style="padding:0"></div>';
-    const rc=document.getElementById('review-content');const cursor=document.createElement('span');cursor.className='cursor';rc.appendChild(cursor);
+    body.innerHTML='<div id="rc" class="bbl a" style="padding:0"></div>';
+    const rc=document.getElementById('rc');const cur=document.createElement('span');cur.className='cursor';rc.appendChild(cur);
     while(true){
       const{done,value}=await reader.read();if(done)break;
       buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();
       for(const line of lines){
         if(!line.startsWith('data:'))continue;const ds=line.slice(5).trim();if(!ds)continue;
-        try{const ev=JSON.parse(ds);if(ev.token!==undefined){rawText+=ev.token;rc.textContent=rawText;rc.appendChild(cursor)}if(ev.done){cursor.remove();rc.innerHTML=ev.html}}catch(_){}
+        try{const ev=JSON.parse(ds);if(ev.token!==undefined){rawText+=ev.token;rc.textContent=rawText;rc.appendChild(cur)}if(ev.done){cur.remove();rc.innerHTML=ev.html}}catch(_){}
       }
     }
   }catch(e){body.innerHTML=`<p style="color:var(--danger);padding:20px">❌ ${esc(String(e))}</p>`}
 }
 function closeReview(){document.getElementById('review-panel').classList.remove('show')}
+
 async function loadToChat(){
   if(!currentRepo||!selectedPaths.size){alert('حدد ملفات أولاً');return}
   const{owner,repo,branch}=currentRepo;
@@ -730,53 +841,23 @@ async function loadToChat(){
   try{
     const r=await fetch('/github/load-to-memory',{method:'POST',body:fd});const d=await r.json();
     if(d.error){alert('❌ '+d.error);return}
-    sw('c');pt.value=`تم تحميل ${d.added.length} ملف من ${owner}/${repo} للذاكرة. كيف أساعدك؟`;ar(pt);pt.focus();
+    projMemFiles=d.files||[];
+    sw('c');pt.value=`تم تحميل ${d.added.length} ملف من ${owner}/${repo}. كيف أساعدك؟`;ar(pt);pt.focus();
   }catch(e){alert('❌ '+e)}
 }
 
-/* ══ SAVED CHATS ════════════════════════════════════════════════════════════ */
+/* ── Saved chats ─────────────────────────────────────────────────────────── */
 function getSaved(){return JSON.parse(localStorage.getItem('leoai_'+ROLE)||'[]')}
 function setSaved(v){localStorage.setItem('leoai_'+ROLE,JSON.stringify(v))}
-function renderSC(){
-  const saved=getSaved();const list=document.getElementById('sc-list');
-  if(!saved.length){list.innerHTML='<div class="sc-empty">لا توجد محادثات</div>';return}
-  list.innerHTML=saved.map((c,i)=>`<div class="sc-item" onclick="loadChat(${i})">
-    <div class="sc-item-hdr"><span class="sc-item-title">${esc(c.title)}</span>
-    <button class="sc-item-del" onclick="event.stopPropagation();delChat(${i})">🗑️</button></div>
-    <div class="sc-item-date">${c.date}</div></div>`).join('');
-}
+function renderSC(){const saved=getSaved();const list=document.getElementById('sc-list');if(!saved.length){list.innerHTML='<div class="sc-empty">لا توجد محادثات</div>';return}list.innerHTML=saved.map((c,i)=>`<div class="sc-item" onclick="loadChat(${i})"><div class="sc-item-hdr"><span class="sc-item-title">${esc(c.title)}</span><button class="sc-item-del" onclick="event.stopPropagation();delChat(${i})">🗑️</button></div><div class="sc-item-date">${c.date}</div></div>`).join('')}
 function loadChat(i){const c=getSaved()[i];if(!c)return;wel.style.display='none';msgs.innerHTML=c.html;bot();closePanel()}
 function delChat(i){const s=getSaved();s.splice(i,1);setSaved(s);renderSC()}
-function saveChat(){
-  if(!msgs.children.length){alert('لا يوجد شيء للحفظ');return}
-  const saved=getSaved();const first=msgs.querySelector('.bbl.u');
-  saved.unshift({id:Date.now(),title:(first?.textContent||'محادثة').slice(0,50),date:new Date().toLocaleString('ar-SA'),html:msgs.innerHTML});
-  if(saved.length>30)saved.pop();setSaved(saved);renderSC();alert('✅ تم الحفظ');
-}
-async function shareChat(){
-  if(!msgs.children.length){alert('لا يوجد شيء');return}
-  const first=msgs.querySelector('.bbl.u');
-  const fd=new FormData();fd.append('html',msgs.innerHTML);fd.append('title',(first?.textContent||'محادثة').slice(0,50));
-  try{const r=await fetch('/share',{method:'POST',body:fd});const d=await r.json();const url=window.location.origin+d.url;await navigator.clipboard.writeText(url);alert(`✅ تم نسخ الرابط:\n${url}`)}catch(e){alert('❌ '+e)}
-}
-async function clearChat(){
-  if(!confirm('مسح المحادثة؟'))return;if(streaming)await stopStream();
-  const fd=new FormData();fd.append('sid',SID);try{await fetch('/clear',{method:'POST',body:fd})}catch(_){}
-  msgs.innerHTML='';fsec.innerHTML='';spin.classList.remove('on');setStreaming(false);ctrl=null;
-  pendingFiles=[];renderAbar();wel.style.display='flex';Object.keys(pf).forEach(k=>delete pf[k]);
-}
+function saveChat(){if(!msgs.children.length){alert('لا يوجد شيء للحفظ');return}const saved=getSaved();const first=msgs.querySelector('.bbl.u');saved.unshift({id:Date.now(),title:(first?.textContent||'محادثة').slice(0,50),date:new Date().toLocaleString('ar-SA'),html:msgs.innerHTML});if(saved.length>30)saved.pop();setSaved(saved);renderSC();alert('✅ تم الحفظ')}
+async function shareChat(){if(!msgs.children.length){alert('لا يوجد شيء');return}const first=msgs.querySelector('.bbl.u');const fd=new FormData();fd.append('html',msgs.innerHTML);fd.append('title',(first?.textContent||'محادثة').slice(0,50));try{const r=await fetch('/share',{method:'POST',body:fd});const d=await r.json();const url=window.location.origin+d.url;await navigator.clipboard.writeText(url);alert(`✅ تم نسخ الرابط:\n${url}`)}catch(e){alert('❌ '+e)}}
+async function clearChat(){if(!confirm('مسح المحادثة؟'))return;if(streaming)await stopStream();const fd=new FormData();fd.append('sid',SID);try{await fetch('/clear',{method:'POST',body:fd})}catch(_){}msgs.innerHTML='';fsec.innerHTML='';spin.classList.remove('on');setStreaming(false);ctrl=null;pendingFiles=[];renderAbar();wel.style.display='flex';Object.keys(pf).forEach(k=>delete pf[k])}
 
 /* ── Image Gen ───────────────────────────────────────────────────────────── */
-async function genImg(){
-  const p=document.getElementById('igp').value.trim();if(!p){document.getElementById('ige').textContent='⚠️ اكتب وصف';return}
-  document.getElementById('ige').textContent='';const btn=document.getElementById('igb'),sp2=document.getElementById('igsp');btn.disabled=true;sp2.classList.add('on');
-  const fd=new FormData();fd.append('prompt',p);fd.append('size',document.getElementById('igs').value);fd.append('model',document.getElementById('igm').value);
-  try{const data=await(await fetch('/generate-image',{method:'POST',body:fd})).json();sp2.classList.remove('on');btn.disabled=false;if(data.error){document.getElementById('ige').textContent='❌ '+data.error;return}
-    const card=document.createElement('div');card.className='icard';
-    card.innerHTML=`<img src="${data.url}" alt="${esc(p)}" loading="lazy"><div class="icft"><span class="icp">${esc(p)}</span><a class="icdl" href="${data.url}" download="leo-ai.jpg" target="_blank">⬇️</a></div>`;
-    document.getElementById('igg').prepend(card);
-  }catch(e){sp2.classList.remove('on');btn.disabled=false}
-}
+async function genImg(){const p=document.getElementById('igp').value.trim();if(!p){document.getElementById('ige').textContent='⚠️ اكتب وصف';return}document.getElementById('ige').textContent='';const btn=document.getElementById('igb'),sp2=document.getElementById('igsp');btn.disabled=true;sp2.classList.add('on');const fd=new FormData();fd.append('prompt',p);fd.append('size',document.getElementById('igs').value);fd.append('model',document.getElementById('igm').value);try{const data=await(await fetch('/generate-image',{method:'POST',body:fd})).json();sp2.classList.remove('on');btn.disabled=false;if(data.error){document.getElementById('ige').textContent='❌ '+data.error;return}const card=document.createElement('div');card.className='icard';card.innerHTML=`<img src="${data.url}" alt="${esc(p)}" loading="lazy"><div class="icft"><span class="icp">${esc(p)}</span><a class="icdl" href="${data.url}" download="leo-ai.jpg" target="_blank">⬇️</a></div>`;document.getElementById('igg').prepend(card)}catch(e){sp2.classList.remove('on');btn.disabled=false}}
 document.getElementById('igp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();genImg()}});
 
 /* ── Init ────────────────────────────────────────────────────────────────── */
