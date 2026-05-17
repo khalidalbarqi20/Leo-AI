@@ -10,87 +10,42 @@
 :root{
   --bg:#212121;--sf:#2f2f2f;--sf2:#3a3a3a;--bd:#404040;
   --ac:#19c37d;--ac2:#ab68ff;--tx:#ececec;--mu:#8e8ea0;
-  --cbg:#1a1a1a;--chdr:#252525;--r:12px;--danger:#ef4444;
-  --hh:52px; /* header height */
+  --cbg:#1a1a1a;--chdr:#252525;--r:12px;--danger:#ef4444;--warn:#f59e0b;
 }
-html{height:100%;overflow:hidden}
-body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;
-     background:var(--bg);color:var(--tx);display:flex;flex-direction:column;
-     -webkit-font-smoothing:antialiased}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);
+     display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
 
-/* ══ HEADER ══════════════════════════════════════════════════════════════════ */
-.hdr{
-  background:#171717;border-bottom:1px solid var(--bd);
-  height:var(--hh);padding:0 10px;
-  display:flex;align-items:center;gap:6px;
-  flex-shrink:0;z-index:20;position:relative;
-}
+/* ── HEADER ──────────────────────────────────────────────────────────────── */
+.hdr{background:#171717;border-bottom:1px solid var(--bd);height:52px;padding:0 8px;
+     display:flex;align-items:center;gap:5px;flex-shrink:0;z-index:20}
 .logo{width:28px;height:28px;flex-shrink:0;
       background:linear-gradient(135deg,#19c37d,#ab68ff);
       border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
-.hdr-mid{flex:1;display:flex;justify-content:center;align-items:center;gap:5px;min-width:0}
+.hdr-mid{flex:1;display:flex;justify-content:center;align-items:center;gap:4px;min-width:0}
 .tabs-in{display:flex;background:var(--sf);border:1px solid var(--bd);border-radius:7px;padding:2px;gap:2px}
-.tab{padding:4px 10px;border-radius:5px;border:none;background:transparent;color:var(--mu);
-     font-size:11.5px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tab{padding:4px 8px;border-radius:5px;border:none;background:transparent;color:var(--mu);
+     font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
 .tab.on{background:var(--sf2);color:var(--tx)}
-.mpick{display:flex;align-items:center;gap:4px;background:var(--sf);border:1px solid var(--bd);
-       border-radius:7px;padding:4px 8px;cursor:pointer;font-size:11px;color:var(--tx);
-       max-width:120px;flex-shrink:0;transition:border-color .15s}
-.mpick:hover,.mpick:active{border-color:var(--ac)}
+.mpick{display:flex;align-items:center;gap:3px;background:var(--sf);border:1px solid var(--bd);
+       border-radius:7px;padding:4px 7px;cursor:pointer;font-size:11px;color:var(--tx);
+       max-width:105px;flex-shrink:0}
+.mpick:active{border-color:var(--ac)}
 .mpick .mn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .mpick .arr{color:var(--mu);font-size:9px;flex-shrink:0;transition:transform .2s}
 .mpick.open .arr{transform:rotate(180deg)}
-.ibtn{width:34px;height:34px;border-radius:8px;background:transparent;border:1px solid var(--bd);
-      color:var(--tx);cursor:pointer;font-size:17px;display:flex;align-items:center;
-      justify-content:center;transition:all .15s;flex-shrink:0;-webkit-user-select:none}
+.ibtn{width:32px;height:32px;border-radius:7px;background:transparent;border:1px solid var(--bd);
+      color:var(--tx);cursor:pointer;font-size:15px;display:flex;align-items:center;
+      justify-content:center;transition:all .15s;flex-shrink:0;position:relative}
 .ibtn:active{background:var(--sf2)}
-.ibtn.red{border-color:rgba(239,68,68,.35)}
 .ibtn.red:active{background:rgba(239,68,68,.15)}
+.ibtn .badge{position:absolute;top:-4px;right:-4px;background:var(--ac);color:#111;
+             border-radius:50%;width:14px;height:14px;font-size:8px;font-weight:700;
+             display:none;align-items:center;justify-content:center}
+.ibtn .badge.show{display:flex}
 
-/* ══ SAVED CHATS SIDEBAR (right side) ════════════════════════════════════════ */
-.sc-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;
-       opacity:0;pointer-events:none;transition:opacity .25s}
-.sc-ov.on{opacity:1;pointer-events:all}
-.sc-panel{
-  position:fixed;top:0;right:0;bottom:0;width:min(300px,85vw);
-  background:#181818;border-left:1px solid var(--bd);
-  z-index:51;transform:translateX(100%);
-  transition:transform .3s cubic-bezier(.4,0,.2,1);
-  display:flex;flex-direction:column;
-}
-.sc-panel.on{transform:translateX(0)}
-.sc-head{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:14px 14px 10px;border-bottom:1px solid var(--bd);flex-shrink:0;
-}
-.sc-title{font-size:15px;font-weight:700}
-.sc-x{width:28px;height:28px;background:var(--sf);border:none;border-radius:50%;
-      color:var(--tx);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
-.sc-x:active{background:var(--sf2)}
-.sc-list{flex:1;overflow-y:auto;padding:6px 8px 20px}
-.sc-list::-webkit-scrollbar{width:3px}
-.sc-list::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
-.sc-empty{text-align:center;color:var(--mu);font-size:12px;padding:30px 10px}
-.sc-item{
-  padding:10px 11px;border-radius:9px;cursor:pointer;
-  transition:background .12s;margin-bottom:4px;
-  border:1px solid transparent;
-}
-.sc-item:hover,.sc-item:active{background:var(--sf)}
-.sc-item-title{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sc-item-date{font-size:10.5px;color:var(--mu);margin-top:2px}
-.sc-item-del{float:left;background:transparent;border:none;color:var(--mu);
-             cursor:pointer;font-size:14px;padding:0 4px;line-height:1}
-.sc-item-del:active{color:var(--danger)}
-.sc-new{
-  margin:10px 8px 0;padding:10px;background:var(--ac);color:#111;
-  border:none;border-radius:9px;font-size:13px;font-weight:700;
-  cursor:pointer;width:calc(100% - 16px);transition:opacity .15s;
-}
-.sc-new:active{opacity:.85}
-
-/* ══ MODEL SHEET ══════════════════════════════════════════════════════════════ */
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}
+/* ── MODEL SHEET ─────────────────────────────────────────────────────────── */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}
 .ov.on{opacity:1;pointer-events:all}
 .sheet{position:fixed;bottom:0;left:0;right:0;z-index:101;background:#1a1a1a;
        border-radius:18px 18px 0 0;border-top:1px solid var(--bd);
@@ -103,11 +58,8 @@ body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;
 .sh-ttl{font-size:15px;font-weight:700}
 .sh-x{width:26px;height:26px;background:var(--sf);border:none;border-radius:50%;
       color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
-.sh-x:active{background:var(--sf2)}
 .sh-list{overflow-y:auto;padding:6px 9px 28px;flex:1}
-.sh-list::-webkit-scrollbar{width:3px}
-.sh-list::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
-.mi{display:flex;align-items:center;gap:10px;padding:10px 9px;border-radius:10px;cursor:pointer;transition:background .12s}
+.mi{display:flex;align-items:center;gap:10px;padding:10px 9px;border-radius:10px;cursor:pointer}
 .mi:active{background:var(--sf)}
 .mi.sel{background:rgba(25,195,125,.08)}
 .mi-ico{width:36px;height:36px;background:var(--sf);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
@@ -118,23 +70,150 @@ body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;
 .tg.c{background:rgba(25,195,125,.15);color:var(--ac)}
 .tg.v{background:rgba(171,104,255,.15);color:var(--ac2)}
 .tg.r{background:rgba(251,191,36,.15);color:#fbbf24}
-.tg.p{background:rgba(59,130,246,.15);color:#60a5fa}
 .mi-desc{font-size:10.5px;color:var(--mu);margin-top:1px}
 .mi-meta{display:flex;gap:5px;margin-top:3px}
 .pl{font-size:9px;color:var(--mu);background:var(--sf);border-radius:3px;padding:2px 5px}
-.mi-chk{color:var(--ac);font-size:16px;font-weight:700;opacity:0;flex-shrink:0;transition:opacity .15s}
+.mi-chk{color:var(--ac);font-size:16px;font-weight:700;opacity:0;flex-shrink:0}
 .mi.sel .mi-chk{opacity:1}
 
-/* ══ PAGES ════════════════════════════════════════════════════════════════════ */
+/* ── PANEL (right slide) ─────────────────────────────────────────────────── */
+.panel-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;
+           opacity:0;pointer-events:none;transition:opacity .25s}
+.panel-ov.on{opacity:1;pointer-events:all}
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(320px,90vw);
+       background:#181818;border-left:1px solid var(--bd);z-index:51;
+       transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
+       display:flex;flex-direction:column}
+.panel.on{transform:translateX(0)}
+.panel-head{display:flex;align-items:center;justify-content:space-between;
+            padding:14px 14px 10px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.panel-title{font-size:14px;font-weight:700}
+.panel-x{width:26px;height:26px;background:var(--sf);border:none;border-radius:50%;
+         color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.panel-x:active{background:var(--sf2)}
+.panel-body{flex:1;overflow-y:auto;padding:8px}
+.panel-body::-webkit-scrollbar{width:3px}
+.panel-body::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+.panel-footer{padding:8px;border-top:1px solid var(--bd);flex-shrink:0;display:flex;flex-direction:column;gap:5px}
+.pbtn{padding:9px;border:none;border-radius:8px;font-size:13px;font-weight:700;
+      cursor:pointer;text-align:center;transition:opacity .15s}
+.pbtn:active{opacity:.85}
+.pbtn.ac{background:var(--ac);color:#111}
+.pbtn.sec{background:var(--sf);color:var(--tx);border:1px solid var(--bd)}
+.pbtn.danger{background:transparent;color:var(--danger);border:1px solid rgba(239,68,68,.3)}
+
+/* Saved chat items */
+.sc-item{padding:9px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px;border:1px solid transparent}
+.sc-item:active{background:var(--sf)}
+.sc-item-hdr{display:flex;align-items:center;justify-content:space-between}
+.sc-item-title{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.sc-item-del{background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:0 3px}
+.sc-item-del:active{color:var(--danger)}
+.sc-item-date{font-size:10px;color:var(--mu);margin-top:2px}
+.sc-empty{text-align:center;color:var(--mu);font-size:12px;padding:20px 10px}
+
+/* ══ GITHUB BROWSER ════════════════════════════════════════════════════════ */
 .page{display:none;flex:1;flex-direction:column;overflow:hidden}
 .page.on{display:flex}
 
-/* ── Chat ─────────────────────────────────────────────────────────────────── */
-.cw{flex:1;overflow-y:auto;scroll-behavior:smooth;padding:4px 0 8px;
-    -webkit-overflow-scrolling:touch}
+/* GitHub page layout */
+.gh-layout{display:flex;flex:1;overflow:hidden}
+.gh-sidebar{width:220px;flex-shrink:0;border-left:1px solid var(--bd);
+            overflow-y:auto;background:#181818;display:flex;flex-direction:column}
+.gh-sidebar::-webkit-scrollbar{width:3px}
+.gh-sidebar::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+.gh-main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+
+/* Repo list */
+.gh-search{padding:8px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.gh-search input{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);
+                 border-radius:7px;padding:7px 9px;font-size:12px;outline:none;font-family:inherit}
+.gh-search input:focus{border-color:var(--ac)}
+.repo-item{padding:9px 10px;cursor:pointer;border-bottom:1px solid var(--bd);transition:background .12s}
+.repo-item:active{background:var(--sf)}
+.repo-item.active{background:rgba(25,195,125,.08);border-right:2px solid var(--ac)}
+.repo-name{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.repo-meta{font-size:10px;color:var(--mu);margin-top:2px;display:flex;gap:6px}
+.repo-private{background:rgba(245,158,11,.15);color:var(--warn);border-radius:3px;
+              padding:1px 4px;font-size:9px;font-weight:700}
+.repo-lang{color:var(--ac)}
+.repos-loading{text-align:center;color:var(--mu);padding:20px;font-size:12px}
+
+/* File tree */
+.gh-top{padding:8px 10px;border-bottom:1px solid var(--bd);flex-shrink:0;
+        display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gh-repo-title{font-size:13px;font-weight:700;flex:1;min-width:0;
+               overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gh-top-btns{display:flex;gap:5px;flex-shrink:0}
+.gh-btn{background:var(--sf);border:1px solid var(--bd);color:var(--tx);
+        padding:5px 10px;border-radius:7px;font-size:11.5px;font-weight:600;
+        cursor:pointer;transition:all .15s;white-space:nowrap}
+.gh-btn:active{background:var(--sf2)}
+.gh-btn.ac{background:var(--ac);color:#111;border-color:var(--ac)}
+.gh-btn.ac:active{opacity:.85}
+.gh-btn.review{background:rgba(171,104,255,.15);color:var(--ac2);border-color:rgba(171,104,255,.4)}
+
+/* File tree list */
+.file-tree{flex:1;overflow-y:auto;padding:6px 0}
+.file-tree::-webkit-scrollbar{width:3px}
+.file-tree::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+.file-tree-empty{text-align:center;color:var(--mu);padding:30px 10px;font-size:12px}
+
+.tree-item{display:flex;align-items:center;gap:7px;padding:5px 10px;
+           cursor:pointer;transition:background .1s;user-select:none}
+.tree-item:active{background:var(--sf)}
+.tree-item.selected{background:rgba(25,195,125,.08)}
+.tree-item.checked .ti-check{opacity:1}
+.ti-check{width:16px;height:16px;border:1.5px solid var(--bd);border-radius:3px;
+          flex-shrink:0;display:flex;align-items:center;justify-content:center;
+          font-size:10px;color:var(--ac);opacity:0;transition:all .15s}
+.tree-item.checked .ti-check{opacity:1;background:rgba(25,195,125,.15);border-color:var(--ac)}
+.ti-icon{font-size:13px;flex-shrink:0}
+.ti-name{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.ti-name.code{color:var(--tx)}
+.ti-name.other{color:var(--mu)}
+.ti-size{font-size:10px;color:var(--mu);flex-shrink:0}
+
+/* File viewer */
+.file-viewer{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.fv-head{padding:8px 10px;border-bottom:1px solid var(--bd);flex-shrink:0;
+         display:flex;align-items:center;gap:7px}
+.fv-path{font-size:11.5px;color:var(--mu);font-family:monospace;flex:1;
+         overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fv-btns{display:flex;gap:5px;flex-shrink:0}
+.fv-body{flex:1;overflow:auto;padding:12px}
+.fv-body::-webkit-scrollbar{width:4px}
+.fv-body::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+.fv-body pre{font-family:'Fira Code',monospace;font-size:12px;line-height:1.6;
+             color:#cdd6f4;white-space:pre;tab-size:2}
+.fv-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
+          height:100%;color:var(--mu);font-size:13px;text-align:center;gap:8px;padding:20px}
+.fv-empty .fv-icon{font-size:36px}
+
+/* Selected files bar */
+.sel-bar{background:rgba(25,195,125,.07);border-top:1px solid rgba(25,195,125,.2);
+         padding:7px 10px;display:none;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap}
+.sel-bar.show{display:flex}
+.sel-bar-count{font-size:12px;color:var(--ac);font-weight:600}
+.sel-bar-btns{display:flex;gap:6px;margin-right:auto}
+
+/* Review result panel */
+.review-panel{position:fixed;inset:0;background:var(--bg);z-index:200;
+              display:none;flex-direction:column}
+.review-panel.show{display:flex}
+.rp-head{background:#171717;border-bottom:1px solid var(--bd);padding:10px 12px;
+         display:flex;align-items:center;gap:8px;flex-shrink:0}
+.rp-title{font-size:14px;font-weight:700;flex:1}
+.rp-close{background:var(--sf);border:1px solid var(--bd);color:var(--tx);
+          padding:6px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600}
+.rp-body{flex:1;overflow-y:auto;padding:14px}
+.rp-body::-webkit-scrollbar{width:4px}
+.rp-body::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+
+/* ── CHAT ─────────────────────────────────────────────────────────────────── */
+.cw{flex:1;overflow-y:auto;scroll-behavior:smooth;padding:4px 0 8px;-webkit-overflow-scrolling:touch}
 .cw::-webkit-scrollbar{width:3px}
 .cw::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
-
 #welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;
          min-height:calc(100svh - 160px);padding:20px 14px;text-align:center;animation:fu .4s ease}
 @keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
@@ -145,126 +224,100 @@ body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;
 .ws{color:var(--mu);font-size:12px;margin-bottom:18px;line-height:1.7;max-width:340px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:500px}
 .chip{background:var(--sf);border:1px solid var(--bd);padding:7px 12px;border-radius:16px;
-      font-size:11.5px;cursor:pointer;color:var(--mu);transition:all .15s;-webkit-user-select:none}
+      font-size:11.5px;cursor:pointer;color:var(--mu);user-select:none}
 .chip:active{border-color:var(--ac);color:var(--ac);background:rgba(25,195,125,.07)}
-
 #msgs{padding:4px 0}
-.row{display:flex;gap:8px;max-width:100%;margin:0;padding:3px 10px;animation:fu .2s ease}
+.row{display:flex;gap:8px;padding:3px 10px;animation:fu .2s ease}
 .row.u{justify-content:flex-end}
 .row.a{justify-content:flex-start}
 .av{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;
     justify-content:center;font-size:12px;margin-top:3px}
 .av.aa{background:linear-gradient(135deg,#19c37d,#ab68ff);order:-1}
 .av.ua{background:linear-gradient(135deg,#ab68ff,#6b3fa0)}
-.bbl{max-width:85%;padding:9px 12px;border-radius:var(--r);font-size:13.5px;
-     line-height:1.75;word-break:break-word}
+.bbl{max-width:86%;padding:9px 12px;border-radius:var(--r);font-size:13.5px;line-height:1.75;word-break:break-word}
 .bbl.u{background:var(--sf);border:1px solid var(--bd);border-bottom-left-radius:4px}
-.bbl.a{background:transparent;width:100%;max-width:100%;border-bottom-right-radius:4px}
-.msg-actions{display:flex;gap:6px;margin-top:5px;opacity:.7}
+.bbl.a{background:transparent;width:100%;max-width:100%}
+.mtag{font-size:10px;color:var(--mu);margin-top:2px}
+.mact{display:flex;gap:8px;margin-top:5px;flex-wrap:wrap}
 .mac-btn{background:transparent;border:none;color:var(--mu);font-size:11px;cursor:pointer;
          display:flex;align-items:center;gap:3px;padding:0}
 .mac-btn:active{color:var(--ac)}
-.mtag{font-size:10px;color:var(--mu);margin-top:2px;padding-right:2px}
-
-/* Streaming cursor */
 .cursor{display:inline-block;width:2px;height:1em;background:var(--ac);
         margin-right:1px;vertical-align:text-bottom;animation:blink .5s step-end infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-
-/* Markdown */
 .bbl.a h1,.bbl.a h2,.bbl.a h3{color:var(--ac);margin:10px 0 4px;font-weight:600}
 .bbl.a h1{font-size:15px}.bbl.a h2{font-size:14px}.bbl.a h3{font-size:13px}
 .bbl.a p{margin:4px 0}
 .bbl.a code{background:var(--cbg);padding:2px 5px;border-radius:4px;
             font-family:'Fira Code',monospace;font-size:11.5px;color:#ff9e64;border:1px solid #333}
 .bbl.a blockquote{border-right:3px solid var(--ac);padding-right:9px;margin:6px 0;color:var(--mu)}
-.bbl.a li{margin:3px 0 3px 8px}
+.bbl.a li{margin:3px 0}
 .bbl.a strong{color:#fff}
-
-/* Code blocks */
 .cw2{background:var(--cbg);border-radius:9px;margin:8px 0;border:1px solid var(--bd);overflow:hidden}
 .ch{display:flex;justify-content:space-between;align-items:center;
     padding:6px 11px;background:var(--chdr);border-bottom:1px solid var(--bd)}
 .ch span{color:var(--mu);font-size:11px;font-family:monospace;font-weight:600}
+.ch-btns{display:flex;gap:5px}
 .ch button{background:transparent;color:var(--mu);border:1px solid var(--bd);
-           padding:3px 9px;border-radius:4px;cursor:pointer;font-size:11px;transition:all .15s}
+           padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10.5px}
 .ch button:active{background:var(--sf2);color:var(--tx)}
 .ch button.ok{color:var(--ac);border-color:var(--ac)}
 .cw2 pre{margin:0;padding:11px 12px;overflow-x:auto;font-size:12px;line-height:1.6}
 .cw2 pre code{background:none!important;padding:0!important;border:none!important;
               color:#cdd6f4;font-family:'Fira Code',monospace}
-
-/* Vision note */
 .vn{background:rgba(171,104,255,.1);border:1px solid rgba(171,104,255,.3);
     border-radius:7px;padding:6px 10px;font-size:11px;color:var(--ac2);margin-bottom:6px;display:none}
 .vn.on{display:block}
-
-/* Spinner */
-#spin{display:none;max-width:100%;margin:0;padding:5px 12px;gap:9px;align-items:center}
+#spin{display:none;padding:5px 12px;gap:9px;align-items:center}
 #spin.on{display:flex}
 .ring{width:20px;height:20px;border:2.5px solid #333;border-top-color:var(--ac);
       border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
 @keyframes sp{to{transform:rotate(360deg)}}
 .stx{color:var(--mu);font-size:12px}
-
-/* Files panel */
 #fsec{padding:0 10px}
 .fb{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin:4px 0}
-.fbh{padding:7px 11px;border-bottom:1px solid var(--bd);font-size:12px;color:var(--ac);font-weight:600}
+.fbh{display:flex;align-items:center;justify-content:space-between;
+     padding:7px 11px;border-bottom:1px solid var(--bd);font-size:12px}
+.fbh span{color:var(--ac);font-weight:600}
+.fbh-dl{background:transparent;border:1px solid var(--ac);color:var(--ac);
+        padding:3px 9px;border-radius:5px;cursor:pointer;font-size:10.5px;font-weight:600}
 .fi{display:flex;justify-content:space-between;align-items:center;
-    padding:7px 11px;border-bottom:1px solid var(--bd);transition:background .1s}
+    padding:7px 11px;border-bottom:1px solid var(--bd)}
 .fi:last-child{border-bottom:none}
-.fi:active{background:var(--sf2)}
-.fi span{font-size:12px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:65%}
+.fi span{font-size:12px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
 .fi button{background:transparent;border:1px solid var(--ac);color:var(--ac);
-           padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600;
-           flex-shrink:0;transition:all .15s}
-.fi button:active{background:rgba(25,195,125,.12)}
-
-/* ── Attachments bar ──────────────────────────────────────────────────────── */
-.attach-bar{display:flex;flex-wrap:wrap;gap:5px;padding:0 0 6px;max-height:80px;overflow-y:auto}
+           padding:4px 9px;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600}
+.attach-bar{display:flex;flex-wrap:wrap;gap:5px;padding:0 0 6px;max-height:76px;overflow-y:auto}
 .atch{display:flex;align-items:center;gap:4px;background:var(--sf);border:1px solid var(--bd);
-      border-radius:6px;padding:3px 8px;font-size:11px;color:var(--mu)}
-.atch-del{background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:13px;
-          line-height:1;padding:0;margin-right:-2px}
-.atch-del:active{color:var(--danger)}
-.atch-img{width:36px;height:36px;object-fit:cover;border-radius:4px;flex-shrink:0}
-
-/* ── INPUT ──────────────────────────────────────────────────────────────────── */
+      border-radius:6px;padding:3px 7px;font-size:11px;color:var(--mu);max-width:140px}
+.atch-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.atch-del{background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:12px;padding:0}
 .ia{background:var(--bg);padding:5px 10px 10px;flex-shrink:0;
     padding-bottom:max(10px,env(safe-area-inset-bottom))}
 .iw{max-width:700px;margin:0 auto}
 .ib{background:var(--sf);border:1px solid var(--bd);border-radius:12px;
-    padding:7px 7px 7px 11px;display:flex;align-items:flex-end;gap:5px;transition:border-color .15s}
+    padding:7px 7px 7px 11px;display:flex;align-items:flex-end;gap:5px}
 .ib:focus-within{border-color:#555}
 .ib textarea{flex:1;background:transparent;color:var(--tx);border:none;outline:none;
              font-family:inherit;font-size:14px;line-height:1.55;resize:none;
              min-height:22px;max-height:140px;padding:2px 0}
 .ib textarea::placeholder{color:var(--mu)}
-.ib-btns{display:flex;flex-direction:column;gap:3px;align-items:center}
-/* attach */
+.ib-btns{display:flex;flex-direction:column;gap:3px}
 .att-btn{width:30px;height:30px;background:transparent;border:1px solid var(--bd);
          border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-         font-size:15px;color:var(--mu);transition:all .15s;flex-shrink:0}
+         font-size:14px;color:var(--mu)}
 .att-btn:active{border-color:var(--ac);color:var(--ac)}
-/* send/stop */
 .snd{width:30px;height:30px;background:var(--ac);border:none;border-radius:7px;
-     cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+     cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .snd:active{opacity:.85}
 .snd svg{width:13px;height:13px;fill:#111}
 .snd.stop{background:var(--danger);animation:pulse 1.2s ease-in-out infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}60%{box-shadow:0 0 0 6px rgba(239,68,68,0)}}
-
+.att-count{font-size:8px;background:var(--ac);color:#111;border-radius:3px;padding:1px 3px;font-weight:700}
 .hint{text-align:center;font-size:10px;color:#555;margin-top:4px}
 
-/* Count badge */
-.att-count{font-size:9px;background:var(--ac);color:#111;border-radius:3px;
-           padding:1px 4px;font-weight:700;margin-right:2px}
-
-/* ── IMAGE GEN ──────────────────────────────────────────────────────────────── */
-.igw{flex:1;overflow-y:auto;padding:14px 10px 0;-webkit-overflow-scrolling:touch}
-.igw::-webkit-scrollbar{width:3px}
-.igw::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+/* ── IMAGE GEN ───────────────────────────────────────────────────────────── */
+.igw{flex:1;overflow-y:auto;padding:14px 10px 0}
 .igi{max-width:640px;margin:0 auto}
 .ig-t{font-size:17px;font-weight:700;margin-bottom:4px}
 .ig-s{color:var(--mu);font-size:11.5px;margin-bottom:14px}
@@ -272,18 +325,17 @@ body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;
 .ig-f label{font-size:12px;color:var(--mu);display:block;margin-bottom:5px}
 .ig-ta{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);
        border-radius:8px;padding:8px 10px;font-family:inherit;font-size:13px;
-       resize:none;height:76px;outline:none;transition:border-color .15s}
+       resize:none;height:76px;outline:none}
 .ig-ta:focus{border-color:#555}
-.ig-row{display:flex;gap:6px;margin-top:9px;align-items:flex-end;flex-wrap:wrap}
+.ig-row{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
 .ig-sel{background:var(--bg);color:var(--tx);border:1px solid var(--bd);
-        border-radius:7px;padding:6px 8px;font-size:11.5px;cursor:pointer;outline:none;flex:1}
+        border-radius:7px;padding:6px 8px;font-size:12px;cursor:pointer;outline:none;flex:1}
 .ig-btn{background:var(--ac2);color:#fff;border:none;padding:7px 16px;border-radius:8px;
-        cursor:pointer;font-size:13px;font-weight:700;transition:opacity .15s}
+        cursor:pointer;font-size:13px;font-weight:700}
 .ig-btn:active{opacity:.85}
 .ig-btn:disabled{background:#444;cursor:not-allowed}
 .ig-err{color:var(--danger);font-size:11.5px;padding:5px 0}
-.ig-sp{display:none;flex-direction:column;align-items:center;padding:26px;gap:10px;
-       color:var(--mu);font-size:12px}
+.ig-sp{display:none;flex-direction:column;align-items:center;padding:24px;gap:10px;color:var(--mu);font-size:12px}
 .ig-sp.on{display:flex}
 .ig-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:9px;padding-bottom:16px}
 .icard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;animation:fu .3s ease}
@@ -291,8 +343,9 @@ body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;
 .icft{padding:7px 9px;display:flex;align-items:center;justify-content:space-between}
 .icp{font-size:10px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:62%}
 .icdl{background:transparent;border:1px solid var(--ac);color:var(--ac);padding:3px 8px;
-      border-radius:4px;cursor:pointer;font-size:10px;font-weight:600;text-decoration:none;display:inline-block}
-.icdl:active{background:rgba(25,195,125,.1)}
+      border-radius:4px;cursor:pointer;font-size:10px;font-weight:600;text-decoration:none}
+
+@media(min-width:600px){.gh-sidebar{width:260px}}
 </style>
 </head>
 <body>
@@ -300,11 +353,11 @@ body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;
 <!-- ══ HEADER ════════════════════════════════════════════════════════════════ -->
 <div class="hdr">
   <div class="logo">🚀</div>
-
   <div class="hdr-mid">
     <div class="tabs-in">
-      <button class="tab on" id="tC" onclick="sw('c')">💬 محادثة</button>
-      <button class="tab"    id="tI" onclick="sw('i')">🎨 صور</button>
+      <button class="tab on" id="tC" onclick="sw('c')">💬</button>
+      <button class="tab"    id="tG" onclick="sw('g')">🐙 GitHub</button>
+      <button class="tab"    id="tI" onclick="sw('i')">🎨</button>
     </div>
     <button class="mpick" id="mp" onclick="openSh()">
       <span id="mb">🥇</span>
@@ -312,32 +365,44 @@ body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;
       <span class="arr">▾</span>
     </button>
   </div>
-
-  <!-- Saved chats button -->
-  <button class="ibtn" onclick="openSC()" title="المحادثات المحفوظة">📋</button>
+  <button class="ibtn" onclick="openPanel('chats')" title="المحادثات">📋</button>
   <button class="ibtn red" onclick="clearChat()" title="مسح">🗑️</button>
-</div>
-
-<!-- ══ SAVED CHATS PANEL ══════════════════════════════════════════════════════ -->
-<div class="sc-ov" id="sc-ov" onclick="closeSC()"></div>
-<div class="sc-panel" id="sc-panel">
-  <div class="sc-head">
-    <span class="sc-title">📋 المحادثات المحفوظة</span>
-    <button class="sc-x" onclick="closeSC()">✕</button>
-  </div>
-  <button class="sc-new" onclick="saveChat()">💾 حفظ المحادثة الحالية</button>
-  <div class="sc-list" id="sc-list"></div>
 </div>
 
 <!-- ══ MODEL SHEET ════════════════════════════════════════════════════════════ -->
 <div class="ov" id="ov" onclick="closeSh()"></div>
 <div class="sheet" id="sh">
   <div class="sh-bar"></div>
-  <div class="sh-head">
-    <span class="sh-ttl">اختر الموديل</span>
-    <button class="sh-x" onclick="closeSh()">✕</button>
-  </div>
+  <div class="sh-head"><span class="sh-ttl">اختر الموديل</span><button class="sh-x" onclick="closeSh()">✕</button></div>
   <div class="sh-list" id="shl"></div>
+</div>
+
+<!-- ══ PANEL ══════════════════════════════════════════════════════════════════ -->
+<div class="panel-ov" id="panel-ov" onclick="closePanel()"></div>
+<div class="panel" id="panel-chats">
+  <div class="panel-head">
+    <span class="panel-title">📋 المحادثات</span>
+    <button class="panel-x" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-body"><div id="sc-list"><div class="sc-empty">لا توجد محادثات</div></div></div>
+  <div class="panel-footer">
+    <button class="pbtn ac" onclick="saveChat()">💾 حفظ الحالية</button>
+    <button class="pbtn sec" onclick="shareChat()">🔗 مشاركة</button>
+  </div>
+</div>
+
+<!-- ══ REVIEW PANEL ════════════════════════════════════════════════════════════ -->
+<div class="review-panel" id="review-panel">
+  <div class="rp-head">
+    <span class="rp-title" id="rp-title">🔍 مراجعة الكود</span>
+    <button class="rp-close" onclick="closeReview()">✕ إغلاق</button>
+  </div>
+  <div class="rp-body" id="rp-body">
+    <div style="display:flex;flex-direction:column;align-items:center;padding:40px;gap:12px;color:var(--mu)">
+      <div class="ring" style="width:32px;height:32px;border-width:3px"></div>
+      <span>جاري تحليل الكود...</span>
+    </div>
+  </div>
 </div>
 
 <!-- ══ PAGE: CHAT ════════════════════════════════════════════════════════════ -->
@@ -346,51 +411,89 @@ body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;
     <div id="welcome">
       <div class="wi">🤖</div>
       <div class="wt">مرحباً، أنا Leo-AI</div>
-      <div class="ws">مساعد برمجة احترافي يفكر كمهندس أول<br>يحلل ويصمم ويبني ويصحح</div>
+      <div class="ws">مساعد برمجة احترافي • اضغط 🐙 GitHub لمراجعة ملفاتك</div>
       <div class="chips">
-        <span class="chip" onclick="sp('ابنِ موقع portfolio احترافي HTML+CSS+JS')">🌐 موقع</span>
-        <span class="chip" onclick="sp('صمم API بـ FastAPI مع SQLite كامل CRUD')">⚡ FastAPI</span>
-        <span class="chip" onclick="sp('اكتب بوت تيليجرام Python مع DB')">🤖 بوت</span>
-        <span class="chip" onclick="sp('Docker Compose لـ FastAPI + PostgreSQL + Nginx')">🐳 Docker</span>
-        <span class="chip" onclick="sp('راجع هذا الكود: ابحث عن bugs وأمان')">🔍 مراجعة</span>
-        <span class="chip" onclick="sp('React + TypeScript + Tailwind component')">⚛️ React</span>
-        <span class="chip" onclick="sp('CI/CD pipeline بـ GitHub Actions')">🔧 CI/CD</span>
-        <span class="chip" onclick="sp('اشرح هذه الصورة وحلل الكود فيها')">👁️ صورة</span>
+        <span class="chip" onclick="sp('ابنِ موقع portfolio احترافي')">🌐 موقع</span>
+        <span class="chip" onclick="sp('صمم API بـ FastAPI مع SQLite')">⚡ API</span>
+        <span class="chip" onclick="sp('بوت تيليجرام Python')">🤖 بوت</span>
+        <span class="chip" onclick="sp('Docker Compose لـ FastAPI + PostgreSQL')">🐳 Docker</span>
+        <span class="chip" onclick="sw('g')">🐙 استعرض GitHub</span>
+        <span class="chip" onclick="sp('راجع هذا الكود وابحث عن الأخطاء')">🔍 مراجعة</span>
       </div>
     </div>
     <div id="msgs"></div>
-    <div id="spin">
-      <div class="ring"></div>
-      <span class="stx" id="stx">يفكر...</span>
-    </div>
+    <div id="spin"><div class="ring"></div><span class="stx" id="stx">يفكر...</span></div>
   </div>
   <div id="fsec"></div>
-
-  <!-- Input area -->
   <div class="ia">
     <div class="iw">
       <div class="vn" id="vn">👁️ سيُستخدم موديل يدعم رؤية الصور تلقائياً</div>
-      <!-- Attachments preview -->
       <div class="attach-bar" id="attach-bar"></div>
       <div class="ib">
         <textarea id="pt" placeholder="اكتب طلبك..." rows="1"
           onkeydown="kd(event)" oninput="ar(this)"></textarea>
         <div class="ib-btns">
-          <!-- Attach button -->
-          <label class="att-btn" for="fii" title="إرفاق (حتى 25 ملف)">
-            <span id="att-ico">📎</span>
-          </label>
-          <input type="file" id="fii" multiple
-            accept="image/*,.txt,.py,.js,.ts,.tsx,.jsx,.html,.css,.json,.md,.vue,.php,.java,.cpp,.c,.go,.rs,.rb,.sql,.xml,.yaml,.yml,.zip,.tar,.tar.gz,.tgz"
-            style="display:none" onchange="addFiles(this)">
-          <!-- Send / Stop -->
-          <button class="snd" id="sb" onclick="toggleSend()" title="إرسال / إيقاف">
+          <label class="att-btn" for="fii"><span id="att-ico">📎</span></label>
+          <input type="file" id="fii" multiple style="display:none"
+            accept="image/*,.txt,.py,.js,.ts,.tsx,.jsx,.html,.css,.json,.md,.vue,.php,.java,.cpp,.c,.go,.rs,.rb,.sql,.xml,.yaml,.yml,.zip,.tar,.tar.gz,.pdf"
+            onchange="addFiles(this)">
+          <button class="snd" id="sb" onclick="toggleSend()">
             <svg id="ico-s" viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
             <svg id="ico-x" viewBox="0 0 24 24" style="display:none"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
           </button>
         </div>
       </div>
-      <div class="hint">Enter إرسال • Shift+Enter سطر جديد • 📎 حتى 25 مرفق</div>
+      <div class="hint">Enter إرسال • Shift+Enter سطر جديد</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE: GITHUB ════════════════════════════════════════════════════════════ -->
+<div class="page" id="pgG">
+  <div class="gh-layout">
+
+    <!-- Sidebar: repo list -->
+    <div class="gh-sidebar">
+      <div class="gh-search">
+        <input id="repo-search" placeholder="🔍 ابحث في الـ repos..." oninput="filterRepos(this.value)">
+      </div>
+      <div id="repo-list">
+        <div class="repos-loading">⏳ جاري تحميل الـ repos...</div>
+      </div>
+    </div>
+
+    <!-- Main: file tree + viewer -->
+    <div class="gh-main">
+      <!-- Top bar -->
+      <div class="gh-top" id="gh-top" style="display:none">
+        <span class="gh-repo-title" id="gh-repo-title">—</span>
+        <div class="gh-top-btns">
+          <button class="gh-btn" onclick="selectAllCode()">☑️ تحديد الكل</button>
+          <button class="gh-btn" onclick="clearSelection()">✕ إلغاء</button>
+          <button class="gh-btn review" onclick="startReview()">🔍 مراجعة</button>
+          <button class="gh-btn ac" onclick="loadToChat()">💬 تحميل للمحادثة</button>
+        </div>
+      </div>
+
+      <!-- Selected files bar -->
+      <div class="sel-bar" id="sel-bar">
+        <span class="sel-bar-count" id="sel-count">0 ملف محدد</span>
+        <div class="sel-bar-btns">
+          <button class="gh-btn review" onclick="startReview()">🔍 مراجعة الكود المحدد</button>
+          <button class="gh-btn ac" onclick="loadToChat()">💬 تحميل للمحادثة</button>
+        </div>
+      </div>
+
+      <!-- Content: tree or file viewer -->
+      <div id="gh-content" style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+        <div class="fv-empty">
+          <div class="fv-icon">🐙</div>
+          <span>اختر مستودعاً من اليسار لعرض ملفاته</span>
+          {% if not has_github_token %}
+          <span style="color:var(--danger);font-size:11px">⚠️ GITHUB_TOKEN غير موجود — لن تظهر الـ repos الخاصة</span>
+          {% endif %}
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -405,430 +508,533 @@ body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;
         <label>وصف الصورة</label>
         <textarea class="ig-ta" id="igp" placeholder="مثال: غروب الشمس على البحر..."></textarea>
         <div class="ig-row">
-          <select class="ig-sel" id="igs">
-            <option value="1024x1024">مربع 1024×1024</option>
-            <option value="1280x720">أفقي 1280×720</option>
-            <option value="720x1280">عمودي 720×1280</option>
-            <option value="512x512">صغير 512×512</option>
-          </select>
-          <select class="ig-sel" id="igm">
-            <option value="flux">Flux</option>
-            <option value="flux-realism">Realism</option>
-            <option value="flux-anime">Anime</option>
-            <option value="turbo">Turbo</option>
-          </select>
+          <select class="ig-sel" id="igs"><option value="1024x1024">مربع 1024×1024</option><option value="1280x720">أفقي</option><option value="720x1280">عمودي</option></select>
+          <select class="ig-sel" id="igm"><option value="flux">Flux</option><option value="flux-realism">Realism</option><option value="flux-anime">Anime</option></select>
           <button class="ig-btn" id="igb" onclick="genImg()">✨ توليد</button>
         </div>
         <div id="ige" class="ig-err"></div>
       </div>
-      <div class="chips" style="margin-bottom:10px;justify-content:flex-start">
-        <span class="chip" onclick="sip('futuristic city night neon cinematic')">🌃</span>
-        <span class="chip" onclick="sip('cute anime developer coding laptop')">🎌</span>
-        <span class="chip" onclick="sip('abstract geometric digital art vibrant')">🎨</span>
-        <span class="chip" onclick="sip('minimalist professional logo')">🏷️</span>
-      </div>
-      <div id="igsp" class="ig-sp">
-        <div class="ring" style="border-top-color:var(--ac2)"></div>
-        <span>جاري التوليد...</span>
-      </div>
+      <div id="igsp" class="ig-sp"><div class="ring" style="border-top-color:var(--ac2)"></div><span>جاري التوليد...</span></div>
       <div class="ig-grid" id="igg"></div>
     </div>
   </div>
 </div>
 
-<!-- ══ SCRIPT ═════════════════════════════════════════════════════════════════ -->
+<!-- ══ SCRIPT ══════════════════════════════════════════════════════════════════ -->
 <script>
 const MODELS = {{ models | tojson }};
-const MAX_FILES = 25;
+const SID    = "default";
+const MAX_AT = 25;
 
-let sel       = MODELS[0].id;
-let mode      = 'c';
-let streaming = false;
-let ctrl      = null;
-const pf      = {};          // { filename: base64_code }
-let pendingFiles = [];       // File objects waiting to send
+let sel          = MODELS[0].id;
+let streaming    = false;
+let ctrl         = null;
+let pendingFiles = [];
+const pf         = {};
 
-/* ── DOM ─────────────────────────────────────────────────────────────────── */
-const cw_   = document.getElementById('cw');
-const msgs  = document.getElementById('msgs');
-const spin  = document.getElementById('spin');
-const stxEl = document.getElementById('stx');
-const wel   = document.getElementById('welcome');
-const fsec  = document.getElementById('fsec');
-const pt    = document.getElementById('pt');
-const sb    = document.getElementById('sb');
-const vn    = document.getElementById('vn');
-const icoS  = document.getElementById('ico-s');
-const icoX  = document.getElementById('ico-x');
-const abar  = document.getElementById('attach-bar');
+// GitHub state
+let allRepos     = [];
+let currentRepo  = null;   // {owner, repo, branch}
+let currentTree  = [];     // all files
+let selectedPaths= new Set();
+let viewingFile  = null;
 
-/* ── Streaming state ──────────────────────────────────────────────────────── */
-function setStreaming(v) {
-  streaming = v;
-  sb.classList.toggle('stop', v);
-  icoS.style.display = v ? 'none' : '';
-  icoX.style.display = v ? ''     : 'none';
+/* ── Streaming ───────────────────────────────────────────────────────────── */
+function setStreaming(v){
+  streaming=v;
+  document.getElementById('sb').classList.toggle('stop',v);
+  document.getElementById('ico-s').style.display=v?'none':'';
+  document.getElementById('ico-x').style.display=v?'':'none';
 }
-function toggleSend() { streaming ? stopStream() : send() }
-async function stopStream() {
-  if (ctrl) ctrl.abort();
-  try { await fetch('/stop', { method:'POST' }) } catch(_) {}
+function toggleSend(){streaming?stopStream():send()}
+async function stopStream(){
+  if(ctrl)ctrl.abort();
+  try{await fetch('/stop',{method:'POST'})}catch(_){}
 }
 
 /* ── Page switch ─────────────────────────────────────────────────────────── */
-function sw(m) {
-  mode = m;
-  document.getElementById('pgC').classList.toggle('on', m==='c');
-  document.getElementById('pgI').classList.toggle('on', m==='i');
-  document.getElementById('tC').classList.toggle('on',  m==='c');
-  document.getElementById('tI').classList.toggle('on',  m==='i');
-  document.getElementById('mp').style.display = m==='c' ? '' : 'none';
+function sw(m){
+  ['c','g','i'].forEach(x=>{
+    document.getElementById('pg'+x.toUpperCase()).classList.toggle('on',m===x);
+    document.getElementById('t'+x.toUpperCase()).classList.toggle('on',m===x);
+  });
+  document.getElementById('mp').style.display=m==='c'?'':'none';
+  if(m==='g'&&!allRepos.length)loadRepos();
 }
 
 /* ── Model sheet ─────────────────────────────────────────────────────────── */
-function tagCls(m) {
-  if (m.vision) return 'v';
-  if (m.strength==='reasoning') return 'r';
-  if (m.strength==='projects')  return 'p';
-  return 'c';
-}
-function buildSh() {
-  const l = document.getElementById('shl');
-  l.innerHTML = '';
-  MODELS.forEach(m => {
-    const d = document.createElement('div');
-    d.className = 'mi' + (m.id===sel?' sel':'');
-    d.innerHTML = `<div class="mi-ico">${m.badge}</div>
+function tagCls(m){return m.vision?'v':m.strength==='reasoning'?'r':m.strength==='projects'?'p':'c'}
+function buildSh(){
+  const l=document.getElementById('shl');l.innerHTML='';
+  MODELS.forEach(m=>{
+    const d=document.createElement('div');
+    d.className='mi'+(m.id===sel?' sel':'');
+    d.innerHTML=`<div class="mi-ico">${m.badge}</div>
       <div class="mi-body">
         <div class="mi-name">${m.name}<span class="tg ${tagCls(m)}">${m.tag}</span></div>
         <div class="mi-desc">${m.desc}</div>
         <div class="mi-meta"><span class="pl">📐 ${m.context}</span><span class="pl">⚡ ${m.speed}</span></div>
       </div><div class="mi-chk">✓</div>`;
-    d.onclick = () => pick(m);
-    l.appendChild(d);
+    d.onclick=()=>pick(m);l.appendChild(d);
   });
 }
-function pick(m) {
-  sel = m.id;
-  document.getElementById('mb').textContent = m.badge;
-  document.getElementById('mn').textContent = m.name.split(' ').slice(0,2).join(' ');
-  stxEl.textContent = m.name + ' يفكر...';
-  buildSh(); closeSh();
-}
-function openSh()  { buildSh(); document.getElementById('ov').classList.add('on'); document.getElementById('sh').classList.add('on'); document.getElementById('mp').classList.add('open') }
-function closeSh() { document.getElementById('ov').classList.remove('on'); document.getElementById('sh').classList.remove('on'); document.getElementById('mp').classList.remove('open') }
-document.addEventListener('keydown', e => { if(e.key==='Escape'){closeSh();closeSC()} });
+function pick(m){sel=m.id;document.getElementById('mb').textContent=m.badge;document.getElementById('mn').textContent=m.name.split(' ').slice(0,2).join(' ');document.getElementById('stx').textContent=m.name+' يفكر...';buildSh();closeSh()}
+function openSh(){buildSh();document.getElementById('ov').classList.add('on');document.getElementById('sh').classList.add('on');document.getElementById('mp').classList.add('open')}
+function closeSh(){document.getElementById('ov').classList.remove('on');document.getElementById('sh').classList.remove('on');document.getElementById('mp').classList.remove('open')}
 
-/* ══ ATTACHMENTS (up to 25) ════════════════════════════════════════════════ */
-function addFiles(input) {
-  const available = MAX_FILES - pendingFiles.length;
-  const toAdd = Array.from(input.files).slice(0, available);
-  if (!toAdd.length) { alert(`الحد الأقصى ${MAX_FILES} مرفق`); return }
-  toAdd.forEach(f => pendingFiles.push(f));
-  input.value = ''; // reset so same file can be re-added
-  renderAttachBar();
-  updateVisionNote();
-}
+/* ── Panel ───────────────────────────────────────────────────────────────── */
+let activePanel=null;
+function openPanel(n){closePanel();activePanel=n;document.getElementById('panel-ov').classList.add('on');document.getElementById('panel-'+n).classList.add('on');if(n==='chats')renderSC()}
+function closePanel(){if(activePanel){document.getElementById('panel-'+activePanel).classList.remove('on');activePanel=null}document.getElementById('panel-ov').classList.remove('on')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSh();closePanel();closeReview()}});
 
-function renderAttachBar() {
-  abar.innerHTML = '';
-  if (!pendingFiles.length) return;
-  pendingFiles.forEach((f, i) => {
-    const el = document.createElement('div');
-    el.className = 'atch';
-    if (f.type.startsWith('image/')) {
-      const url = URL.createObjectURL(f);
-      el.innerHTML = `<img class="atch-img" src="${url}"><button class="atch-del" onclick="removeFile(${i})">✕</button>`;
-    } else {
-      const ext = f.name.split('.').pop();
-      el.innerHTML = `📄 <span style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(f.name)}</span><button class="atch-del" onclick="removeFile(${i})">✕</button>`;
-    }
-    abar.appendChild(el);
-  });
-  // Update attach button badge
-  document.getElementById('att-ico').innerHTML =
-    pendingFiles.length ? `📎<span class="att-count">${pendingFiles.length}</span>` : '📎';
+/* ══ GITHUB BROWSER ════════════════════════════════════════════════════════ */
+async function loadRepos(){
+  document.getElementById('repo-list').innerHTML='<div class="repos-loading">⏳ جاري التحميل...</div>';
+  try{
+    const r=await fetch('/github/repos');
+    const d=await r.json();
+    if(d.error){document.getElementById('repo-list').innerHTML=`<div class="repos-loading" style="color:var(--danger)">❌ ${esc(d.error)}</div>`;return}
+    allRepos=d;
+    renderRepos(d);
+  }catch(e){document.getElementById('repo-list').innerHTML=`<div class="repos-loading" style="color:var(--danger)">❌ ${esc(String(e))}</div>`}
 }
 
-function removeFile(i) {
-  pendingFiles.splice(i, 1);
-  renderAttachBar();
-  updateVisionNote();
-}
-
-function updateVisionNote() {
-  const hasImg = pendingFiles.some(f => f.type.startsWith('image/'));
-  vn.classList.toggle('on', hasImg);
-}
-
-/* ── Helpers ─────────────────────────────────────────────────────────────── */
-function ar(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,140)+'px' }
-function kd(e)  { if(e.key==='Enter'&&!e.shiftKey&&!streaming){e.preventDefault();send()} }
-function sp(t)  { pt.value=t; pt.focus(); ar(pt) }
-function bot()  { cw_.scrollTop=cw_.scrollHeight }
-function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
-
-/* ── Files panel ─────────────────────────────────────────────────────────── */
-function showFiles(filesB64) {
-  if (!filesB64 || !Object.keys(filesB64).length) return;
-  Object.assign(pf, filesB64);
-  let h = '<div class="fb"><div class="fbh">📁 ملفات جاهزة للتحميل</div>';
-  for (const n of Object.keys(filesB64))
-    h += `<div class="fi"><span>📄 ${esc(n)}</span><button onclick="dlFile('${esc(n)}')">💾 تحميل</button></div>`;
-  h += '</div>';
-  fsec.innerHTML = h;
-}
-
-async function dlFile(name) {
-  const b64code = pf[name];
-  if (!b64code) return;
-  const fd = new FormData();
-  fd.append('filename', name);
-  fd.append('code_b64', b64code);   // send base64 — server decodes to raw text
-  try {
-    const res  = await fetch('/download', { method:'POST', body:fd });
-    if (!res.ok) { alert('خطأ في التحميل'); return }
-    const blob = await res.blob();
-    const a    = document.createElement('a');
-    a.href     = URL.createObjectURL(blob);
-    a.download = name;
-    a.click();
-    URL.revokeObjectURL(a.href);
-  } catch(e) { alert('خطأ: ' + e) }
-}
-
-function cpy(btn, b64) {
-  navigator.clipboard.writeText(atob(b64)).then(() => {
-    btn.textContent='✅ تم'; btn.classList.add('ok');
-    setTimeout(() => { btn.textContent='📋 نسخ'; btn.classList.remove('ok') }, 1500);
-  });
-}
-
-/* ── Copy full AI response ───────────────────────────────────────────────── */
-function cpyFull(btn, rawB64) {
-  navigator.clipboard.writeText(atob(rawB64)).then(() => {
-    btn.textContent='✅'; setTimeout(()=>btn.textContent='📄',1500);
-  });
-}
-
-/* ══ STREAMING SEND ════════════════════════════════════════════════════════ */
-async function send() {
-  const txt = pt.value.trim();
-  if (!txt || streaming) return;
-
-  wel.style.display = 'none';
-  setStreaming(true);
-
-  // User bubble
-  const uRow = document.createElement('div');
-  uRow.className = 'row u';
-  const attachCount = pendingFiles.length;
-  uRow.innerHTML = `<div class="bbl u">${esc(txt)}${attachCount ? `<br><span style="font-size:10px;color:var(--mu)">📎 ${attachCount} مرفق</span>` : ''}</div><div class="av ua">👤</div>`;
-  msgs.appendChild(uRow);
-
-  pt.value=''; pt.style.height='auto';
-  vn.classList.remove('on');
-  bot();
-
-  // AI bubble
-  const aRow   = document.createElement('div');
-  aRow.className = 'row a';
-  const avEl   = Object.assign(document.createElement('div'),{className:'av aa',textContent:'🤖'});
-  const wrap   = document.createElement('div');
-  const bbl    = Object.assign(document.createElement('div'),{className:'bbl a'});
-  const cursor = Object.assign(document.createElement('span'),{className:'cursor'});
-  const mtag   = Object.assign(document.createElement('div'),{className:'mtag'});
-  const mact   = Object.assign(document.createElement('div'),{className:'msg-actions'});
-  bbl.appendChild(cursor);
-  wrap.append(bbl, mtag, mact);
-  aRow.append(avEl, wrap);
-  msgs.appendChild(aRow);
-  spin.classList.add('on');
-  bot();
-
-  // Build FormData with up to 25 files
-  const fd = new FormData();
-  fd.append('prompt',   txt);
-  fd.append('model_id', sel);
-  pendingFiles.forEach(f => fd.append('files', f));
-  // clear pending
-  pendingFiles = [];
-  renderAttachBar();
-
-  ctrl = new AbortController();
-  let rawText  = '';
-  let gotFirst = false;
-  let fullRaw  = '';
-
-  try {
-    const res = await fetch('/chat-stream', { method:'POST', body:fd, signal:ctrl.signal });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const reader = res.body.getReader();
-    const dec    = new TextDecoder();
-    let   buf    = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += dec.decode(value, { stream:true });
-      const lines = buf.split('\n'); buf = lines.pop();
-
-      for (const line of lines) {
-        if (!line.startsWith('data:')) continue;
-        const ds = line.slice(5).trim(); if (!ds) continue;
-        try {
-          const ev = JSON.parse(ds);
-
-          if (ev.first && !gotFirst) { gotFirst=true; spin.classList.remove('on') }
-
-          if (ev.token !== undefined) {
-            if (!gotFirst) { gotFirst=true; spin.classList.remove('on') }
-            rawText  += ev.token;
-            fullRaw   = rawText;
-            bbl.textContent = rawText;
-            bbl.appendChild(cursor);
-            bot();
-          }
-
-          if (ev.done) {
-            cursor.remove();
-            bbl.innerHTML = ev.html;
-            fullRaw = ev.raw || rawText;
-            // Model label
-            const lbl = ev.switched ? `${ev.used_model} ← تحويل تلقائي` : ev.used_model;
-            mtag.textContent = `✦ ${lbl}`;
-            // Action buttons
-            const rawB64 = btoa(unescape(encodeURIComponent(fullRaw)));
-            mact.innerHTML = `
-              <button class="mac-btn" onclick="cpyFull(this,'${rawB64}')" title="نسخ الرد كاملاً">📄 نسخ</button>`;
-            if (ev.files) showFiles(ev.files);
-            bot();
-          }
-
-          if (ev.error) {
-            cursor.remove();
-            bbl.innerHTML = `<p style="color:var(--danger)">❌ ${esc(ev.error)}</p>`;
-            bot();
-          }
-        } catch(_) {}
-      }
-    }
-  } catch(e) {
-    spin.classList.remove('on'); cursor.remove();
-    if (e.name==='AbortError') {
-      bbl.innerHTML = rawText
-        ? `<span>${esc(rawText)}</span><p style="color:var(--mu);margin-top:6px;font-size:11px">⏹ توقف</p>`
-        : `<p style="color:var(--mu)">⏹ تم الإيقاف</p>`;
-    } else {
-      bbl.innerHTML = `<p style="color:var(--danger)">❌ ${esc(String(e))}</p>`;
-    }
-    bot();
-  }
-
-  setStreaming(false); ctrl=null; pt.focus();
-}
-
-/* ══ SAVED CHATS ════════════════════════════════════════════════════════════ */
-function openSC()  { renderSC(); document.getElementById('sc-ov').classList.add('on'); document.getElementById('sc-panel').classList.add('on') }
-function closeSC() { document.getElementById('sc-ov').classList.remove('on'); document.getElementById('sc-panel').classList.remove('on') }
-
-function getSaved() { return JSON.parse(localStorage.getItem('leoai') || '[]') }
-function setSaved(v){ localStorage.setItem('leoai', JSON.stringify(v)) }
-
-function renderSC() {
-  const saved = getSaved();
-  const list  = document.getElementById('sc-list');
-  if (!saved.length) {
-    list.innerHTML = '<div class="sc-empty">لا توجد محادثات محفوظة بعد</div>';
-    return;
-  }
-  list.innerHTML = saved.map((c,i) => `
-    <div class="sc-item" onclick="loadChat(${i})">
-      <button class="sc-item-del" onclick="event.stopPropagation();delChat(${i})" title="حذف">🗑️</button>
-      <div class="sc-item-title">${esc(c.title)}</div>
-      <div class="sc-item-date">${c.date}</div>
+function renderRepos(repos){
+  if(!repos.length){document.getElementById('repo-list').innerHTML='<div class="repos-loading">لا توجد مستودعات</div>';return}
+  document.getElementById('repo-list').innerHTML=repos.map((r,i)=>`
+    <div class="repo-item" onclick="loadRepo('${esc(r.full_name.split('/')[0])}','${esc(r.name)}','${esc(r.default_branch)}')" id="ri-${i}">
+      <div class="repo-name">${esc(r.name)} ${r.private?'<span class="repo-private">خاص</span>':''}</div>
+      <div class="repo-meta">
+        <span class="repo-lang">${esc(r.language)}</span>
+        <span>⭐ ${r.stars}</span>
+        <span>${r.updated_at}</span>
+      </div>
     </div>`).join('');
 }
 
-function saveChat() {
-  if (!msgs.children.length) { alert('لا يوجد شيء للحفظ'); return }
-  const saved = getSaved();
-  const first = msgs.querySelector('.bbl.u');
-  saved.unshift({
-    id:    Date.now(),
-    title: (first?.textContent || 'محادثة').slice(0,50),
-    date:  new Date().toLocaleString('ar-SA'),
-    html:  msgs.innerHTML,
+function filterRepos(q){
+  if(!q.trim()){renderRepos(allRepos);return}
+  renderRepos(allRepos.filter(r=>r.name.toLowerCase().includes(q.toLowerCase())||r.description.toLowerCase().includes(q.toLowerCase())));
+}
+
+async function loadRepo(owner,repo,branch='main'){
+  currentRepo={owner,repo,branch};
+  selectedPaths.clear();
+  updateSelBar();
+
+  const top=document.getElementById('gh-top');
+  top.style.display='flex';
+  document.getElementById('gh-repo-title').textContent=`${owner}/${repo}`;
+
+  const content=document.getElementById('gh-content');
+  content.innerHTML='<div class="fv-empty"><div class="ring" style="width:28px;height:28px;border-width:3px"></div><span>جاري تحميل الملفات...</span></div>';
+
+  try{
+    const r=await fetch(`/github/tree?owner=${owner}&repo=${repo}&branch=${branch}`);
+    const d=await r.json();
+    if(d.error){content.innerHTML=`<div class="fv-empty"><span style="color:var(--danger)">❌ ${esc(d.error)}</span></div>`;return}
+    currentTree=d.files;
+    branch=d.branch;
+    currentRepo.branch=branch;
+    renderTree(d.files);
+  }catch(e){content.innerHTML=`<div class="fv-empty"><span style="color:var(--danger)">❌ ${esc(String(e))}</span></div>`}
+}
+
+function fileIcon(path){
+  const ext=path.split('.').pop().toLowerCase();
+  const map={py:'🐍',js:'🟨',ts:'🔷',tsx:'🔷',jsx:'🟨',html:'🌐',css:'🎨',json:'📋',
+             md:'📝',sh:'⚙️',go:'🐹',rs:'🦀',java:'☕',cpp:'⚡',c:'⚡',
+             vue:'💚',php:'🐘',rb:'💎',sql:'🗄️',yml:'⚙️',yaml:'⚙️',
+             toml:'⚙️',env:'🔑',dockerfile:'🐳',tf:'🟣'};
+  return map[ext]||'📄';
+}
+
+function renderTree(files){
+  if(!files.length){
+    document.getElementById('gh-content').innerHTML='<div class="fv-empty"><span>لا توجد ملفات كود</span></div>';
+    return;
+  }
+  const div=document.createElement('div');
+  div.className='file-tree';
+  files.forEach(f=>{
+    const item=document.createElement('div');
+    item.className='tree-item';
+    item.dataset.path=f.path;
+    item.innerHTML=`
+      <div class="ti-check">✓</div>
+      <span class="ti-icon">${fileIcon(f.path)}</span>
+      <span class="ti-name ${f.is_code?'code':'other'}">${esc(f.path)}</span>
+      <span class="ti-size">${f.size>1000?Math.round(f.size/1000)+'K':f.size+'B'}</span>`;
+    item.onclick=(e)=>toggleFile(f.path,item,e);
+    div.appendChild(item);
   });
-  if (saved.length > 30) saved.pop();
-  setSaved(saved);
-  renderSC();
-  alert('✅ تم الحفظ');
+
+  const content=document.getElementById('gh-content');
+  content.innerHTML='';
+  content.appendChild(div);
 }
 
-function loadChat(i) {
-  const c = getSaved()[i];
-  if (!c) return;
-  wel.style.display = 'none';
-  msgs.innerHTML = c.html;
-  bot(); closeSC();
+function toggleFile(path,item,e){
+  if(selectedPaths.has(path)){selectedPaths.delete(path);item.classList.remove('checked')}
+  else{selectedPaths.add(path);item.classList.add('checked')}
+  updateSelBar();
+
+  // Single click → view file
+  if(!e.shiftKey&&selectedPaths.size<=1){
+    viewFile(path);
+  }
 }
 
-function delChat(i) {
-  if (!confirm('حذف هذه المحادثة؟')) return;
-  const saved = getSaved();
-  saved.splice(i, 1);
-  setSaved(saved);
-  renderSC();
+function selectAllCode(){
+  document.querySelectorAll('.tree-item').forEach(item=>{
+    const path=item.dataset.path;
+    const f=currentTree.find(x=>x.path===path);
+    if(f&&f.is_code){selectedPaths.add(path);item.classList.add('checked')}
+  });
+  updateSelBar();
 }
 
-/* ── Clear ───────────────────────────────────────────────────────────────── */
-async function clearChat() {
-  if (!confirm('مسح المحادثة الحالية؟')) return;
-  if (streaming) await stopStream();
-  try { await fetch('/clear',{method:'POST'}) } catch(_) {}
-  msgs.innerHTML=''; fsec.innerHTML='';
-  spin.classList.remove('on');
-  setStreaming(false); ctrl=null;
-  pendingFiles=[]; renderAttachBar();
-  wel.style.display='flex';
+function clearSelection(){
+  selectedPaths.clear();
+  document.querySelectorAll('.tree-item.checked').forEach(el=>el.classList.remove('checked'));
+  updateSelBar();
+}
+
+function updateSelBar(){
+  const bar=document.getElementById('sel-bar');
+  const cnt=document.getElementById('sel-count');
+  cnt.textContent=`${selectedPaths.size} ملف محدد`;
+  bar.classList.toggle('show',selectedPaths.size>0);
+}
+
+async function viewFile(path){
+  if(!currentRepo)return;
+  const {owner,repo,branch}=currentRepo;
+  const content=document.getElementById('gh-content');
+
+  // Add file viewer
+  let viewer=document.getElementById('file-viewer-el');
+  if(!viewer){
+    viewer=document.createElement('div');
+    viewer.id='file-viewer-el';
+    viewer.className='file-viewer';
+    viewer.style.cssText='position:fixed;bottom:0;left:0;right:0;top:52px;z-index:30;background:var(--bg);border-top:1px solid var(--bd)';
+    document.body.appendChild(viewer);
+  }
+  viewer.style.display='flex';
+  viewer.innerHTML=`
+    <div class="fv-head">
+      <span class="fv-path">${esc(path)}</span>
+      <div class="fv-btns">
+        <button class="gh-btn" onclick="copyFileContent()">📋 نسخ</button>
+        <button class="gh-btn review" onclick="reviewSingleFile('${esc(path)}')">🔍 مراجعة</button>
+        <button class="gh-btn" onclick="askAboutFile('${esc(path)}')">💬 اسأل عنه</button>
+        <button class="gh-btn" onclick="closeFileViewer()" style="border-color:var(--danger);color:var(--danger)">✕</button>
+      </div>
+    </div>
+    <div class="fv-body" id="fv-body">
+      <div style="color:var(--mu);font-size:12px">⏳ جاري التحميل...</div>
+    </div>`;
+
+  try{
+    const r=await fetch(`/github/file?owner=${owner}&repo=${repo}&path=${encodeURIComponent(path)}&branch=${branch}`);
+    const d=await r.json();
+    if(d.error){document.getElementById('fv-body').innerHTML=`<span style="color:var(--danger)">❌ ${esc(d.error)}</span>`;return}
+    viewingFile={path,content:d.content};
+    const ext=path.split('.').pop();
+    const escaped=esc(d.content);
+    document.getElementById('fv-body').innerHTML=`
+      <div style="margin-bottom:8px;font-size:11px;color:var(--mu)">${d.lines} سطر • ${Math.round(d.size/1024*10)/10}KB ${d.truncated?'• (مقتطع)':''}</div>
+      <pre>${escaped}</pre>`;
+  }catch(e){
+    document.getElementById('fv-body').innerHTML=`<span style="color:var(--danger)">❌ ${esc(String(e))}</span>`;
+  }
+}
+
+function closeFileViewer(){
+  const v=document.getElementById('file-viewer-el');
+  if(v)v.style.display='none';
+}
+
+function copyFileContent(){
+  if(viewingFile)navigator.clipboard.writeText(viewingFile.content).then(()=>alert('✅ تم نسخ الملف'));
+}
+
+async function reviewSingleFile(path){
+  selectedPaths.clear();
+  selectedPaths.add(path);
+  closeFileViewer();
+  startReview();
+}
+
+function askAboutFile(path){
+  closeFileViewer();
+  sw('c');
+  const p=document.getElementById('pt');
+  p.value=`اسألك عن ملف ${path} من مستودع ${currentRepo?.owner}/${currentRepo?.repo}: `;
+  ar(p); p.focus();
+  // Load file to memory
+  if(currentRepo&&viewingFile){
+    const sid='default';
+    // Add to memory via fetch
+    const content=viewingFile.content;
+    fetch('/project/add',{method:'POST',body:Object.assign(new FormData(),{files:new File([content],path),sid})});
+  }
+}
+
+/* ── Code Review ─────────────────────────────────────────────────────────── */
+async function startReview(){
+  if(!currentRepo){alert('اختر مستودعاً أولاً');return}
+  if(!selectedPaths.size){alert('حدد ملفات للمراجعة أولاً');return}
+
+  const panel=document.getElementById('review-panel');
+  const body =document.getElementById('rp-body');
+  const title=document.getElementById('rp-title');
+
+  panel.classList.add('show');
+  title.textContent=`🔍 مراجعة ${selectedPaths.size} ملف — ${currentRepo.owner}/${currentRepo.repo}`;
+  body.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;padding:40px;gap:12px;color:var(--mu)"><div class="ring" style="width:32px;height:32px;border-width:3px;border-top-color:var(--ac2)"></div><span>جاري تحليل الكود... قد يستغرق دقيقة</span></div>`;
+
+  const {owner,repo,branch}=currentRepo;
+  const fd=new FormData();
+  fd.append('owner',  owner);
+  fd.append('repo',   repo);
+  fd.append('branch', branch);
+  fd.append('paths',  Array.from(selectedPaths).join(','));
+  fd.append('model_id',sel);
+
+  try{
+    const res=await fetch('/github/review',{method:'POST',body:fd});
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+
+    const reader=res.body.getReader();
+    const dec=new TextDecoder();
+    let buf='';
+    let rawText='';
+    let gotFirst=false;
+
+    body.innerHTML='<div id="review-content" class="bbl a" style="padding:0"></div>';
+    const rc=document.getElementById('review-content');
+    const cursor=document.createElement('span');
+    cursor.className='cursor';
+    rc.appendChild(cursor);
+
+    while(true){
+      const{done,value}=await reader.read();
+      if(done)break;
+      buf+=dec.decode(value,{stream:true});
+      const lines=buf.split('\n');buf=lines.pop();
+      for(const line of lines){
+        if(!line.startsWith('data:'))continue;
+        const ds=line.slice(5).trim();if(!ds)continue;
+        try{
+          const ev=JSON.parse(ds);
+          if(ev.token!==undefined){rawText+=ev.token;rc.textContent=rawText;rc.appendChild(cursor)}
+          if(ev.done){cursor.remove();rc.innerHTML=ev.html}
+        }catch(_){}
+      }
+    }
+  }catch(e){
+    body.innerHTML=`<p style="color:var(--danger);padding:20px">❌ ${esc(String(e))}</p>`;
+  }
+}
+
+function closeReview(){document.getElementById('review-panel').classList.remove('show')}
+
+async function loadToChat(){
+  if(!currentRepo||!selectedPaths.size){alert('حدد ملفات أولاً');return}
+  const {owner,repo,branch}=currentRepo;
+  const fd=new FormData();
+  fd.append('owner',  owner);
+  fd.append('repo',   repo);
+  fd.append('branch', branch);
+  fd.append('paths',  Array.from(selectedPaths).join(','));
+  fd.append('sid',    SID);
+  try{
+    const r=await fetch('/github/load-to-memory',{method:'POST',body:fd});
+    const d=await r.json();
+    if(d.error){alert('❌ '+d.error);return}
+    sw('c');
+    document.getElementById('pt').value=`لقد قمت بتحميل ${d.added.length} ملف من ${owner}/${repo} إلى الذاكرة. ماذا تريد أن تعمل عليها؟`;
+    ar(document.getElementById('pt'));
+    document.getElementById('pt').focus();
+  }catch(e){alert('❌ '+e)}
+}
+
+/* ── Helpers ─────────────────────────────────────────────────────────────── */
+function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,140)+'px'}
+function kd(e){if(e.key==='Enter'&&!e.shiftKey&&!streaming){e.preventDefault();send()}}
+function sp(t){document.getElementById('pt').value=t;document.getElementById('pt').focus();ar(document.getElementById('pt'))}
+function bot(){document.getElementById('cw').scrollTop=document.getElementById('cw').scrollHeight}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+/* ── Attachments ─────────────────────────────────────────────────────────── */
+function addFiles(input){
+  const avail=MAX_AT-pendingFiles.length;
+  Array.from(input.files).slice(0,avail).forEach(f=>pendingFiles.push(f));
+  input.value='';renderAbar();
+  document.getElementById('vn').classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')));
+}
+function removeFile(i){pendingFiles.splice(i,1);renderAbar();document.getElementById('vn').classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')))}
+function renderAbar(){
+  const ab=document.getElementById('attach-bar');ab.innerHTML='';
+  if(!pendingFiles.length){document.getElementById('att-ico').innerHTML='📎';return}
+  document.getElementById('att-ico').innerHTML=`📎<span class="att-count">${pendingFiles.length}</span>`;
+  pendingFiles.forEach((f,i)=>{
+    const el=document.createElement('div');el.className='atch';
+    el.innerHTML=`<span>${fileIcon(f.name)}</span><span class="atch-name">${esc(f.name)}</span><button class="atch-del" onclick="removeFile(${i})">✕</button>`;
+    ab.appendChild(el);
+  });
+}
+
+/* ── Files panel ─────────────────────────────────────────────────────────── */
+function showFiles(filesB64){
+  if(!filesB64||!Object.keys(filesB64).length)return;
+  Object.assign(pf,filesB64);
+  const names=Object.keys(filesB64);
+  let h=`<div class="fb"><div class="fbh"><span>📁 ملفات (${names.length})</span><button class="fbh-dl" onclick="dlZip()">📦 ZIP</button></div>`;
+  names.forEach(n=>h+=`<div class="fi"><span>${fileIcon(n)} ${esc(n)}</span><button onclick="dlFile('${esc(n)}')">💾</button></div>`);
+  h+='</div>';
+  document.getElementById('fsec').innerHTML=h;
+}
+async function dlFile(name){
+  const b64=pf[name];if(!b64)return;
+  const fd=new FormData();fd.append('filename',name);fd.append('code_b64',b64);
+  const blob=await(await fetch('/download',{method:'POST',body:fd})).blob();
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:name});
+  a.click();URL.revokeObjectURL(a.href);
+}
+async function dlZip(){
+  const blob=await(await fetch(`/download/zip/${SID}`)).blob();
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:'leo-ai.zip'});
+  a.click();URL.revokeObjectURL(a.href);
+}
+function cpy(btn,b64){navigator.clipboard.writeText(atob(b64)).then(()=>{btn.textContent='✅ تم';btn.classList.add('ok');setTimeout(()=>{btn.textContent='📋 نسخ';btn.classList.remove('ok')},1500)})}
+function explainCode(btn,b64){document.getElementById('pt').value=`اشرح هذا الكود:\n\`\`\`\n${atob(b64)}\n\`\`\``;ar(document.getElementById('pt'));sw('c');send()}
+function cpyFull(btn,rawB64){navigator.clipboard.writeText(atob(rawB64)).then(()=>{btn.textContent='✅';setTimeout(()=>btn.textContent='📄 نسخ',1500)})}
+
+/* ══ STREAMING SEND ════════════════════════════════════════════════════════ */
+async function send(){
+  const txt=document.getElementById('pt').value.trim();
+  if(!txt||streaming)return;
+  document.getElementById('welcome').style.display='none';
+  setStreaming(true);
+  const cw_=document.getElementById('cw');
+  const msgs=document.getElementById('msgs');
+  const spin=document.getElementById('spin');
+
+  const uRow=document.createElement('div');uRow.className='row u';
+  uRow.innerHTML=`<div class="bbl u">${esc(txt)}${pendingFiles.length?`<br><span style="font-size:10px;color:var(--mu)">📎 ${pendingFiles.length} مرفق</span>`:''}</div><div class="av ua">👤</div>`;
+  msgs.appendChild(uRow);
+  document.getElementById('pt').value='';document.getElementById('pt').style.height='auto';
+  document.getElementById('vn').classList.remove('on');
+  cw_.scrollTop=cw_.scrollHeight;
+
+  const aRow=document.createElement('div');aRow.className='row a';
+  const avEl=Object.assign(document.createElement('div'),{className:'av aa',textContent:'🤖'});
+  const wrap=document.createElement('div');wrap.style.flex='1';
+  const bbl=Object.assign(document.createElement('div'),{className:'bbl a'});
+  const cursor=Object.assign(document.createElement('span'),{className:'cursor'});
+  const mtag=Object.assign(document.createElement('div'),{className:'mtag'});
+  const mact=Object.assign(document.createElement('div'),{className:'mact'});
+  bbl.appendChild(cursor);wrap.append(bbl,mtag,mact);aRow.append(avEl,wrap);msgs.appendChild(aRow);
+  spin.classList.add('on');cw_.scrollTop=cw_.scrollHeight;
+
+  const fd=new FormData();
+  fd.append('prompt',txt);fd.append('model_id',sel);fd.append('sid',SID);
+  pendingFiles.forEach(f=>fd.append('files',f));pendingFiles=[];renderAbar();
+
+  ctrl=new AbortController();
+  let rawText='';let gotFirst=false;let fullRaw='';
+  try{
+    const res=await fetch('/chat-stream',{method:'POST',body:fd,signal:ctrl.signal});
+    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const reader=res.body.getReader();const dec=new TextDecoder();let buf='';
+    while(true){
+      const{done,value}=await reader.read();if(done)break;
+      buf+=dec.decode(value,{stream:true});
+      const lines=buf.split('\n');buf=lines.pop();
+      for(const line of lines){
+        if(!line.startsWith('data:'))continue;
+        const ds=line.slice(5).trim();if(!ds)continue;
+        try{
+          const ev=JSON.parse(ds);
+          if(ev.first&&!gotFirst){gotFirst=true;spin.classList.remove('on')}
+          if(ev.token!==undefined){if(!gotFirst){gotFirst=true;spin.classList.remove('on')}rawText+=ev.token;fullRaw=rawText;bbl.textContent=rawText;bbl.appendChild(cursor);cw_.scrollTop=cw_.scrollHeight}
+          if(ev.done){cursor.remove();bbl.innerHTML=ev.html;fullRaw=ev.raw||rawText;
+            mtag.textContent=`✦ ${ev.switched?ev.used_model+' ← تحويل تلقائي':ev.used_model}`;
+            const rb=btoa(unescape(encodeURIComponent(fullRaw)));
+            mact.innerHTML=`<button class="mac-btn" onclick="cpyFull(this,'${rb}')">📄 نسخ</button>`;
+            if(ev.files)showFiles(ev.files);cw_.scrollTop=cw_.scrollHeight}
+          if(ev.error){cursor.remove();bbl.innerHTML=`<p style="color:var(--danger)">❌ ${esc(ev.error)}</p>`;cw_.scrollTop=cw_.scrollHeight}
+        }catch(_){}
+      }
+    }
+  }catch(e){
+    spin.classList.remove('on');cursor.remove();
+    bbl.innerHTML=e.name==='AbortError'
+      ?`<p style="color:var(--mu)">⏹ تم الإيقاف</p>`
+      :`<p style="color:var(--danger)">❌ ${esc(String(e))}</p>`;
+    cw_.scrollTop=cw_.scrollHeight;
+  }
+  setStreaming(false);ctrl=null;document.getElementById('pt').focus();
+}
+
+/* ── Saved chats ─────────────────────────────────────────────────────────── */
+function getSaved(){return JSON.parse(localStorage.getItem('leoai')||'[]')}
+function setSaved(v){localStorage.setItem('leoai',JSON.stringify(v))}
+function renderSC(){
+  const saved=getSaved();const list=document.getElementById('sc-list');
+  if(!saved.length){list.innerHTML='<div class="sc-empty">لا توجد محادثات</div>';return}
+  list.innerHTML=saved.map((c,i)=>`<div class="sc-item" onclick="loadChat(${i})"><div class="sc-item-hdr"><span class="sc-item-title">${esc(c.title)}</span><button class="sc-item-del" onclick="event.stopPropagation();delChat(${i})">🗑️</button></div><div class="sc-item-date">${c.date}</div></div>`).join('');
+}
+function loadChat(i){const c=getSaved()[i];if(!c)return;document.getElementById('welcome').style.display='none';document.getElementById('msgs').innerHTML=c.html;document.getElementById('cw').scrollTop=document.getElementById('cw').scrollHeight;closePanel()}
+function delChat(i){const s=getSaved();s.splice(i,1);setSaved(s);renderSC()}
+function saveChat(){
+  const msgs=document.getElementById('msgs');if(!msgs.children.length){alert('لا يوجد شيء');return}
+  const saved=getSaved();const first=msgs.querySelector('.bbl.u');
+  saved.unshift({id:Date.now(),title:(first?.textContent||'محادثة').slice(0,50),date:new Date().toLocaleString('ar-SA'),html:msgs.innerHTML});
+  if(saved.length>30)saved.pop();setSaved(saved);renderSC();alert('✅ تم الحفظ');
+}
+async function shareChat(){
+  const msgs=document.getElementById('msgs');if(!msgs.children.length){alert('لا يوجد شيء');return}
+  const first=msgs.querySelector('.bbl.u');
+  const fd=new FormData();fd.append('html',msgs.innerHTML);fd.append('title',(first?.textContent||'محادثة').slice(0,50));
+  try{const r=await fetch('/share',{method:'POST',body:fd});const d=await r.json();const url=window.location.origin+d.url;await navigator.clipboard.writeText(url);alert(`✅ تم نسخ الرابط:\n${url}`)}catch(e){alert('❌ '+e)}
+}
+async function clearChat(){
+  if(!confirm('مسح المحادثة؟'))return;
+  if(streaming)await stopStream();
+  const fd=new FormData();fd.append('sid',SID);
+  try{await fetch('/clear',{method:'POST',body:fd})}catch(_){}
+  document.getElementById('msgs').innerHTML='';document.getElementById('fsec').innerHTML='';
+  document.getElementById('spin').classList.remove('on');setStreaming(false);ctrl=null;
+  pendingFiles=[];renderAbar();document.getElementById('welcome').style.display='flex';
   Object.keys(pf).forEach(k=>delete pf[k]);
 }
 
 /* ── Image Gen ───────────────────────────────────────────────────────────── */
-function sip(t) { document.getElementById('igp').value=t }
-async function genImg() {
+async function genImg(){
   const p=document.getElementById('igp').value.trim();
   if(!p){document.getElementById('ige').textContent='⚠️ اكتب وصف';return}
   document.getElementById('ige').textContent='';
   const btn=document.getElementById('igb'),sp2=document.getElementById('igsp');
-  btn.disabled=true; sp2.classList.add('on');
-  const fd=new FormData();
-  fd.append('prompt',p);
-  fd.append('size',document.getElementById('igs').value);
-  fd.append('model',document.getElementById('igm').value);
-  try {
-    const data=await(await fetch('/generate-image',{method:'POST',body:fd})).json();
-    sp2.classList.remove('on'); btn.disabled=false;
-    if(data.error){document.getElementById('ige').textContent='❌ '+data.error;return}
-    const card=document.createElement('div');
-    card.className='icard';
-    card.innerHTML=`<img src="${data.url}" alt="${esc(p)}" loading="lazy">
-      <div class="icft"><span class="icp">${esc(p)}</span>
-      <a class="icdl" href="${data.url}" download="leo-ai.jpg" target="_blank">⬇️</a></div>`;
+  btn.disabled=true;sp2.classList.add('on');
+  const fd=new FormData();fd.append('prompt',p);fd.append('size',document.getElementById('igs').value);fd.append('model',document.getElementById('igm').value);
+  try{const data=await(await fetch('/generate-image',{method:'POST',body:fd})).json();sp2.classList.remove('on');btn.disabled=false;if(data.error){document.getElementById('ige').textContent='❌ '+data.error;return}
+    const card=document.createElement('div');card.className='icard';
+    card.innerHTML=`<img src="${data.url}" alt="${esc(p)}" loading="lazy"><div class="icft"><span class="icp">${esc(p)}</span><a class="icdl" href="${data.url}" download="leo-ai.jpg" target="_blank">⬇️</a></div>`;
     document.getElementById('igg').prepend(card);
-  } catch(e){sp2.classList.remove('on');btn.disabled=false;document.getElementById('ige').textContent='❌ '+e}
+  }catch(e){sp2.classList.remove('on');btn.disabled=false}
 }
-document.getElementById('igp').addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();genImg()}
-});
+document.getElementById('igp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();genImg()}});
 
 /* ── Init ────────────────────────────────────────────────────────────────── */
 buildSh();
-document.getElementById('mb').textContent = MODELS[0].badge;
-document.getElementById('mn').textContent = MODELS[0].name.split(' ').slice(0,2).join(' ');
-stxEl.textContent = MODELS[0].name + ' يفكر...';
+document.getElementById('mb').textContent=MODELS[0].badge;
+document.getElementById('mn').textContent=MODELS[0].name.split(' ').slice(0,2).join(' ');
+document.getElementById('stx').textContent=MODELS[0].name+' يفكر...';
 </script>
 </body>
 </html>
