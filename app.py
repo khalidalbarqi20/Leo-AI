@@ -32,22 +32,15 @@ OPENROUTER_API_KEY: str | None = os.getenv("OPENROUTER_API_KEY")
 GITHUB_TOKEN:       str | None = os.getenv("GITHUB_TOKEN")
 APP_PASSWORD:       str        = os.getenv("APP_PASSWORD", "")
 
-# Auto-load repo: set AUTO_LOAD_REPO=owner/repo in Render environment
-# يمكن تحديد اكثر من repo بفاصلة: owner1/repo1,owner2/repo2
-AUTO_LOAD_REPO: str = os.getenv("AUTO_LOAD_REPO", "")
-
 # ── Session stores ─────────────────────────────────────────────────────────────
-admin_sessions: set[str]  = set()
-guest_sessions: set[str]  = set()
+admin_sessions: set[str]  = set()   # full access
+guest_sessions: set[str]  = set()   # limited access
 
 chat_sessions:   dict[str, list] = {}
 project_memory:  dict[str, dict] = {}
 stop_flags:      dict[str, asyncio.Event] = {}
 generated_files: dict[str, dict] = {}
 shared_chats:    dict[str, dict] = {}
-
-# تتبع الجلسات التي تم تحميل المشروع لها تلقائياً
-auto_loaded_sessions: set[str] = set()
 
 # ── Auth helpers ───────────────────────────────────────────────────────────────
 def get_role(token: str | None) -> str:
@@ -85,104 +78,37 @@ def gh_headers() -> dict:
     return h
 
 # ── System prompts ─────────────────────────────────────────────────────────────
-SYSTEM_PROMPT_ADMIN = """أنت مهندس برمجيات أول خبير، معماري أنظمة، متخصص في debugging، مراجع أمني، ومساعد برمجي احترافي.
+SYSTEM_PROMPT_ADMIN = """You are a senior software engineer, system architect, debugging specialist, security reviewer, and production-grade AI coding agent.
 
-══════════════════════════════════════════
-🔴 القاعدة الأولى والأهم: اسأل قبل أن تكتب
-══════════════════════════════════════════
+CORE ENGINEERING RULES:
+- Think and analyze before writing code. Prioritize correctness, security, maintainability.
+- Always identify root cause before fixing bugs. Never patch symptoms.
+- For complex tasks: show implementation plan first, then code.
+- Proactively flag security issues, architectural risks, and regressions.
+- Write clean, modular, production-grade code with proper error handling.
+- After every code block, add "⚠️ ملاحظات" section if there are important notes.
+- When project files are provided, study them and respect existing architecture.
+- Verify logic before claiming it works. Think about edge cases.
 
-عندما يعطيك المستخدم فكرة أو طلباً غير مكتمل، لا تبدأ في الكتابة فوراً.
-بدلاً من ذلك، اسأله أسئلة دقيقة ومحددة تشمل كل جانب ناقص.
+CODE REVIEW RULES:
+- Analyze EVERY file systematically
+- Report: 🐛 Bugs, 🔐 Security vulnerabilities, ⚡ Performance issues, 🏗️ Architecture problems, 📝 Code quality
+- Provide specific line references when possible
+- Show the fixed code for every issue found
+- Rate overall code quality: /10
+- Prioritize: CRITICAL > HIGH > MEDIUM > LOW
 
-الأسئلة التي يجب أن تطرحها دائماً عند الطلب الجديد:
-
-1. 🎯 الهدف: ما الغرض الدقيق من هذا الكود/المشروع؟
-2. 🛠️ التقنيات: ما اللغة؟ ما الإطار؟ ما الإصدار؟
-3. 🗄️ البيانات: ما نوع البيانات؟ قاعدة بيانات؟ API خارجي؟
-4. 👤 المستخدم: من سيستخدمه؟ كيف؟
-5. 🔗 التكامل: هل يتكامل مع شيء موجود؟
-6. ⚡ الأداء: هل هناك متطلبات سرعة أو حجم بيانات؟
-7. 🔐 الأمان: هل هناك متطلبات أمنية خاصة؟
-8. 📱 البيئة: أين سيُنشر؟ موبايل؟ ويب؟ سيرفر؟
-9. 🎨 الواجهة: إذا كان واجهة، ما الشكل المطلوب؟
-10. ❌ القيود: ما الذي لا تريده بالتحديد؟
-
-اجمع الأسئلة في رسالة واحدة منظمة — لا ترسل أسئلة متفرقة.
-انتظر الإجابات الكاملة قبل أن تبدأ البناء.
-
-══════════════════════════════════════════
-💡 الاقتراحات الاستباقية
-══════════════════════════════════════════
-
-بعد فهم الطلب وقبل الكتابة، قدّم قسم "💡 اقتراحاتي" يحتوي على:
-- بدائل أفضل لما طلبه المستخدم إذا وجدت
-- ميزات إضافية تستحق التفكير فيها
-- تحذيرات من مشاكل محتملة في النهج المقترح
-- أفضل الممارسات للحالة المحددة
-
-اسأل المستخدم عن اقتراحاتك: "هل تريد أن أضيف X؟ هل تريد Y بدل Z؟"
-
-══════════════════════════════════════════
-🔗 قراءة الروابط والمصادر
-══════════════════════════════════════════
-
-عندما يرسل المستخدم رابطاً (URL):
-- اقرأ محتواه واستخرج المعلومات منه
-- إذا كان رابط GitHub: اقرأ الكود وحلله
-- إذا كان رابط documentation: استخدمه في إجابتك
-- إذا كان رابط مقال: لخصه وطبّق ما يفيد
-- أخبر المستخدم بما استخلصته من الرابط
-
-══════════════════════════════════════════
-⚙️ قواعد كتابة الكود
-══════════════════════════════════════════
-
-- لا تكتب كوداً حتى تفهم المتطلبات كاملاً
-- اعرض خطة التنفيذ أولاً للمهام الكبيرة
-- اكتب كوداً نظيفاً، معيارياً، قابلاً للصيانة
-- تعامل مع كل الـ edge cases
-- أضف error handling مناسب دائماً
-- احترم المعمارية الموجودة في المشروع
-- تحقق من منطق الكود قبل الإرسال
-
-قواعد مراجعة الكود:
-- حلل كل ملف بشكل منهجي
-- أبلغ عن: 🐛 Bugs، 🔐 ثغرات أمنية، ⚡ مشاكل أداء، 🏗️ مشاكل معمارية، 📝 جودة الكود
-- أعطِ رقم السطر دائماً
-- اعرض الكود المُصحح لكل مشكلة
-- قيّم الكود من /10 مع التبرير
-- رتّب: CRITICAL > HIGH > MEDIUM > LOW
-
-══════════════════════════════════════════
-📝 التنسيق
-══════════════════════════════════════════
-
-- رد دائماً بنفس لغة المستخدم (عربي → عربي، إنجليزي → إنجليزي)
-- الكود دائماً داخل Markdown code blocks مع تحديد اللغة
-- للمشاريع متعددة الملفات: ### filename.ext قبل كل بلوك
-- عند وجود ملاحظات مهمة بعد الكود: أضف قسم ⚠️ ملاحظات
-- استخدم الـ emojis للوضوح والتنظيم
+FORMAT:
+- Detect user language and respond in SAME language
+- Write code in Markdown code blocks with language tags
+- For multi-file projects: ### filename.ext before each block
 """
 
-SYSTEM_PROMPT_GUEST = """أنت مساعد برمجة ذكي ومتعاون.
-
-🔴 القاعدة الأولى: اسأل قبل أن تكتب
-عندما يكون الطلب غير واضح أو ناقص، اسأل أسئلة محددة في رسالة واحدة:
-- ما اللغة والإطار المطلوب؟
-- ما الغرض الدقيق؟
-- هل هناك متطلبات خاصة؟
-
-💡 قدّم اقتراحات استباقية:
-- بدائل أفضل إذا وجدت
-- ميزات إضافية مفيدة
-- تحذيرات من مشاكل محتملة
-
-🔗 اقرأ الروابط التي يرسلها المستخدم واستخرج منها المعلومات.
-
-📝 التنسيق:
-- رد بنفس لغة المستخدم
-- الكود داخل Markdown code blocks
-- كن واضحاً ومفيداً ومختصراً
+SYSTEM_PROMPT_GUEST = """You are a helpful AI coding assistant. Help the user write, debug, and understand code.
+- Be clear, concise, and helpful
+- Write code in Markdown code blocks with language tags
+- Detect user language and respond in SAME language
+- Provide examples when helpful
 """
 
 # ── Models ─────────────────────────────────────────────────────────────────────
@@ -193,75 +119,11 @@ MODELS: list[dict] = [
     {"id":"qwen/qwen2.5-vl-72b-instruct:free","name":"Qwen2.5 VL 72B","desc":"يقرأ الصور","badge":"👁️","context":"128K","speed":"متوسط","tag":"يرى الصور","vision":True,"strength":"vision"},
     {"id":"qwen/qwen2.5-vl-32b-instruct:free","name":"Qwen2.5 VL 32B","desc":"يقرأ الصور • سريع","badge":"🔍","context":"128K","speed":"سريع","tag":"يرى الصور","vision":True,"strength":"vision"},
     {"id":"google/gemma-4-31b-it:free","name":"Gemma 4 31B","desc":"يقرأ الصور • 256K","badge":"🌟","context":"256K","speed":"متوسط","tag":"يرى الصور","vision":True,"strength":"vision"},
-    {"id":"mistralai/mistral-small-3.1-24b-instruct:free","name":"Mistral Small","desc":"سريع وذكي","badge":"⚡","context":"128K","speed":"سريع","tag":"سريع","vision":False,"strength":"general"},
-    {"id":"google/gemma-3-27b-it:free","name":"Gemma 3 27B","desc":"متوازن وموثوق","badge":"💎","context":"128K","speed":"متوسط","tag":"متوازن","vision":False,"strength":"general"},
+    {"id":"openai/gpt-oss-20b:free","name":"GPT-OSS 20B","desc":"سريع ودقيق","badge":"⚡","context":"128K","speed":"سريع","tag":"سريع","vision":False,"strength":"general"},
+    {"id":"meta-llama/llama-4-scout:free","name":"Llama 4 Scout","desc":"الأسرع","badge":"⚡","context":"128K","speed":"سريع جداً","tag":"الأسرع","vision":False,"strength":"general"},
 ]
 VISION_IDS = [m["id"] for m in MODELS if m["vision"]]
 CODING_IDS = [m["id"] for m in MODELS if not m["vision"]]
-
-# ── Smart Model Router — يختار الموديل تلقائياً حسب نوع الطلب ──────────────
-def smart_route_model(prompt: str) -> str:
-    """Analyze prompt and return best model ID automatically."""
-    p = prompt.lower()
-    # Vision/image analysis
-    if any(w in p for w in ["صورة","صوره","image","screenshot","شاشة","ارفع","انظر"]):
-        return VISION_IDS[0] if VISION_IDS else MODELS[0]["id"]
-    # Deep reasoning / debugging / analysis
-    if any(w in p for w in ["لماذا","سبب","حلل","تحليل","خطأ","error","bug","debug","فكر","explain","why","analyze","reason"]):
-        return "deepseek/deepseek-r1:free"
-    # Large project building
-    if any(w in p for w in ["مشروع كامل","منصة","نظام","full project","platform","system","architecture","هيكل"]):
-        return "moonshotai/kimi-k2:free"
-    # Code / dashboard / web building
-    if any(w in p for w in ["كود","code","html","css","js","dashboard","داشبورد","موقع","صفحة","api","بناء","اكتب","build","لعبة","game"]):
-        return "qwen/qwen3-coder-480b-a35b-instruct:free"
-    # Quick simple questions — استخدم Mistral بدل Llama المتوقف
-    if len(prompt) < 80:
-        return "mistralai/mistral-small-3.1-24b-instruct:free"
-    # Default: best coder
-    return MODELS[0]["id"]
-
-# ── Free APIs للبيانات الحقيقية ───────────────────────────────────────────────
-FREE_APIS = {
-    "stocks_global": {
-        "name": "Alpha Vantage",
-        "url": "https://www.alphavantage.co/query",
-        "key_env": "ALPHA_VANTAGE_KEY",
-        "docs": "https://www.alphavantage.co/documentation/",
-        "free_tier": "25 طلب/يوم",
-    },
-    "crypto": {
-        "name": "CoinGecko",
-        "url": "https://api.coingecko.com/api/v3",
-        "key_env": None,
-        "docs": "https://www.coingecko.com/api/documentation",
-        "free_tier": "مجاني بدون مفتاح",
-    },
-    "currency": {
-        "name": "ExchangeRate-API",
-        "url": "https://open.er-api.com/v6/latest",
-        "key_env": None,
-        "docs": "https://www.exchangerate-api.com/docs",
-        "free_tier": "1500 طلب/شهر",
-    },
-    "news": {
-        "name": "NewsAPI",
-        "url": "https://newsapi.org/v2",
-        "key_env": "NEWS_API_KEY",
-        "docs": "https://newsapi.org/docs",
-        "free_tier": "100 طلب/يوم",
-    },
-    "weather": {
-        "name": "Open-Meteo",
-        "url": "https://api.open-meteo.com/v1/forecast",
-        "key_env": None,
-        "docs": "https://open-meteo.com/en/docs",
-        "free_tier": "مجاني بدون مفتاح",
-    },
-}
-
-ALPHA_VANTAGE_KEY: str = os.getenv("ALPHA_VANTAGE_KEY", "demo")
-NEWS_API_KEY:      str = os.getenv("NEWS_API_KEY", "")
 
 CODE_EXT = {".py",".js",".ts",".tsx",".jsx",".html",".css",".json",".md",".txt",
             ".yml",".yaml",".sh",".bash",".go",".rs",".java",".cpp",".c",".h",
@@ -365,78 +227,89 @@ LOGIN_PAGE = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="theme-color" content="#0a0f1e">
+<meta name="theme-color" content="#171717">
 <title>Leo-AI</title>
 <style>
-*{{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}}
-:root{{
-  --bg:#0a0f1e;--bg2:#0d1426;--sf:#111827;
-  --bd:#1e2d4a;--bd2:#2a3f63;
-  --ac:#b8c5d6;--ac2:#6b9fd4;
-  --tx:#e8edf5;--mu:#6b7a99;--danger:#e85d6a;
-}}
-html,body{{height:100%;background:var(--bg);color:var(--tx);
-  font-family:'Segoe UI',system-ui,sans-serif;
-  display:flex;align-items:center;justify-content:center;padding:20px;}}
-.wrap{{width:100%;max-width:300px;display:flex;flex-direction:column;gap:10px}}
-.logo-wrap{{text-align:center;margin-bottom:4px}}
-.logo{{width:56px;height:56px;margin:0 auto 10px;
-  background:linear-gradient(135deg,#1a2d4a,#0f1e38);
-  border:1px solid var(--bd2);border-radius:14px;
-  display:flex;align-items:center;justify-content:center;font-size:26px;}}
-h1{{font-size:20px;font-weight:700;color:var(--tx)}}
-.sub{{color:var(--mu);font-size:12px;margin-top:3px}}
-.card{{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px}}
-.card-title{{font-size:11px;font-weight:700;margin-bottom:11px;
-  display:flex;align-items:center;gap:6px;color:var(--mu);
-  letter-spacing:.5px;text-transform:uppercase;}}
-.badge{{font-size:9px;font-weight:700;border-radius:4px;padding:2px 6px}}
-.badge.adm{{background:rgba(184,197,214,.1);color:var(--ac);border:1px solid rgba(184,197,214,.2)}}
-.badge.gst{{background:rgba(107,159,212,.1);color:var(--ac2);border:1px solid rgba(107,159,212,.2)}}
-input[type=password]{{width:100%;background:var(--bg);color:var(--tx);
-  border:1px solid var(--bd);border-radius:9px;
-  padding:11px 13px;font-size:15px;outline:none;
-  text-align:center;letter-spacing:3px;margin-bottom:10px;
-  font-family:inherit;transition:border-color .15s;}}
-input[type=password]:focus{{border-color:var(--bd2)}}
-input[type=password]::placeholder{{letter-spacing:1px;font-size:13px}}
-.btn{{width:100%;padding:11px;border:none;border-radius:9px;
-  font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;}}
+*{{margin:0;padding:0;box-sizing:border-box}}
+body{{font-family:'Segoe UI',system-ui,sans-serif;background:#212121;color:#ececec;
+     display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}}
+.wrap{{width:100%;max-width:340px;display:flex;flex-direction:column;gap:14px}}
+.logo-wrap{{text-align:center;margin-bottom:8px}}
+.logo{{width:70px;height:70px;background:linear-gradient(135deg,#19c37d,#ab68ff);
+       border-radius:50%;display:flex;align-items:center;justify-content:center;
+       font-size:34px;margin:0 auto 12px}}
+h1{{font-size:22px;font-weight:700;text-align:center}}
+.sub{{color:#8e8ea0;font-size:13px;text-align:center;margin-bottom:4px}}
+
+/* Cards */
+.card{{background:#2f2f2f;border:1px solid #404040;border-radius:14px;padding:20px}}
+.card-title{{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:7px}}
+.card-title .badge{{background:rgba(25,195,125,.15);color:#19c37d;border-radius:5px;padding:2px 7px;font-size:10px}}
+.card-title .badge.g{{background:rgba(171,104,255,.15);color:#ab68ff}}
+
+input[type=password]{{width:100%;background:#1a1a1a;color:#ececec;border:1px solid #404040;
+      border-radius:9px;padding:12px 13px;font-size:15px;outline:none;
+      text-align:center;letter-spacing:3px;margin-bottom:10px;font-family:inherit;
+      transition:border-color .15s}}
+input[type=password]:focus{{border-color:#19c37d}}
+.btn{{width:100%;padding:12px;border:none;border-radius:9px;font-size:14px;
+      font-weight:700;cursor:pointer;transition:opacity .15s}}
 .btn:active{{opacity:.85}}
-.btn-admin{{background:linear-gradient(135deg,#b8c5d6,#8fa3bf);color:#0a0f1e}}
-.btn-guest{{background:transparent;color:var(--ac2);border:1px solid rgba(107,159,212,.3);}}
-.btn-guest:active{{background:rgba(107,159,212,.08)}}
-.err{{color:var(--danger);font-size:11.5px;text-align:center;min-height:16px;margin-top:4px}}
-.div{{display:flex;align-items:center;gap:10px;color:var(--mu);font-size:11px}}
-.div::before,.div::after{{content:'';flex:1;height:1px;background:var(--bd)}}
+.btn-admin{{background:#19c37d;color:#111}}
+.btn-guest{{background:#2f2f2f;color:#ececec;border:1px solid #404040}}
+.btn-guest:active{{background:#3a3a3a}}
+.err{{color:#ef4444;font-size:12px;text-align:center;min-height:16px;margin-top:2px}}
+.divider{{display:flex;align-items:center;gap:10px;color:#555;font-size:11px;margin:4px 0}}
+.divider::before,.divider::after{{content:'';flex:1;height:1px;background:#404040}}
+.features{{display:flex;flex-direction:column;gap:5px;margin-top:10px}}
+.feat{{display:flex;align-items:center;gap:7px;font-size:11.5px;color:#8e8ea0}}
+.feat-dot{{width:6px;height:6px;border-radius:50%;flex-shrink:0}}
+.feat-dot.ac{{background:#19c37d}}
+.feat-dot.off{{background:#404040}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="logo-wrap">
-    <div class="logo">🤖</div>
+    <div class="logo">🚀</div>
     <h1>Leo-AI</h1>
     <p class="sub">مساعد البرمجة الاحترافي</p>
   </div>
+
+  <!-- Admin card -->
   <div class="card">
-    <div class="card-title">🔐 المستخدم الرئيسي <span class="badge adm">ADMIN</span></div>
+    <div class="card-title">🔐 المستخدم الرئيسي <span class="badge">وصول كامل</span></div>
     <form method="post" action="/login/admin">
-      <input type="password" name="password" placeholder="كلمة المرور" autocomplete="current-password" autofocus>
+      <input type="password" name="password" placeholder="كلمة المرور" autocomplete="current-password">
       <button class="btn btn-admin" type="submit">دخول ←</button>
     </form>
-    <div class="err">{admin_err}</div>
+    <div class="err" id="err-admin">{admin_err}</div>
+    <div class="features">
+      <div class="feat"><span class="feat-dot ac"></span>GitHub browser + code review</div>
+      <div class="feat"><span class="feat-dot ac"></span>ذاكرة المشروع الدائمة</div>
+      <div class="feat"><span class="feat-dot ac"></span>جميع الميزات</div>
+    </div>
   </div>
-  <div class="div">أو</div>
+
+  <div class="divider">أو</div>
+
+  <!-- Guest card -->
   <div class="card">
-    <div class="card-title">👤 دخول كضيف <span class="badge gst">GUEST</span></div>
+    <div class="card-title">👤 ضيف <span class="badge g">وصول محدود</span></div>
+    <p style="font-size:12px;color:#8e8ea0;margin-bottom:12px">بدون كلمة مرور — محادثة مباشرة</p>
     <form method="post" action="/login/guest">
-      <button class="btn btn-guest" type="submit">دخول بدون كلمة مرور ←</button>
+      <button class="btn btn-guest" type="submit">دخول كضيف ←</button>
     </form>
+    <div class="features">
+      <div class="feat"><span class="feat-dot ac"></span>محادثة ذكاء اصطناعي</div>
+      <div class="feat"><span class="feat-dot ac"></span>رفع ملفات وصور</div>
+      <div class="feat"><span class="feat-dot ac"></span>حفظ المحادثات محلياً</div>
+      <div class="feat"><span class="feat-dot off"></span><span style="text-decoration:line-through">GitHub — متاح للمستخدم الرئيسي</span></div>
+    </div>
   </div>
 </div>
 </body>
 </html>"""
-
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(err: str = ""):
@@ -464,16 +337,7 @@ async def login_guest():
     return resp
 
 @app.get("/logout")
-async def logout_get(leo_session: str | None = Cookie(default=None)):
-    admin_sessions.discard(leo_session or "")
-    guest_sessions.discard(leo_session or "")
-    resp = RedirectResponse(url="/login", status_code=302)
-    resp.delete_cookie("leo_session")
-    resp.delete_cookie("leo_role")
-    return resp
-
-@app.post("/logout")
-async def logout_post(leo_session: str | None = Cookie(default=None)):
+async def logout(leo_session: str | None = Cookie(default=None)):
     admin_sessions.discard(leo_session or "")
     guest_sessions.discard(leo_session or "")
     resp = RedirectResponse(url="/login", status_code=302)
@@ -485,241 +349,17 @@ async def logout_post(leo_session: str | None = Cookie(default=None)):
 # MAIN
 # ══════════════════════════════════════════════════════════════════════════════
 
-# ── Admin Alerts — فحص شامل وإرجاع تنبيهات ──────────────────────────────────
-@app.get("/admin/alerts")
-async def admin_alerts(leo_session: str | None = Cookie(default=None)):
-    """فحص شامل: API keys، موديلات، GitHub — ويرجع قائمة التنبيهات"""
-    if r := check_admin(leo_session): return r
-
-    alerts = []   # {"level": "error|warn|ok", "title": "...", "detail": "..."}
-
-    # 1. فحص OPENROUTER_API_KEY
-    if not OPENROUTER_API_KEY:
-        alerts.append({"level":"error","icon":"🔑",
-                        "title":"OPENROUTER_API_KEY مفقود",
-                        "detail":"البوت لن يعمل بدون هذا المفتاح. أضفه في Render > Environment Variables"})
-    else:
-        # جرّب طلب بسيط للتحقق من صحة المفتاح
-        try:
-            async with httpx.AsyncClient(timeout=10) as client:
-                r2 = await client.get(
-                    "https://openrouter.ai/api/v1/models",
-                    headers={"Authorization": f"Bearer {OPENROUTER_API_KEY}"}
-                )
-                if r2.status_code == 401:
-                    alerts.append({"level":"error","icon":"🔑",
-                                    "title":"OPENROUTER_API_KEY غير صالح",
-                                    "detail":"المفتاح موجود لكن مرفوض من OpenRouter. تحقق منه أو جدّده"})
-                elif r2.status_code == 200:
-                    alerts.append({"level":"ok","icon":"✅",
-                                    "title":"OpenRouter API يعمل",
-                                    "detail":"المفتاح صالح والاتصال ناجح"})
-        except Exception as e:
-            alerts.append({"level":"warn","icon":"🌐",
-                            "title":"تعذّر الاتصال بـ OpenRouter",
-                            "detail":f"تحقق من الإنترنت أو حاول لاحقاً. ({str(e)[:60]})"})
-
-    # 2. فحص GITHUB_TOKEN
-    if not GITHUB_TOKEN:
-        alerts.append({"level":"warn","icon":"🐙",
-                        "title":"GITHUB_TOKEN مفقود",
-                        "detail":"لن تتمكن من تصفح repos. أضف GITHUB_TOKEN في Render"})
-    else:
-        try:
-            async with httpx.AsyncClient(timeout=8, headers=gh_headers()) as client:
-                r3 = await client.get("https://api.github.com/user")
-                if r3.status_code == 200:
-                    uname = r3.json().get("login","")
-                    alerts.append({"level":"ok","icon":"🐙",
-                                    "title":f"GitHub متصل — @{uname}",
-                                    "detail":"التوكن صالح ويمكن تصفح المستودعات"})
-                elif r3.status_code == 401:
-                    alerts.append({"level":"error","icon":"🐙",
-                                    "title":"GITHUB_TOKEN منتهي أو غير صالح",
-                                    "detail":"جدّد التوكن من GitHub > Settings > Developer settings"})
-                else:
-                    alerts.append({"level":"warn","icon":"🐙",
-                                    "title":f"GitHub: HTTP {r3.status_code}",
-                                    "detail":"استجابة غير متوقعة من GitHub API"})
-        except Exception as e:
-            alerts.append({"level":"warn","icon":"🐙",
-                            "title":"تعذّر الاتصال بـ GitHub",
-                            "detail":str(e)[:80]})
-
-    # 3. فحص الموديلات بطلب حقيقي لكل موديل
-    broken_models = []
-    working_models = []
-    if OPENROUTER_API_KEY:
-        hdrs_or = {
-            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://leo-ai.app",
-        }
-        test_msg = [{"role": "user", "content": "hi"}]
-        async with httpx.AsyncClient(
-            timeout=httpx.Timeout(connect=5.0, read=20.0, write=5.0, pool=5.0)
-        ) as client:
-            for m in MODELS:
-                try:
-                    resp = await client.post(
-                        "https://openrouter.ai/api/v1/chat/completions",
-                        headers=hdrs_or,
-                        json={"model": m["id"], "messages": test_msg,
-                              "max_tokens": 3, "stream": False},
-                    )
-                    if resp.status_code == 200:
-                        working_models.append(f"{m['badge']} {m['name']}")
-                    else:
-                        # استخرج سبب الخطأ
-                        try:
-                            err_body = resp.json()
-                            err_msg = (err_body.get("error", {}).get("message", "")
-                                       or str(err_body))[:120]
-                        except Exception:
-                            err_msg = f"HTTP {resp.status_code}"
-
-                        # حدّد السبب والحل
-                        if "No endpoints" in err_msg or "not found" in err_msg.lower():
-                            reason = "الموديل أُزيل من OpenRouter أو غير متاح مجاناً"
-                            fix    = "أبلغ المطوّر لاستبداله بموديل آخر في app.py"
-                        elif "quota" in err_msg.lower() or "rate" in err_msg.lower():
-                            reason = "تجاوزت حد الاستخدام المجاني"
-                            fix    = "انتظر إعادة تعيين الحصة (عادةً يومياً) أو أضف رصيد لـ OpenRouter"
-                        elif "401" in err_msg or "unauthorized" in err_msg.lower():
-                            reason = "مفتاح API غير صالح لهذا الموديل"
-                            fix    = "تحقق من OPENROUTER_API_KEY في Render"
-                        else:
-                            reason = err_msg
-                            fix    = "حاول مرة أخرى أو اختر موديلاً آخر"
-
-                        broken_models.append({
-                            "name":   f"{m['badge']} {m['name']}",
-                            "reason": reason,
-                            "fix":    fix,
-                        })
-                except Exception as exc:
-                    broken_models.append({
-                        "name":   f"{m['badge']} {m['name']}",
-                        "reason": f"خطأ في الاتصال: {str(exc)[:80]}",
-                        "fix":    "تحقق من الإنترنت أو حاول لاحقاً",
-                    })
-
-    if broken_models:
-        detail_lines = []
-        for b in broken_models:
-            detail_lines.append(f"• {b['name']}: {b['reason']} → {b['fix']}")
-        alerts.append({
-            "level":  "error",
-            "icon":   "🤖",
-            "title":  f"{len(broken_models)} موديل متوقف من {len(MODELS)}",
-            "detail": "\n".join(detail_lines),
-        })
-    if working_models:
-        alerts.append({
-            "level":  "ok",
-            "icon":   "🤖",
-            "title":  f"{len(working_models)} موديل يعمل",
-            "detail": " • ".join(working_models),
-        })
-
-    # 4. فحص APP_PASSWORD
-    if not APP_PASSWORD:
-        alerts.append({"level":"warn","icon":"🔒",
-                        "title":"APP_PASSWORD غير مضبوط",
-                        "detail":"أي شخص يمكنه الدخول كـ Admin. أضف APP_PASSWORD في Render"})
-
-    # 5. فحص AUTO_LOAD_REPO
-    if AUTO_LOAD_REPO:
-        alerts.append({"level":"ok","icon":"📁",
-                        "title":f"Auto-load مضبوط: {AUTO_LOAD_REPO}",
-                        "detail":"المشروع سيُحمّل تلقائياً عند كل دخول"})
-
-    return JSONResponse({
-        "alerts": alerts,
-        "errors":   sum(1 for a in alerts if a["level"]=="error"),
-        "warnings": sum(1 for a in alerts if a["level"]=="warn"),
-        "ok":       sum(1 for a in alerts if a["level"]=="ok"),
-    })
-
-
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request, leo_session: str | None = Cookie(default=None)):
     if r := check_auth(leo_session): return r
     role = get_role(leo_session)
-
-    # ── تحميل تلقائي لذاكرة المشروع عند أول دخول للـ admin ──────────────────
-    auto_load_status = None
-    if (role == "admin"
-            and AUTO_LOAD_REPO
-            and GITHUB_TOKEN
-            and leo_session not in auto_loaded_sessions):
-
-        auto_loaded_sessions.add(leo_session)
-        sid = "default"
-        project_memory.setdefault(sid, {})
-        repos_to_load = [r.strip() for r in AUTO_LOAD_REPO.split(",") if r.strip()]
-        total_loaded  = 0
-
-        async with httpx.AsyncClient(timeout=30, headers=gh_headers()) as client:
-            for repo_full in repos_to_load:
-                parts = repo_full.split("/")
-                if len(parts) != 2:
-                    continue
-                owner, repo = parts
-
-                # جلب الفرع الافتراضي
-                try:
-                    rresp = await client.get(
-                        f"https://api.github.com/repos/{owner}/{repo}")
-                    if rresp.status_code != 200:
-                        continue
-                    branch = rresp.json().get("default_branch", "main")
-
-                    # جلب شجرة الملفات
-                    tresp = await client.get(
-                        f"https://api.github.com/repos/{owner}/{repo}"
-                        f"/git/trees/{branch}?recursive=1")
-                    if tresp.status_code != 200:
-                        continue
-
-                    to_fetch = []
-                    for item in tresp.json().get("tree", []):
-                        if item["type"] != "blob": continue
-                        path  = item["path"]
-                        pparts = path.split("/")
-                        if any(p in SKIP_DIRS for p in pparts): continue
-                        ext = os.path.splitext(path)[1].lower()
-                        if ext not in CODE_EXT: continue
-                        if item.get("size", 0) > 150_000: continue
-                        to_fetch.append(path)
-
-                    # حد 40 ملف لكل repo
-                    for path in to_fetch[:40]:
-                        raw_url = (f"https://raw.githubusercontent.com/"
-                                   f"{owner}/{repo}/{branch}/{path}")
-                        try:
-                            resp = await client.get(raw_url)
-                            if resp.status_code == 200:
-                                key = f"{repo}/{path}"
-                                project_memory[sid][key] = f"[GitHub: {owner}/{repo}/{path}]\n{resp.text[:8_000]}"
-                                total_loaded += 1
-                        except Exception:
-                            pass
-                except Exception as e:
-                    logger.warning(f"Auto-load {repo_full}: {e}")
-
-        if total_loaded > 0:
-            auto_load_status = total_loaded
-            logger.info(f"Auto-loaded {total_loaded} files for session {leo_session[:8]}...")
-
     return templates.TemplateResponse("index.html", {
         "request":          request,
         "models":           MODELS,
         "default_model":    MODELS[0]["id"],
         "has_github_token": bool(GITHUB_TOKEN),
-        "role":             role,
+        "role":             role,          # "admin" or "guest"
         "is_admin":         role == "admin",
-        "auto_load_status": auto_load_status,  # عدد الملفات المحملة تلقائياً
     })
 
 # ── GitHub (admin only) ────────────────────────────────────────────────────────
@@ -795,86 +435,6 @@ async def github_load(owner:str=Form(...), repo:str=Form(...), branch:str=Form("
             except Exception as e: errors.append(f"{path}: {e}")
     return JSONResponse({"ok":True,"added":added,"errors":errors,"total":len(project_memory[sid]),"files":list(project_memory[sid].keys())})
 
-@app.post("/github/load-repo-full")
-async def github_load_repo_full(
-    owner: str = Form(...),
-    repo:  str = Form(...),
-    branch:str = Form("main"),
-    sid:   str = Form("default"),
-    leo_session: str | None = Cookie(default=None),
-):
-    """
-    تحميل كامل ملفات الـ repo دفعة واحدة للذاكرة.
-    يجلب شجرة الملفات ثم يحمّل كل ملف كود (حتى 40 ملف).
-    """
-    if r := check_admin(leo_session): return r
-
-    project_memory.setdefault(sid, {})
-    # امسح الذاكرة القديمة لهذا الـ repo
-    old_keys = [k for k in project_memory[sid] if k.startswith(f"{repo}/")]
-    for k in old_keys:
-        del project_memory[sid][k]
-
-    added   = []
-    skipped = 0
-    errors  = []
-
-    async with httpx.AsyncClient(timeout=30, headers=gh_headers()) as client:
-        # 1) جلب شجرة الملفات
-        repo_resp = await client.get(f"https://api.github.com/repos/{owner}/{repo}")
-        if repo_resp.status_code != 200:
-            return JSONResponse({"error": f"الـ repo غير موجود: {repo_resp.status_code}"}, status_code=404)
-        branch = repo_resp.json().get("default_branch", branch)
-
-        tree_resp = await client.get(
-            f"https://api.github.com/repos/{owner}/{repo}/git/trees/{branch}?recursive=1")
-        if tree_resp.status_code != 200:
-            return JSONResponse({"error": "فشل جلب شجرة الملفات"}, status_code=500)
-
-        all_items = tree_resp.json().get("tree", [])
-
-        # 2) فلترة: ملفات كود فقط، حجم معقول
-        to_fetch = []
-        for item in all_items:
-            if item["type"] != "blob": continue
-            path  = item["path"]
-            parts = path.split("/")
-            if any(p in SKIP_DIRS for p in parts): continue
-            ext = os.path.splitext(path)[1].lower()
-            if ext not in CODE_EXT: skipped += 1; continue
-            if item.get("size", 0) > 150_000: skipped += 1; continue
-            to_fetch.append(path)
-
-        # حد أقصى 40 ملف
-        to_fetch = to_fetch[:40]
-
-        # 3) تحميل المحتوى
-        for path in to_fetch:
-            raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{path}"
-            try:
-                resp = await client.get(raw_url)
-                if resp.status_code == 200:
-                    content = resp.text[:8_000]
-                    project_memory[sid][f"{repo}/{path}"] = \
-                        f"[GitHub: {owner}/{repo}/{path}]\n{content}"
-                    added.append(path)
-                else:
-                    errors.append(f"{path}: HTTP {resp.status_code}")
-            except Exception as e:
-                errors.append(f"{path}: {e}")
-
-    return JSONResponse({
-        "ok":      True,
-        "repo":    f"{owner}/{repo}",
-        "branch":  branch,
-        "added":   len(added),
-        "skipped": skipped,
-        "errors":  errors[:5],
-        "total":   len(project_memory[sid]),
-        "files":   list(project_memory[sid].keys()),
-    })
-
-
 @app.post("/github/review")
 async def github_review(owner:str=Form(...), repo:str=Form(...), branch:str=Form("main"),
                          paths:str=Form(""), model_id:str=Form(None), sid:str=Form("default"),
@@ -915,11 +475,7 @@ async def github_review(owner:str=Form(...), repo:str=Form(...), branch:str=Form
 8. **💡 اقتراحات التحسين**"""
 
     valid_ids=[m["id"] for m in MODELS]
-    # Smart routing: اختيار تلقائي إذا لم يحدد المستخدم موديلاً
-    if model_id == "auto" or not model_id or model_id not in valid_ids:
-        chosen = smart_route_model(prompt)
-    else:
-        chosen = model_id
+    chosen=model_id if model_id in valid_ids else MODELS[0]["id"]
     ordered=[chosen]+[mid for mid in CODING_IDS if mid!=chosen]
     chat_sessions.setdefault(sid,[])
     stop_ev=asyncio.Event(); stop_flags[sid]=stop_ev
@@ -1027,39 +583,6 @@ async def chat_stream(request:Request, prompt:str=Form(...), model_id:str=Form(N
             else: user_text+=f"\n\n{read_file(f.filename,raw,mt)}"
         except Exception as e: logger.error(f"File {f.filename}: {e}")
 
-    # ── قراءة الروابط تلقائياً من نص المستخدم ────────────────────────────────
-    _url_re = re.compile(r"https?://[^\s]+")
-    found_urls = _url_re.findall(prompt)
-    if found_urls:
-        url_contents = []
-        async with httpx.AsyncClient(
-            timeout=httpx.Timeout(connect=5.0, read=15.0, write=5.0, pool=5.0),
-            follow_redirects=True,
-            headers={"User-Agent": "Mozilla/5.0 Leo-AI/7.0"},
-        ) as uclient:
-            for url in found_urls[:3]:
-                try:
-                    uresp = await uclient.get(url)
-                    if uresp.status_code == 200:
-                        uct = uresp.headers.get("content-type", "")
-                        if any(t in uct for t in ("text", "json", "javascript")):
-                            raw_text = uresp.text[:12_000]
-                            if "html" in uct:
-                                raw_text = re.sub(r'<style[^>]*>.*?</style>', '', raw_text, flags=re.DOTALL|re.IGNORECASE)
-                                raw_text = re.sub(r'<script[^>]*>.*?</script>', '', raw_text, flags=re.DOTALL|re.IGNORECASE)
-                                raw_text = re.sub(r'<[^>]+>', '', raw_text)
-                                raw_text = re.sub(r'\s+', ' ', raw_text).strip()[:8_000]
-                            url_contents.append(f"[محتوى الرابط: {url}]\n{raw_text}")
-                        else:
-                            url_contents.append(f"[الرابط {url}: محتوى ثنائي]")
-                    else:
-                        url_contents.append(f"[الرابط {url}: HTTP {uresp.status_code}]")
-                except Exception as ue:
-                    url_contents.append(f"[فشل قراءة الرابط {url}: {ue}]")
-                    logger.warning(f"URL fetch {url}: {ue}")
-        if url_contents:
-            user_text = prompt + "\n\n" + "\n\n".join(url_contents)
-
     if has_image:
         obj=next((m for m in MODELS if m["id"]==chosen),None)
         if not (obj and obj["vision"]): chosen=VISION_IDS[0] if VISION_IDS else chosen; switched=True
@@ -1085,12 +608,10 @@ async def chat_stream(request:Request, prompt:str=Form(...), model_id:str=Form(N
         for mid in ordered:
             if stop_ev.is_set(): break
             try:
-                # مشاريع كاملة تحتاج وقت أطول
-                read_timeout = 180.0 if any(w in prompt.lower() for w in ["مشروع","كامل","full","complete","منصة","system"]) else 90.0
-                to=httpx.Timeout(connect=8.0,read=read_timeout,write=10.0,pool=5.0)
+                to=httpx.Timeout(connect=8.0,read=90.0,write=10.0,pool=5.0)
                 async with httpx.AsyncClient(timeout=to) as client:
                     async with client.stream("POST","https://openrouter.ai/api/v1/chat/completions",
-                        headers=hdrs,json={"model":mid,"messages":messages,"temperature":0.3,"max_tokens":8000,"stream":True}) as resp:
+                        headers=hdrs,json={"model":mid,"messages":messages,"temperature":0.3,"max_tokens":4000,"stream":True}) as resp:
                         if resp.status_code!=200:
                             body=await resp.aread()
                             try: last_err=json.loads(body).get("error",{}).get("message","")
@@ -1117,34 +638,7 @@ async def chat_stream(request:Request, prompt:str=Form(...), model_id:str=Form(N
             except Exception as exc: last_err=str(exc); continue
 
         if stop_ev.is_set() and full_text: full_text+="\n\n*(⏹ توقف)*"
-        if not full_text:
-            if "timeout" in last_err.lower():
-                full_text = (
-                    "⏱️ **انتهت مهلة الانتظار**\n\n"
-                    "الموديل لم يرد في الوقت المحدد.\n\n"
-                    "**الحلول:**\n"
-                    "- اضغط 🔄 وأرسل الطلب مرة أخرى\n"
-                    "- قسّم الطلب إلى أجزاء أصغر\n"
-                    "- اختر موديلاً أسرع (⚡ Mistral أو 💎 Gemma)"
-                )
-            elif "No endpoints" in last_err or "not found" in last_err.lower():
-                full_text = (
-                    "🤖 **الموديل المختار غير متاح حالياً**\n\n"
-                    "**الحلول:**\n"
-                    "- اختر موديلاً آخر يدوياً من القائمة\n"
-                    "- افتح القائمة ☰ > 🔔 التنبيهات لمعرفة الموديلات الشغّالة\n"
-                    "- اضغط 🤖 ذكي للاختيار التلقائي"
-                )
-            else:
-                full_text = (
-                    f"⚠️ **تعذّر الحصول على رد**\n\n"
-                    f"الخطأ: `{last_err[:150]}`\n\n"
-                    "**الحلول:**\n"
-                    "- اضغط 🔄 إعادة الاتصال\n"
-                    "- جرّب موديلاً مختلفاً\n"
-                    "- افتح ☰ > 🔔 التنبيهات للتشخيص"
-                )
-            yield f"data: {json.dumps({'token':full_text})}\n\n"
+        if not full_text: full_text=f"⚠️ فشلت كل النماذج.\n\nالخطأ: `{last_err}`"; yield f"data: {json.dumps({'token':full_text})}\n\n"
         session.append({"role":"user","content":prompt})
         session.append({"role":"assistant","content":full_text})
         files_found=extract_files(full_text)
@@ -1232,104 +726,6 @@ h1,h2,h3{{color:#19c37d}}strong{{color:#fff}}
 <span style="color:#8e8ea0;font-size:12px">محادثة مشتركة</span></div>
 {chat['html']}</body></html>""")
 
-# ── Smart Router info endpoint ────────────────────────────────────────────────
-@app.get("/smart-route")
-async def smart_route_info(prompt: str = "", leo_session: str|None = Cookie(default=None)):
-    if r := check_auth(leo_session): return r
-    model_id = smart_route_model(prompt) if prompt else MODELS[0]["id"]
-    model = next((m for m in MODELS if m["id"] == model_id), MODELS[0])
-    return JSONResponse({"model_id": model_id, "model_name": model["name"], "badge": model["badge"]})
-
-# ── Free APIs info endpoint ────────────────────────────────────────────────────
-@app.get("/apis")
-async def get_free_apis(leo_session: str|None = Cookie(default=None)):
-    if r := check_auth(leo_session): return r
-    result = {}
-    for key, api in FREE_APIS.items():
-        result[key] = {
-            "name": api["name"],
-            "url": api["url"],
-            "free_tier": api["free_tier"],
-            "docs": api["docs"],
-            "configured": bool(api["key_env"] is None or os.getenv(api["key_env"], "")),
-        }
-    return JSONResponse(result)
-
-# ── Proxy للـ APIs الخارجية (يتجنب CORS) ────────────────────────────────────
-@app.get("/proxy/crypto")
-async def proxy_crypto(coin: str = "bitcoin", leo_session: str|None = Cookie(default=None)):
-    """CoinGecko proxy — أسعار العملات الرقمية"""
-    if r := check_auth(leo_session): return r
-    try:
-        async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.get(
-                f"https://api.coingecko.com/api/v3/simple/price",
-                params={"ids": coin, "vs_currencies": "usd,sar", "include_24hr_change": "true"}
-            )
-            return JSONResponse(resp.json())
-    except Exception as e:
-        return JSONResponse({"error": str(e)}, status_code=500)
-
-@app.get("/proxy/currency")
-async def proxy_currency(base: str = "USD", leo_session: str|None = Cookie(default=None)):
-    """ExchangeRate-API proxy — أسعار العملات"""
-    if r := check_auth(leo_session): return r
-    try:
-        async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.get(f"https://open.er-api.com/v6/latest/{base}")
-            return JSONResponse(resp.json())
-    except Exception as e:
-        return JSONResponse({"error": str(e)}, status_code=500)
-
-@app.get("/proxy/stock")
-async def proxy_stock(symbol: str = "AAPL", leo_session: str|None = Cookie(default=None)):
-    """Alpha Vantage proxy — أسعار الأسهم العالمية"""
-    if r := check_auth(leo_session): return r
-    try:
-        async with httpx.AsyncClient(timeout=15) as client:
-            resp = await client.get(
-                "https://www.alphavantage.co/query",
-                params={"function": "GLOBAL_QUOTE", "symbol": symbol, "apikey": ALPHA_VANTAGE_KEY}
-            )
-            return JSONResponse(resp.json())
-    except Exception as e:
-        return JSONResponse({"error": str(e)}, status_code=500)
-
-@app.get("/proxy/weather")
-async def proxy_weather(lat: float = 24.7, lon: float = 46.7, leo_session: str|None = Cookie(default=None)):
-    """Open-Meteo proxy — بيانات الطقس"""
-    if r := check_auth(leo_session): return r
-    try:
-        async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.get(
-                "https://api.open-meteo.com/v1/forecast",
-                params={"latitude": lat, "longitude": lon,
-                        "current": "temperature_2m,wind_speed_10m,precipitation",
-                        "timezone": "auto"}
-            )
-            return JSONResponse(resp.json())
-    except Exception as e:
-        return JSONResponse({"error": str(e)}, status_code=500)
-
-@app.get("/proxy/news")
-async def proxy_news(q: str = "technology", lang: str = "ar", leo_session: str|None = Cookie(default=None)):
-    """NewsAPI proxy — الأخبار"""
-    if r := check_auth(leo_session): return r
-    if not NEWS_API_KEY:
-        # fallback: RSS feeds بدون مفتاح
-        return JSONResponse({"message": "أضف NEWS_API_KEY في Render للحصول على الأخبار", "articles": []})
-    try:
-        async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.get(
-                "https://newsapi.org/v2/everything",
-                params={"q": q, "language": lang, "pageSize": 10, "apiKey": NEWS_API_KEY}
-            )
-            return JSONResponse(resp.json())
-    except Exception as e:
-        return JSONResponse({"error": str(e)}, status_code=500)
-
-
-# ── GitHub Push — رفع ملفات للـ repo مباشرة ──────────────────────────────────
 @app.post("/generate-image")
 async def generate_image(prompt:str=Form(...),size:str=Form("1024x1024"),model:str=Form("flux"),
                           leo_session:str|None=Cookie(default=None)):
@@ -1338,218 +734,3 @@ async def generate_image(prompt:str=Form(...),size:str=Form("1024x1024"),model:s
         w,h=map(int,size.split("x")) if "x" in size else (1024,1024)
         return JSONResponse({"url":img_url(prompt,w,h,model),"prompt":prompt})
     except Exception as e: return JSONResponse({"error":str(e)},status_code=500)
-
-
-# ══ GitHub Push ════════════════════════════════════════════════════════════════
-# ── Health check — فحص الموديلات الشغّالة ────────────────────────────────────
-@app.get("/health")
-async def health_check(leo_session: str | None = Cookie(default=None)):
-    """فحص سريع لكل الموديلات — يرجع قائمة الشغّال والمتوقف"""
-    if r := check_auth(leo_session): return r
-    if not OPENROUTER_API_KEY:
-        return JSONResponse({"error": "API key missing"}, status_code=500)
-
-    results = []
-    hdrs = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://leo-ai.app",
-        "X-Title": "Leo-AI",
-    }
-    test_msg = [{"role": "user", "content": "hi"}]
-
-    async with httpx.AsyncClient(timeout=httpx.Timeout(connect=5.0, read=15.0, write=5.0, pool=5.0)) as client:
-        for m in MODELS:
-            try:
-                resp = await client.post(
-                    "https://openrouter.ai/api/v1/chat/completions",
-                    headers=hdrs,
-                    json={"model": m["id"], "messages": test_msg, "max_tokens": 5, "stream": False},
-                )
-                ok = resp.status_code == 200
-                err = "" if ok else resp.json().get("error", {}).get("message", "")[:80]
-                results.append({"id": m["id"], "name": m["name"], "badge": m["badge"], "ok": ok, "error": err})
-            except Exception as exc:
-                results.append({"id": m["id"], "name": m["name"], "badge": m["badge"], "ok": False, "error": str(exc)[:80]})
-
-    working  = [r for r in results if r["ok"]]
-    broken   = [r for r in results if not r["ok"]]
-    return JSONResponse({"working": working, "broken": broken, "total": len(results)})
-
-
-@app.post("/github/push")
-async def github_push(
-    owner:   str = Form(...),
-    repo:    str = Form(...),
-    branch:  str = Form("main"),
-    files:   str = Form(...),
-    message: str = Form("Leo-AI: update files"),
-    leo_session: str | None = Cookie(default=None),
-):
-    if r := check_admin(leo_session): return r
-    if not GITHUB_TOKEN:
-        return JSONResponse({"error": "GITHUB_TOKEN غير موجود"}, status_code=401)
-    try:
-        files_dict = json.loads(files)
-    except Exception:
-        return JSONResponse({"error": "تنسيق الملفات غير صحيح"}, status_code=400)
-
-    results = []
-    errors  = []
-    hdrs2   = gh_headers()
-    hdrs2["Content-Type"] = "application/json"
-
-    async with httpx.AsyncClient(timeout=25, headers=hdrs2) as client:
-        repo_resp = await client.get(f"https://api.github.com/repos/{owner}/{repo}")
-        if repo_resp.status_code != 200:
-            return JSONResponse({"error": "الـ repo غير موجود"}, status_code=404)
-        branch = repo_resp.json().get("default_branch", branch)
-
-        for filepath, b64_content in files_dict.items():
-            try:
-                check = await client.get(
-                    f"https://api.github.com/repos/{owner}/{repo}/contents/{filepath}",
-                    params={"ref": branch}
-                )
-                sha = check.json().get("sha") if check.status_code == 200 else None
-                payload = {"message": message, "content": b64_content, "branch": branch}
-                if sha:
-                    payload["sha"] = sha
-                resp = await client.put(
-                    f"https://api.github.com/repos/{owner}/{repo}/contents/{filepath}",
-                    json=payload,
-                )
-                if resp.status_code in (200, 201):
-                    results.append(filepath)
-                else:
-                    errors.append(f"{filepath}: HTTP {resp.status_code}")
-            except Exception as exc:
-                errors.append(f"{filepath}: {exc}")
-
-    return JSONResponse({
-        "ok": len(errors) == 0,
-        "pushed": results,
-        "errors": errors,
-        "repo": f"{owner}/{repo}",
-        "branch": branch,
-    })
-
-
-# ══ Screenshot to Code ═════════════════════════════════════════════════════════
-@app.post("/screenshot-to-code")
-async def screenshot_to_code(
-    image:     UploadFile = File(...),
-    style:     str        = Form(default="dark"),
-    framework: str        = Form(default="html"),
-    leo_session: str | None = Cookie(default=None),
-):
-    if r := check_auth(leo_session): return r
-    if not OPENROUTER_API_KEY:
-        async def _err():
-            yield "data: " + json.dumps({"error": "API key not set"}) + "\n\n"
-        return StreamingResponse(_err(), media_type="text/event-stream")
-
-    try:
-        raw = await image.read()
-        mt  = image.content_type or "image/png"
-        b64_img = base64.b64encode(raw).decode()
-    except Exception as exc:
-        async def _err2():
-            yield "data: " + json.dumps({"error": str(exc)}) + "\n\n"
-        return StreamingResponse(_err2(), media_type="text/event-stream")
-
-    style_map = {
-        "dark":    "dark theme (#0f0f0f background, white text, colored accents)",
-        "modern":  "modern clean design with white background, subtle shadows",
-        "tailwind": "using inline Tailwind-like CSS classes",
-    }
-    style_desc = style_map.get(style, style_map["dark"])
-    fw_desc = "React functional component (return JSX)" if framework == "react" else "single HTML file with embedded CSS and JavaScript"
-
-    prompt = (
-        f"Analyze this UI screenshot carefully and recreate it as {fw_desc}.\n\n"
-        f"Style: {style_desc}\n\n"
-        "Requirements:\n"
-        "- Match the layout, spacing, and structure exactly\n"
-        "- Include all visible UI elements\n"
-        "- Use realistic placeholder data\n"
-        "- Fully responsive\n"
-        "- Add hover effects and transitions\n"
-        "- Output ONLY the complete code, nothing else"
-    )
-
-    messages = [
-        {"role": "system", "content": "You are an expert UI developer. Recreate UIs from screenshots with pixel-perfect accuracy."},
-        {"role": "user", "content": [
-            {"type": "text",      "text": prompt},
-            {"type": "image_url", "image_url": {"url": f"data:{mt};base64,{b64_img}"}},
-        ]},
-    ]
-
-    hdrs3 = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type":  "application/json",
-        "HTTP-Referer":  "https://leo-ai.app",
-        "X-Title":       "Leo-AI",
-    }
-
-    async def streamer():
-        full_text = ""
-        last_err  = ""
-        for mid in VISION_IDS:
-            try:
-                to = httpx.Timeout(connect=8.0, read=90.0, write=10.0, pool=5.0)
-                async with httpx.AsyncClient(timeout=to) as client:
-                    async with client.stream("POST",
-                        "https://openrouter.ai/api/v1/chat/completions",
-                        headers=hdrs3,
-                        json={"model": mid, "messages": messages, "temperature": 0.1, "max_tokens": 4000, "stream": True},
-                    ) as resp:
-                        if resp.status_code != 200:
-                            body = await resp.aread()
-                            try:    last_err = json.loads(body).get("error", {}).get("message", "")
-                            except: last_err = body.decode(errors="replace")[:200]
-                            continue
-                        buf = ""; got_first = False
-                        async for chunk in resp.aiter_text():
-                            buf += chunk
-                            lines_buf = buf.split("\n")
-                            buf = lines_buf.pop()
-                            for line in lines_buf:
-                                line = line.strip()
-                                if not line.startswith("data:"): continue
-                                ds = line[5:].strip()
-                                if ds == "[DONE]": break
-                                try:
-                                    delta = json.loads(ds)["choices"][0]["delta"].get("content", "")
-                                    if delta:
-                                        if not got_first:
-                                            got_first = True
-                                            yield "data: " + json.dumps({"first": True, "model": mid}) + "\n\n"
-                                        full_text += delta
-                                        yield "data: " + json.dumps({"token": delta}) + "\n\n"
-                                except: continue
-                break
-            except Exception as exc:
-                last_err = str(exc); continue
-
-        if not full_text:
-            full_text = "فشل التحويل: " + last_err
-            yield "data: " + json.dumps({"token": full_text}) + "\n\n"
-
-        code_match = re.search(r"```(?:html|jsx|tsx|javascript)?\n([\s\S]*?)```", full_text)
-        code = code_match.group(1).strip() if code_match else full_text.strip()
-        fname = "component.jsx" if framework == "react" else "screenshot-to-code.html"
-        files_b64 = {fname: base64.b64encode(code.encode()).decode()}
-        yield "data: " + json.dumps({
-            "done": True,
-            "html": markdown_to_html(full_text),
-            "files": files_b64,
-            "raw": full_text,
-            "used_model": "Vision Model",
-        }) + "\n\n"
-
-    return StreamingResponse(streamer(), media_type="text/event-stream",
-                             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
-
-
