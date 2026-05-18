@@ -485,6 +485,113 @@ async def logout_post(leo_session: str | None = Cookie(default=None)):
 # MAIN
 # ══════════════════════════════════════════════════════════════════════════════
 
+# ── Admin Alerts — فحص شامل وإرجاع تنبيهات ──────────────────────────────────
+@app.get("/admin/alerts")
+async def admin_alerts(leo_session: str | None = Cookie(default=None)):
+    """فحص شامل: API keys، موديلات، GitHub — ويرجع قائمة التنبيهات"""
+    if r := check_admin(leo_session): return r
+
+    alerts = []   # {"level": "error|warn|ok", "title": "...", "detail": "..."}
+
+    # 1. فحص OPENROUTER_API_KEY
+    if not OPENROUTER_API_KEY:
+        alerts.append({"level":"error","icon":"🔑",
+                        "title":"OPENROUTER_API_KEY مفقود",
+                        "detail":"البوت لن يعمل بدون هذا المفتاح. أضفه في Render > Environment Variables"})
+    else:
+        # جرّب طلب بسيط للتحقق من صحة المفتاح
+        try:
+            async with httpx.AsyncClient(timeout=10) as client:
+                r2 = await client.get(
+                    "https://openrouter.ai/api/v1/models",
+                    headers={"Authorization": f"Bearer {OPENROUTER_API_KEY}"}
+                )
+                if r2.status_code == 401:
+                    alerts.append({"level":"error","icon":"🔑",
+                                    "title":"OPENROUTER_API_KEY غير صالح",
+                                    "detail":"المفتاح موجود لكن مرفوض من OpenRouter. تحقق منه أو جدّده"})
+                elif r2.status_code == 200:
+                    alerts.append({"level":"ok","icon":"✅",
+                                    "title":"OpenRouter API يعمل",
+                                    "detail":"المفتاح صالح والاتصال ناجح"})
+        except Exception as e:
+            alerts.append({"level":"warn","icon":"🌐",
+                            "title":"تعذّر الاتصال بـ OpenRouter",
+                            "detail":f"تحقق من الإنترنت أو حاول لاحقاً. ({str(e)[:60]})"})
+
+    # 2. فحص GITHUB_TOKEN
+    if not GITHUB_TOKEN:
+        alerts.append({"level":"warn","icon":"🐙",
+                        "title":"GITHUB_TOKEN مفقود",
+                        "detail":"لن تتمكن من تصفح repos. أضف GITHUB_TOKEN في Render"})
+    else:
+        try:
+            async with httpx.AsyncClient(timeout=8, headers=gh_headers()) as client:
+                r3 = await client.get("https://api.github.com/user")
+                if r3.status_code == 200:
+                    uname = r3.json().get("login","")
+                    alerts.append({"level":"ok","icon":"🐙",
+                                    "title":f"GitHub متصل — @{uname}",
+                                    "detail":"التوكن صالح ويمكن تصفح المستودعات"})
+                elif r3.status_code == 401:
+                    alerts.append({"level":"error","icon":"🐙",
+                                    "title":"GITHUB_TOKEN منتهي أو غير صالح",
+                                    "detail":"جدّد التوكن من GitHub > Settings > Developer settings"})
+                else:
+                    alerts.append({"level":"warn","icon":"🐙",
+                                    "title":f"GitHub: HTTP {r3.status_code}",
+                                    "detail":"استجابة غير متوقعة من GitHub API"})
+        except Exception as e:
+            alerts.append({"level":"warn","icon":"🐙",
+                            "title":"تعذّر الاتصال بـ GitHub",
+                            "detail":str(e)[:80]})
+
+    # 3. فحص الموديلات بشكل خفيف (بدون طلبات فعلية — نفحص قائمة OpenRouter)
+    broken_models = []
+    if OPENROUTER_API_KEY:
+        try:
+            async with httpx.AsyncClient(timeout=10) as client:
+                r4 = await client.get(
+                    "https://openrouter.ai/api/v1/models",
+                    headers={"Authorization": f"Bearer {OPENROUTER_API_KEY}"}
+                )
+                if r4.status_code == 200:
+                    available_ids = {m["id"] for m in r4.json().get("data", [])}
+                    for m in MODELS:
+                        if m["id"] not in available_ids:
+                            broken_models.append(f"{m['badge']} {m['name']}")
+        except Exception:
+            pass
+
+    if broken_models:
+        alerts.append({"level":"error","icon":"🤖",
+                        "title":f"{len(broken_models)} موديل غير متاح",
+                        "detail":"الموديلات التالية غير موجودة في OpenRouter: " + " • ".join(broken_models)})
+    elif OPENROUTER_API_KEY:
+        alerts.append({"level":"ok","icon":"🤖",
+                        "title":"جميع الموديلات متاحة",
+                        "detail":f"{len(MODELS)} موديل جاهز للاستخدام"})
+
+    # 4. فحص APP_PASSWORD
+    if not APP_PASSWORD:
+        alerts.append({"level":"warn","icon":"🔒",
+                        "title":"APP_PASSWORD غير مضبوط",
+                        "detail":"أي شخص يمكنه الدخول كـ Admin. أضف APP_PASSWORD في Render"})
+
+    # 5. فحص AUTO_LOAD_REPO
+    if AUTO_LOAD_REPO:
+        alerts.append({"level":"ok","icon":"📁",
+                        "title":f"Auto-load مضبوط: {AUTO_LOAD_REPO}",
+                        "detail":"المشروع سيُحمّل تلقائياً عند كل دخول"})
+
+    return JSONResponse({
+        "alerts": alerts,
+        "errors":   sum(1 for a in alerts if a["level"]=="error"),
+        "warnings": sum(1 for a in alerts if a["level"]=="warn"),
+        "ok":       sum(1 for a in alerts if a["level"]=="ok"),
+    })
+
+
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request, leo_session: str | None = Cookie(default=None)):
     if r := check_auth(leo_session): return r
@@ -958,7 +1065,17 @@ async def chat_stream(request:Request, prompt:str=Form(...), model_id:str=Form(N
             except Exception as exc: last_err=str(exc); continue
 
         if stop_ev.is_set() and full_text: full_text+="\n\n*(⏹ توقف)*"
-        if not full_text: full_text=f"⚠️ فشلت كل النماذج.\n\nالخطأ: `{last_err}`"; yield f"data: {json.dumps({'token':full_text})}\n\n"
+        if not full_text:
+            # رسالة خطأ واضحة مع اقتراح
+            full_text = (
+                f"⚠️ **تعذّر الحصول على رد**\n\n"
+                f"الخطأ: `{last_err}`\n\n"
+                f"**جرّب:**\n"
+                f"- اضغط 🔄 إعادة الاتصال وأرسل الطلب مرة أخرى\n"
+                f"- اختر موديلاً مختلفاً من القائمة يدوياً\n"
+                f"- تحقق من `/health` لمعرفة الموديلات الشغّالة"
+            )
+            yield f"data: {json.dumps({'token':full_text})}\n\n"
         session.append({"role":"user","content":prompt})
         session.append({"role":"assistant","content":full_text})
         files_found=extract_files(full_text)
@@ -1155,6 +1272,42 @@ async def generate_image(prompt:str=Form(...),size:str=Form("1024x1024"),model:s
 
 
 # ══ GitHub Push ════════════════════════════════════════════════════════════════
+# ── Health check — فحص الموديلات الشغّالة ────────────────────────────────────
+@app.get("/health")
+async def health_check(leo_session: str | None = Cookie(default=None)):
+    """فحص سريع لكل الموديلات — يرجع قائمة الشغّال والمتوقف"""
+    if r := check_auth(leo_session): return r
+    if not OPENROUTER_API_KEY:
+        return JSONResponse({"error": "API key missing"}, status_code=500)
+
+    results = []
+    hdrs = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://leo-ai.app",
+        "X-Title": "Leo-AI",
+    }
+    test_msg = [{"role": "user", "content": "hi"}]
+
+    async with httpx.AsyncClient(timeout=httpx.Timeout(connect=5.0, read=15.0, write=5.0, pool=5.0)) as client:
+        for m in MODELS:
+            try:
+                resp = await client.post(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    headers=hdrs,
+                    json={"model": m["id"], "messages": test_msg, "max_tokens": 5, "stream": False},
+                )
+                ok = resp.status_code == 200
+                err = "" if ok else resp.json().get("error", {}).get("message", "")[:80]
+                results.append({"id": m["id"], "name": m["name"], "badge": m["badge"], "ok": ok, "error": err})
+            except Exception as exc:
+                results.append({"id": m["id"], "name": m["name"], "badge": m["badge"], "ok": False, "error": str(exc)[:80]})
+
+    working  = [r for r in results if r["ok"]]
+    broken   = [r for r in results if not r["ok"]]
+    return JSONResponse({"working": working, "broken": broken, "total": len(results)})
+
+
 @app.post("/github/push")
 async def github_push(
     owner:   str = Form(...),
