@@ -2,33 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
 <meta name="theme-color" content="#171717">
 <title>Leo-AI</title>
-<!-- Pyodide for Python in browser -->
-<script>
-// Lazy-load Pyodide only when needed
-let pyodideReady = false;
-let pyodideLoading = false;
-let pyodide = null;
-async function loadPyodideIfNeeded() {
-  if (pyodideReady) return true;
-  if (pyodideLoading) return false;
-  pyodideLoading = true;
-  try {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js';
-    document.head.appendChild(script);
-    await new Promise((res, rej) => { script.onload=res; script.onerror=rej; });
-    pyodide = await loadPyodide();
-    pyodideReady = true;
-    return true;
-  } catch(e) {
-    pyodideLoading = false;
-    return false;
-  }
-}
-</script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -43,54 +19,58 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 /* ══ HEADER ══════════════════════════════════════════════════════════════════ */
 .hdr{background:#171717;border-bottom:1px solid var(--bd);height:52px;padding:0 6px;
      display:flex;align-items:center;gap:4px;flex-shrink:0;z-index:20;overflow:hidden}
-.logo{width:26px;height:26px;flex-shrink:0;background:linear-gradient(135deg,#19c37d,#ab68ff);
+.logo{width:26px;height:26px;flex-shrink:0;
+      background:linear-gradient(135deg,#19c37d,#ab68ff);
       border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px}
-.role-badge{font-size:9px;border-radius:4px;padding:2px 5px;font-weight:700;flex-shrink:0;white-space:nowrap}
+.role-badge{font-size:9px;border-radius:4px;padding:2px 5px;font-weight:700;flex-shrink:0}
 .role-badge.admin{background:rgba(25,195,125,.15);color:var(--ac)}
 .role-badge.guest{background:rgba(171,104,255,.15);color:var(--ac2)}
 .hdr-mid{flex:1;display:flex;justify-content:center;align-items:center;gap:3px;min-width:0;overflow:hidden}
 .tabs-in{display:flex;background:var(--sf);border:1px solid var(--bd);border-radius:7px;padding:2px;gap:1px;flex-shrink:0}
-.tab{padding:4px 7px;border-radius:5px;border:none;background:transparent;color:var(--mu);
-     font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
+.tab{padding:4px 7px;border-radius:5px;border:none;background:transparent;
+     color:var(--mu);font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
 .tab.on{background:var(--sf2);color:var(--tx)}
 .mpick{display:flex;align-items:center;gap:3px;background:var(--sf);border:1px solid var(--bd);
        border-radius:7px;padding:4px 6px;cursor:pointer;font-size:10.5px;color:var(--tx);
-       max-width:90px;flex-shrink:1;min-width:0}
-.mpick:active{border-color:var(--ac)}
+       max-width:88px;flex-shrink:1;min-width:0}
 .mpick .mn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;min-width:0;flex:1}
 .mpick .arr{color:var(--mu);font-size:9px;flex-shrink:0;transition:transform .2s}
 .mpick.open .arr{transform:rotate(180deg)}
-/* Smart router badge */
-.smart-badge{font-size:8.5px;background:rgba(25,195,125,.15);color:var(--ac);
-             border-radius:3px;padding:1px 4px;flex-shrink:0;display:none}
-.smart-badge.show{display:block}
+.auto-tag{font-size:8px;background:rgba(25,195,125,.2);color:var(--ac);
+          border-radius:3px;padding:1px 4px;font-weight:700}
 .hbts{display:flex;gap:3px;flex-shrink:0}
 .ibtn{width:30px;height:30px;border-radius:7px;background:transparent;border:1px solid var(--bd);
       color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;
       justify-content:center;flex-shrink:0;text-decoration:none}
 .ibtn:active{background:var(--sf2)}
-.ibtn.red:active{background:rgba(239,68,68,.15)}
 
-/* ══ MODEL SHEET ══════════════════════════════════════════════════════════════ */
-.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;opacity:0;pointer-events:none;transition:opacity .25s}
+/* ══ OVERLAY / SHEET ════════════════════════════════════════════════════════ */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;
+    opacity:0;pointer-events:none;transition:opacity .25s}
 .ov.on{opacity:1;pointer-events:all}
 .sheet{position:fixed;bottom:0;left:0;right:0;z-index:101;background:#1a1a1a;
        border-radius:18px 18px 0 0;border-top:1px solid var(--bd);
        transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
-       max-height:82vh;display:flex;flex-direction:column}
+       max-height:85vh;display:flex;flex-direction:column}
 .sheet.on{transform:translateY(0)}
-.sh-bar{width:34px;height:4px;background:var(--bd);border-radius:2px;margin:11px auto 0;flex-shrink:0}
-.sh-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 9px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.sh-bar{width:34px;height:4px;background:var(--bd);border-radius:2px;
+        margin:11px auto 0;flex-shrink:0}
+.sh-head{display:flex;align-items:center;justify-content:space-between;
+         padding:12px 16px 9px;border-bottom:1px solid var(--bd);flex-shrink:0}
 .sh-ttl{font-size:15px;font-weight:700}
-.sh-x{width:26px;height:26px;background:var(--sf);border:none;border-radius:50%;color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.sh-x{width:26px;height:26px;background:var(--sf);border:none;border-radius:50%;
+      color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
 .sh-list{overflow-y:auto;padding:6px 9px 28px;flex:1}
 .sh-list::-webkit-scrollbar{width:3px}
 .sh-list::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
-.mi{display:flex;align-items:center;gap:10px;padding:10px 9px;border-radius:10px;cursor:pointer}
-.mi:active{background:var(--sf)}
+.mi{display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;cursor:pointer}
+.mi:active,.mi:hover{background:var(--sf)}
 .mi.sel{background:rgba(25,195,125,.08)}
-.mi-ico{width:36px;height:36px;background:var(--sf);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.mi.auto-mi{background:rgba(25,195,125,.05);border:1px solid rgba(25,195,125,.2);margin-bottom:6px}
+.mi-ico{width:34px;height:34px;background:var(--sf);border-radius:50%;
+        display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
 .mi.sel .mi-ico{background:rgba(25,195,125,.15);border:1.5px solid var(--ac)}
+.mi.auto-mi .mi-ico{background:linear-gradient(135deg,rgba(25,195,125,.2),rgba(171,104,255,.2))}
 .mi-body{flex:1;min-width:0}
 .mi-name{font-size:13px;font-weight:600;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 .tg{font-size:9px;font-weight:700;border-radius:3px;padding:2px 5px}
@@ -98,137 +78,192 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .tg.v{background:rgba(171,104,255,.15);color:var(--ac2)}
 .tg.r{background:rgba(251,191,36,.15);color:#fbbf24}
 .tg.p{background:rgba(59,130,246,.15);color:#60a5fa}
-.mi-desc{font-size:10.5px;color:var(--mu);margin-top:1px}
-.mi-meta{display:flex;gap:5px;margin-top:3px}
-.pl{font-size:9px;color:var(--mu);background:var(--sf);border-radius:3px;padding:2px 5px}
+.mi-desc{font-size:10px;color:var(--mu);margin-top:1px}
 .mi-chk{color:var(--ac);font-size:16px;font-weight:700;opacity:0;flex-shrink:0}
 .mi.sel .mi-chk{opacity:1}
-/* Auto option */
-.mi.auto{background:rgba(25,195,125,.05);border:1px solid rgba(25,195,125,.2);border-radius:10px;margin-bottom:6px}
-.mi.auto .mi-ico{background:linear-gradient(135deg,rgba(25,195,125,.2),rgba(171,104,255,.2))}
 
-/* ══ PANEL ════════════════════════════════════════════════════════════════════ */
-.panel-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s}
+/* ══ SIDE PANEL ═════════════════════════════════════════════════════════════ */
+.panel-ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;
+          opacity:0;pointer-events:none;transition:opacity .25s}
 .panel-ov.on{opacity:1;pointer-events:all}
-.panel{position:fixed;top:0;right:0;bottom:0;width:min(300px,88vw);background:#181818;
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(310px,90vw);background:#181818;
        border-left:1px solid var(--bd);z-index:51;transform:translateX(100%);
        transition:transform .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
 .panel.on{transform:translateX(0)}
-.panel-head{display:flex;align-items:center;justify-content:space-between;padding:13px 13px 9px;border-bottom:1px solid var(--bd);flex-shrink:0}
-.panel-title{font-size:14px;font-weight:700}
-.panel-x{width:26px;height:26px;background:var(--sf);border:none;border-radius:50%;color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
-.panel-body{flex:1;overflow-y:auto;padding:8px}
-.panel-body::-webkit-scrollbar{width:3px}
-.panel-body::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
-.panel-footer{padding:8px;border-top:1px solid var(--bd);flex-shrink:0;display:flex;flex-direction:column;gap:5px}
-.pbtn{padding:9px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;text-align:center}
-.pbtn:active{opacity:.85}
-.pbtn.ac{background:var(--ac);color:#111}
-.pbtn.sec{background:var(--sf);color:var(--tx);border:1px solid var(--bd)}
-/* Saved chat items */
+.ph{display:flex;align-items:center;justify-content:space-between;
+    padding:13px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.ph-title{font-size:14px;font-weight:700}
+.ph-x{width:26px;height:26px;background:var(--sf);border:none;border-radius:50%;
+      color:var(--tx);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.pb{flex:1;overflow-y:auto;padding:8px}
+.pb::-webkit-scrollbar{width:3px}
+.pb::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+.pf{padding:8px;border-top:1px solid var(--bd);flex-shrink:0;display:flex;flex-direction:column;gap:5px}
+.xbtn{padding:9px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;text-align:center}
+.xbtn.ac{background:var(--ac);color:#111}
+.xbtn.sec{background:var(--sf);color:var(--tx);border:1px solid var(--bd)}
+
+/* Saved chats */
 .sc-item{padding:9px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px}
 .sc-item:active{background:var(--sf)}
-.sc-item-hdr{display:flex;align-items:center;justify-content:space-between}
-.sc-item-title{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.sc-item-del{background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:0 3px}
-.sc-item-del:active{color:var(--danger)}
+.sc-item-top{display:flex;align-items:center;justify-content:space-between}
+.sc-item-title{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.sc-item-del{background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:0 2px}
 .sc-item-date{font-size:10px;color:var(--mu);margin-top:2px}
-.sc-empty{text-align:center;color:var(--mu);font-size:12px;padding:20px 10px}
-/* APIs panel items */
-.api-item{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:9px 10px;margin-bottom:7px}
-.api-name{font-size:12.5px;font-weight:700;color:var(--ac)}
-.api-free{font-size:10px;color:var(--mu);margin-top:2px}
-.api-btns{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
-.api-btn{background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:5px;
-         padding:3px 8px;font-size:10.5px;cursor:pointer;text-decoration:none;display:inline-block}
-.api-btn:active{background:var(--sf2);color:var(--tx)}
-.api-btn.use{border-color:var(--ac);color:var(--ac)}
-.api-status{font-size:9px;border-radius:3px;padding:1px 5px;font-weight:700;flex-shrink:0}
-.api-status.ok{background:rgba(25,195,125,.15);color:var(--ac)}
-.api-status.no{background:rgba(239,68,68,.15);color:var(--danger)}
+.sc-empty{text-align:center;color:var(--mu);font-size:12px;padding:24px 10px}
 
-/* ══ PAGES ════════════════════════════════════════════════════════════════════ */
+/* APIs panel */
+.api-card{background:var(--sf);border:1px solid var(--bd);border-radius:9px;
+          padding:10px;margin-bottom:8px}
+.api-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.api-name{font-size:12.5px;font-weight:700}
+.api-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.api-dot.ok{background:var(--ac)}
+.api-dot.no{background:var(--warn)}
+.api-free{font-size:10px;color:var(--mu);margin-bottom:7px}
+.api-btns{display:flex;gap:5px;flex-wrap:wrap}
+.api-btn{background:transparent;border:1px solid var(--bd);color:var(--mu);
+         border-radius:5px;padding:3px 9px;font-size:10.5px;cursor:pointer;text-decoration:none;display:inline-block}
+.api-btn.use{border-color:var(--ac);color:var(--ac)}
+.api-btn.test{border-color:var(--ac2);color:var(--ac2)}
+
+/* ══ TEMPLATE GALLERY ════════════════════════════════════════════════════════ */
+.tpl-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:10px}
+.tpl-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;
+          overflow:hidden;cursor:pointer;transition:border-color .15s}
+.tpl-card:active{border-color:var(--ac)}
+.tpl-thumb{width:100%;height:80px;display:flex;align-items:center;justify-content:center;font-size:32px}
+.tpl-info{padding:7px 9px}
+.tpl-name{font-size:11.5px;font-weight:700}
+.tpl-desc{font-size:10px;color:var(--mu);margin-top:2px}
+/* Gradient thumbs */
+.tpl-stocks{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364)}
+.tpl-crypto{background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)}
+.tpl-game{background:linear-gradient(135deg,#141e30,#243b55)}
+.tpl-weather{background:linear-gradient(135deg,#2193b0,#6dd5ed)}
+.tpl-portfolio{background:linear-gradient(135deg,#1a1a1a,#2d2d2d)}
+.tpl-dashboard{background:linear-gradient(135deg,#0f0c29,#302b63,#24243e)}
+.tpl-news{background:linear-gradient(135deg,#1f1f1f,#2d2d2d)}
+.tpl-shop{background:linear-gradient(135deg,#1a1a1a,#333)}
+
+/* ══ SCREENSHOT TO CODE ══════════════════════════════════════════════════════ */
+.s2c-drop{border:2px dashed var(--bd);border-radius:12px;padding:28px 20px;
+          text-align:center;cursor:pointer;transition:border-color .2s;margin:10px}
+.s2c-drop:active,.s2c-drop.drag{border-color:var(--ac);background:rgba(25,195,125,.05)}
+.s2c-icon{font-size:36px;margin-bottom:8px}
+.s2c-text{font-size:13px;font-weight:600;margin-bottom:4px}
+.s2c-sub{font-size:11px;color:var(--mu)}
+.s2c-opts{padding:0 10px 10px;display:flex;gap:6px;flex-wrap:wrap}
+.s2c-opt{flex:1;min-width:0}
+.s2c-opt label{font-size:10.5px;color:var(--mu);display:block;margin-bottom:4px}
+.s2c-opt select{width:100%;background:var(--sf);color:var(--tx);border:1px solid var(--bd);
+                border-radius:7px;padding:6px 8px;font-size:12px;outline:none;cursor:pointer}
+.s2c-preview{margin:0 10px 10px;border-radius:8px;overflow:hidden;
+             border:1px solid var(--bd);max-height:140px;display:none}
+.s2c-preview img{width:100%;display:block;object-fit:cover;max-height:140px}
+.s2c-preview.show{display:block}
+
+/* ══ GITHUB ═════════════════════════════════════════════════════════════════ */
 .page{display:none;flex:1;flex-direction:column;overflow:hidden}
 .page.on{display:flex}
-
-/* ══ GITHUB ════════════════════════════════════════════════════════════════════ */
 .gh-page{display:flex;flex:1;flex-direction:column;overflow:hidden}
-.gh-topbar{background:#171717;border-bottom:1px solid var(--bd);padding:8px 10px;flex-shrink:0;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.gh-back{background:transparent;border:1px solid var(--bd);color:var(--tx);padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;flex-shrink:0}
+.gh-topbar{background:#171717;border-bottom:1px solid var(--bd);padding:8px 10px;
+           flex-shrink:0;display:flex;align-items:center;gap:7px}
+.gh-back{background:transparent;border:1px solid var(--bd);color:var(--tx);
+         padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0}
 .gh-back:active{background:var(--sf)}
-.gh-title{font-size:13px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.gh-actions{display:flex;gap:5px;padding:7px 10px;border-bottom:1px solid var(--bd);flex-shrink:0;flex-wrap:wrap;background:var(--bg)}
-.gha-btn{flex:1;min-width:0;padding:7px 5px;border:1px solid var(--bd);border-radius:7px;background:var(--sf);color:var(--tx);font-size:10.5px;font-weight:600;cursor:pointer;text-align:center;white-space:nowrap}
-.gha-btn:active{background:var(--sf2)}
-.gha-btn.ac{background:var(--ac);color:#111;border-color:var(--ac)}
-.gha-btn.review{background:rgba(171,104,255,.15);color:var(--ac2);border-color:rgba(171,104,255,.4)}
-.gha-btn.load{background:rgba(25,195,125,.12);color:var(--ac);border-color:rgba(25,195,125,.4)}
-.mem-bar{background:rgba(25,195,125,.07);border-bottom:1px solid rgba(25,195,125,.15);padding:6px 10px;flex-shrink:0;display:none;align-items:center;gap:6px;font-size:11px}
+.gh-title{font-size:13px;font-weight:700;flex:1;min-width:0;
+          overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gh-actions{display:flex;gap:5px;padding:7px 10px;border-bottom:1px solid var(--bd);
+            flex-shrink:0;flex-wrap:wrap}
+.ga-btn{flex:1;min-width:0;padding:7px 4px;border:1px solid var(--bd);border-radius:7px;
+        background:var(--sf);color:var(--tx);font-size:10px;font-weight:600;cursor:pointer;text-align:center;white-space:nowrap}
+.ga-btn:active{background:var(--sf2)}
+.ga-btn.ac{background:var(--ac);color:#111;border-color:var(--ac)}
+.ga-btn.review{background:rgba(171,104,255,.15);color:var(--ac2);border-color:rgba(171,104,255,.3)}
+.ga-btn.load{background:rgba(25,195,125,.12);color:var(--ac);border-color:rgba(25,195,125,.3)}
+.ga-btn.push{background:rgba(59,130,246,.15);color:#60a5fa;border-color:rgba(59,130,246,.3)}
+.mem-bar{background:rgba(25,195,125,.07);border-bottom:1px solid rgba(25,195,125,.15);
+         padding:6px 10px;flex-shrink:0;display:none;align-items:center;gap:6px;font-size:11px}
 .mem-bar.show{display:flex}
-.mem-count{background:rgba(25,195,125,.2);color:var(--ac);border-radius:4px;padding:1px 7px;font-weight:700;flex-shrink:0}
+.mem-count{background:rgba(25,195,125,.2);color:var(--ac);border-radius:4px;
+           padding:1px 7px;font-weight:700;flex-shrink:0}
 .mem-label{color:var(--mu);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mem-clear{background:transparent;border:1px solid var(--bd);color:var(--mu);padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;flex-shrink:0}
-.mem-go{background:var(--ac);color:#111;border:none;padding:3px 9px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0}
-.sel-bar{background:rgba(25,195,125,.06);border-bottom:1px solid rgba(25,195,125,.15);padding:6px 10px;display:none;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.mem-clear{background:transparent;border:1px solid var(--bd);color:var(--mu);
+           padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;flex-shrink:0}
+.mem-go{background:var(--ac);color:#111;border:none;
+        padding:3px 9px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0}
+.sel-bar{background:rgba(25,195,125,.06);border-bottom:1px solid rgba(25,195,125,.15);
+         padding:6px 10px;display:none;align-items:center;gap:6px;flex-shrink:0}
 .sel-bar.show{display:flex}
-.sel-count{font-size:11.5px;color:var(--ac);font-weight:600;flex-shrink:0}
+.sel-count{font-size:11px;color:var(--ac);font-weight:600}
 .gh-search{padding:8px 10px;border-bottom:1px solid var(--bd);flex-shrink:0}
-.gh-search input{width:100%;background:var(--sf);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px 11px;font-size:13px;outline:none;font-family:inherit}
+.gh-search input{width:100%;background:var(--sf);color:var(--tx);border:1px solid var(--bd);
+                 border-radius:8px;padding:7px 11px;font-size:13px;outline:none;font-family:inherit}
 .gh-search input:focus{border-color:var(--ac)}
 .gh-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .gh-list::-webkit-scrollbar{width:3px}
 .gh-list::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
-.repo-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .1s}
+.repo-item{display:flex;align-items:center;gap:10px;padding:11px 12px;
+           border-bottom:1px solid var(--bd);cursor:pointer}
 .repo-item:active{background:var(--sf)}
-.ri-icon{width:34px;height:34px;background:var(--sf);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ri-icon{width:34px;height:34px;background:var(--sf);border-radius:8px;
+         display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .ri-body{flex:1;min-width:0}
-.ri-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:5px}
-.ri-prv{background:rgba(245,158,11,.15);color:var(--warn);border-radius:3px;padding:1px 4px;font-size:8.5px;font-weight:700;flex-shrink:0}
+.ri-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;
+         white-space:nowrap;display:flex;align-items:center;gap:5px}
+.ri-prv{background:rgba(245,158,11,.15);color:var(--warn);border-radius:3px;
+        padding:1px 4px;font-size:8.5px;font-weight:700;flex-shrink:0}
 .ri-meta{font-size:10px;color:var(--mu);margin-top:2px;display:flex;gap:8px}
 .ri-arr{color:var(--mu);font-size:14px;flex-shrink:0}
-.file-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--bd);cursor:pointer;transition:background .1s}
+.file-item{display:flex;align-items:center;gap:8px;padding:8px 12px;
+           border-bottom:1px solid var(--bd);cursor:pointer}
 .file-item:active{background:var(--sf)}
 .file-item.checked{background:rgba(25,195,125,.06)}
-.fi-check{width:18px;height:18px;border:1.5px solid var(--bd);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ac)}
-.file-item.checked .fi-check{background:rgba(25,195,125,.15);border-color:var(--ac)}
-.fi-check-inner{opacity:0;transition:opacity .15s}
-.file-item.checked .fi-check-inner{opacity:1}
-.fi-icon{font-size:15px;flex-shrink:0}
+.fi-chk{width:17px;height:17px;border:1.5px solid var(--bd);border-radius:4px;
+        flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ac)}
+.file-item.checked .fi-chk{background:rgba(25,195,125,.15);border-color:var(--ac)}
+.fi-chi{opacity:0}
+.file-item.checked .fi-chi{opacity:1}
+.fi-icon{font-size:14px;flex-shrink:0}
 .fi-name{font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fi-name.code{color:var(--tx)}
-.fi-name.other{color:var(--mu)}
-.fi-size{font-size:10px;color:var(--mu);flex-shrink:0}
-.fi-mem{font-size:8px;background:rgba(25,195,125,.15);color:var(--ac);border-radius:3px;padding:1px 4px;flex-shrink:0}
-.gh-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px;color:var(--mu);font-size:12.5px;padding:30px}
-.review-panel{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column}
-.review-panel.show{display:flex}
-.rp-head{background:#171717;border-bottom:1px solid var(--bd);padding:10px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0}
-.rp-title{font-size:13.5px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rp-close{background:var(--sf);border:1px solid var(--bd);color:var(--tx);padding:5px 11px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;flex-shrink:0}
-.rp-body{flex:1;overflow-y:auto;padding:14px}
+.fi-name.code{color:var(--tx)} .fi-name.other{color:var(--mu)}
+.fi-size{font-size:9.5px;color:var(--mu);flex-shrink:0}
+.fi-mem{font-size:8px;background:rgba(25,195,125,.15);color:var(--ac);
+        border-radius:3px;padding:1px 4px;flex-shrink:0}
+.gh-empty{text-align:center;color:var(--mu);font-size:12.5px;padding:40px 20px}
 
-/* ══ LIVE PREVIEW ══════════════════════════════════════════════════════════════ */
-.preview-panel{position:fixed;inset:0;background:var(--bg);z-index:150;display:none;flex-direction:column}
-.preview-panel.show{display:flex}
+/* Review / Push overlay */
+.full-ov{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column}
+.full-ov.show{display:flex}
+.fo-head{background:#171717;border-bottom:1px solid var(--bd);padding:10px 12px;
+         display:flex;align-items:center;gap:8px;flex-shrink:0}
+.fo-title{font-size:13px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fo-close{background:var(--sf);border:1px solid var(--bd);color:var(--tx);
+          padding:5px 11px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;flex-shrink:0}
+.fo-body{flex:1;overflow-y:auto;padding:14px}
+.fo-body::-webkit-scrollbar{width:4px}
+.fo-body::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+
+/* ══ LIVE PREVIEW ════════════════════════════════════════════════════════════ */
+.pv-panel{position:fixed;inset:0;background:var(--bg);z-index:150;display:none;flex-direction:column}
+.pv-panel.show{display:flex}
 .pv-head{background:#171717;border-bottom:1px solid var(--bd);padding:8px 10px;
-         display:flex;align-items:center;gap:7px;flex-shrink:0;flex-wrap:wrap}
-.pv-title{font-size:13px;font-weight:700;flex:1}
-.pv-btns{display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap}
+         display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.pv-title{font-size:12.5px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pv-btn{background:var(--sf);border:1px solid var(--bd);color:var(--tx);
-        padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap}
+        padding:5px 9px;border-radius:6px;font-size:10.5px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .pv-btn:active{background:var(--sf2)}
 .pv-btn.ac{background:var(--ac);color:#111;border-color:var(--ac)}
 .pv-btn.danger{border-color:var(--danger);color:var(--danger)}
-.pv-frame{flex:1;border:none;background:#fff}
-/* Python output */
-.py-output{background:var(--cbg);border-top:1px solid var(--bd);padding:10px 12px;
-           font-family:'Fira Code',monospace;font-size:12px;max-height:200px;
-           overflow-y:auto;flex-shrink:0;display:none}
-.py-output.show{display:block}
-.py-output .py-ok{color:#a6e22e}
-.py-output .py-err{color:var(--danger)}
+.pv-frame{flex:1;border:none;background:#fff;width:100%}
+.py-out{background:var(--cbg);border-top:1px solid var(--bd);padding:10px 12px;
+        font-family:'Fira Code',monospace;font-size:12px;max-height:180px;
+        overflow-y:auto;flex-shrink:0;display:none;white-space:pre-wrap}
+.py-out.show{display:block}
+.py-ok{color:#a6e22e} .py-err{color:var(--danger)}
 
-/* ══ CHAT ══════════════════════════════════════════════════════════════════════ */
+/* ══ CHAT ════════════════════════════════════════════════════════════════════ */
 .cw{flex:1;overflow-y:auto;scroll-behavior:smooth;padding:4px 0 8px;-webkit-overflow-scrolling:touch}
 .cw::-webkit-scrollbar{width:3px}
 .cw::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
@@ -246,100 +281,121 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .chip:active{border-color:var(--ac);color:var(--ac);background:rgba(25,195,125,.07)}
 #msgs{padding:4px 0}
 .row{display:flex;gap:8px;padding:3px 10px;animation:fu .2s ease;width:100%}
-.row.u{justify-content:flex-end}
-.row.a{justify-content:flex-start}
-.av{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:3px}
+.row.u{justify-content:flex-end} .row.a{justify-content:flex-start}
+.av{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;
+    align-items:center;justify-content:center;font-size:12px;margin-top:3px}
 .av.aa{background:linear-gradient(135deg,#19c37d,#ab68ff);order:-1}
 .av.ua{background:linear-gradient(135deg,#ab68ff,#6b3fa0)}
 .bbl{padding:9px 12px;border-radius:var(--r);font-size:13.5px;line-height:1.75;word-break:break-word}
 .bbl.u{max-width:82%;background:var(--sf);border:1px solid var(--bd);border-bottom-left-radius:4px}
 .bbl.a{flex:1;min-width:0;max-width:100%;background:transparent}
 .ai-wrap{flex:1;min-width:0;display:flex;flex-direction:column}
-.mtag{font-size:10px;color:var(--mu);margin-top:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-.mtag-model{color:var(--mu)}
-.mtag-auto{font-size:8.5px;background:rgba(25,195,125,.12);color:var(--ac);border-radius:3px;padding:1px 4px}
-.mact{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
-.mac-btn{background:transparent;border:none;color:var(--mu);font-size:11px;cursor:pointer;
-         display:flex;align-items:center;gap:3px;padding:2px 5px;border-radius:4px;border:1px solid var(--bd)}
+.mtag{font-size:10px;color:var(--mu);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.auto-tag-sm{font-size:8px;background:rgba(25,195,125,.12);color:var(--ac);
+             border-radius:3px;padding:1px 4px;font-weight:700}
+.mact{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+.mac-btn{background:transparent;border:1px solid var(--bd);color:var(--mu);
+         font-size:10.5px;cursor:pointer;padding:3px 8px;border-radius:5px;white-space:nowrap}
 .mac-btn:active{color:var(--ac);border-color:var(--ac)}
-.cursor{display:inline-block;width:2px;height:1em;background:var(--ac);margin-right:1px;vertical-align:text-bottom;animation:blink .5s step-end infinite}
+.cursor{display:inline-block;width:2px;height:1em;background:var(--ac);
+        margin-right:1px;vertical-align:text-bottom;animation:blink .5s step-end infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 .bbl.a h1,.bbl.a h2,.bbl.a h3{color:var(--ac);margin:10px 0 4px;font-weight:600}
 .bbl.a h1{font-size:15px}.bbl.a h2{font-size:14px}.bbl.a h3{font-size:13px}
 .bbl.a p{margin:4px 0}
-.bbl.a code{background:var(--cbg);padding:2px 5px;border-radius:4px;font-family:'Fira Code',monospace;font-size:11.5px;color:#ff9e64;border:1px solid #333}
+.bbl.a code{background:var(--cbg);padding:2px 5px;border-radius:4px;
+            font-family:'Fira Code',monospace;font-size:11.5px;color:#ff9e64;border:1px solid #333}
 .bbl.a blockquote{border-right:3px solid var(--ac);padding-right:9px;margin:6px 0;color:var(--mu)}
-.bbl.a li{margin:3px 0}
-.bbl.a strong{color:#fff}
-/* Code blocks — عرض الشاشة كامل */
-.cw2{background:var(--cbg);border-radius:9px;margin:8px 0;border:1px solid var(--bd);overflow:hidden;width:calc(100vw - 20px);max-width:100%}
-.ch{display:flex;justify-content:space-between;align-items:center;padding:6px 11px;background:var(--chdr);border-bottom:1px solid var(--bd)}
+.bbl.a li{margin:3px 0} .bbl.a strong{color:#fff}
+/* Code blocks */
+.cw2{background:var(--cbg);border-radius:9px;margin:8px 0;border:1px solid var(--bd);
+     overflow:hidden;width:calc(100vw - 20px);max-width:100%}
+.ch{display:flex;justify-content:space-between;align-items:center;
+    padding:6px 11px;background:var(--chdr);border-bottom:1px solid var(--bd)}
 .ch span{color:var(--mu);font-size:11px;font-family:monospace;font-weight:600}
 .ch-btns{display:flex;gap:4px;flex-wrap:wrap}
-.ch button{background:transparent;color:var(--mu);border:1px solid var(--bd);padding:3px 7px;border-radius:4px;cursor:pointer;font-size:10px;white-space:nowrap}
+.ch button{background:transparent;color:var(--mu);border:1px solid var(--bd);
+           padding:3px 7px;border-radius:4px;cursor:pointer;font-size:10px;white-space:nowrap}
 .ch button:active{background:var(--sf2);color:var(--tx)}
 .ch button.ok{color:var(--ac);border-color:var(--ac)}
 .cw2 pre{margin:0;padding:11px 12px;overflow-x:auto;font-size:12px;line-height:1.6}
-.cw2 pre code{background:none!important;padding:0!important;border:none!important;color:#cdd6f4;font-family:'Fira Code',monospace}
-.vn{background:rgba(171,104,255,.1);border:1px solid rgba(171,104,255,.3);border-radius:7px;padding:6px 10px;font-size:11px;color:var(--ac2);margin-bottom:6px;display:none}
+.cw2 pre code{background:none!important;padding:0!important;border:none!important;
+              color:#cdd6f4;font-family:'Fira Code',monospace}
+.vn{background:rgba(171,104,255,.1);border:1px solid rgba(171,104,255,.3);border-radius:7px;
+    padding:6px 10px;font-size:11px;color:var(--ac2);margin-bottom:6px;display:none}
 .vn.on{display:block}
+/* Smart bar */
+.smart-bar{display:none;background:rgba(25,195,125,.06);border:1px solid rgba(25,195,125,.15);
+           border-radius:7px;padding:4px 10px;margin-bottom:5px;font-size:11px;
+           color:var(--mu);align-items:center;gap:6px}
+.smart-bar.show{display:flex}
+.smart-bar strong{color:var(--ac)}
 #spin{display:none;padding:5px 12px;gap:9px;align-items:center}
 #spin.on{display:flex}
-.ring{width:20px;height:20px;border:2.5px solid #333;border-top-color:var(--ac);border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
+.ring{width:20px;height:20px;border:2.5px solid #333;border-top-color:var(--ac);
+      border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
 @keyframes sp{to{transform:rotate(360deg)}}
 .stx{color:var(--mu);font-size:12px}
 #fsec{padding:0 10px}
 .fb{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin:4px 0}
-.fbh{display:flex;align-items:center;justify-content:space-between;padding:7px 11px;border-bottom:1px solid var(--bd);font-size:12px}
+.fbh{display:flex;align-items:center;justify-content:space-between;
+     padding:7px 11px;border-bottom:1px solid var(--bd);font-size:12px}
 .fbh span{color:var(--ac);font-weight:600}
-.fbh-dl{background:transparent;border:1px solid var(--ac);color:var(--ac);padding:3px 9px;border-radius:5px;cursor:pointer;font-size:10.5px;font-weight:600}
-.ffi{display:flex;justify-content:space-between;align-items:center;padding:7px 11px;border-bottom:1px solid var(--bd)}
-.ffi:last-child{border-bottom:none}
-.ffi span{font-size:11.5px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%}
-.ffi-btns{display:flex;gap:4px}
-.ffi button{background:transparent;border:1px solid var(--ac);color:var(--ac);padding:3px 7px;border-radius:5px;cursor:pointer;font-size:10.5px;font-weight:600;white-space:nowrap}
-.attach-bar{display:flex;flex-wrap:wrap;gap:5px;padding:0 0 6px;max-height:72px;overflow-y:auto}
-.atch{display:flex;align-items:center;gap:4px;background:var(--sf);border:1px solid var(--bd);border-radius:6px;padding:3px 7px;font-size:11px;color:var(--mu);max-width:135px}
+.fbh-dl{background:transparent;border:1px solid var(--ac);color:var(--ac);
+        padding:3px 9px;border-radius:5px;cursor:pointer;font-size:10.5px;font-weight:600}
+.fi2{display:flex;justify-content:space-between;align-items:center;
+     padding:7px 11px;border-bottom:1px solid var(--bd)}
+.fi2:last-child{border-bottom:none}
+.fi2 span{font-size:11.5px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:50%}
+.fi2-btns{display:flex;gap:4px;flex-shrink:0}
+.fi2-btns button,.fi2-btns a{background:transparent;border:1px solid var(--bd);color:var(--mu);
+  padding:3px 7px;border-radius:5px;cursor:pointer;font-size:10.5px;text-decoration:none;white-space:nowrap}
+.fi2-btns button:active{color:var(--ac);border-color:var(--ac)}
+.attach-bar{display:flex;flex-wrap:wrap;gap:5px;padding:0 0 5px;max-height:70px;overflow-y:auto}
+.atch{display:flex;align-items:center;gap:4px;background:var(--sf);border:1px solid var(--bd);
+      border-radius:6px;padding:3px 7px;font-size:11px;color:var(--mu);max-width:130px}
 .atch-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
 .atch-del{background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:12px;padding:0}
-.ia{background:var(--bg);padding:5px 10px 10px;flex-shrink:0;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+/* Input */
+.ia{background:var(--bg);padding:5px 10px 10px;flex-shrink:0;
+    padding-bottom:max(10px,env(safe-area-inset-bottom))}
 .iw{max-width:700px;margin:0 auto}
-/* Smart router bar */
-.smart-bar{display:none;background:rgba(25,195,125,.06);border:1px solid rgba(25,195,125,.15);
-           border-radius:7px;padding:4px 10px;margin-bottom:5px;font-size:11px;
-           color:var(--mu);align-items:center;gap:5px}
-.smart-bar.show{display:flex}
-.smart-bar strong{color:var(--ac)}
-.ib{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:7px 7px 7px 11px;display:flex;align-items:flex-end;gap:5px}
+.ib{background:var(--sf);border:1px solid var(--bd);border-radius:12px;
+    padding:7px 7px 7px 11px;display:flex;align-items:flex-end;gap:5px}
 .ib:focus-within{border-color:#555}
-.ib textarea{flex:1;background:transparent;color:var(--tx);border:none;outline:none;font-family:inherit;font-size:14px;line-height:1.55;resize:none;min-height:22px;max-height:140px;padding:2px 0}
+.ib textarea{flex:1;background:transparent;color:var(--tx);border:none;outline:none;
+             font-family:inherit;font-size:14px;line-height:1.55;resize:none;
+             min-height:22px;max-height:140px;padding:2px 0}
 .ib textarea::placeholder{color:var(--mu)}
 .ib-btns{display:flex;flex-direction:column;gap:3px}
-.att-btn{width:30px;height:30px;background:transparent;border:1px solid var(--bd);border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--mu)}
+.att-btn{width:30px;height:30px;background:transparent;border:1px solid var(--bd);
+         border-radius:7px;cursor:pointer;display:flex;align-items:center;
+         justify-content:center;font-size:14px;color:var(--mu)}
 .att-btn:active{border-color:var(--ac);color:var(--ac)}
-.snd{width:30px;height:30px;background:var(--ac);border:none;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.snd{width:30px;height:30px;background:var(--ac);border:none;border-radius:7px;
+     cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .snd:active{opacity:.85}
 .snd svg{width:13px;height:13px;fill:#111}
 .snd.stop{background:var(--danger);animation:pulse 1.2s ease-in-out infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)}60%{box-shadow:0 0 0 6px rgba(239,68,68,0)}}
 .att-count{font-size:8px;background:var(--ac);color:#111;border-radius:3px;padding:1px 3px;font-weight:700}
 .hint{text-align:center;font-size:10px;color:#555;margin-top:4px}
-
-/* ══ IMAGE GEN ══════════════════════════════════════════════════════════════════ */
+/* Image Gen */
 .igw{flex:1;overflow-y:auto;padding:14px 10px 0}
 .igi{max-width:100%;margin:0 auto}
 .ig-t{font-size:17px;font-weight:700;margin-bottom:4px}
 .ig-s{color:var(--mu);font-size:11.5px;margin-bottom:14px}
 .ig-f{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:12px;margin-bottom:12px}
 .ig-f label{font-size:12px;color:var(--mu);display:block;margin-bottom:5px}
-.ig-ta{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:13px;resize:none;height:76px;outline:none}
+.ig-ta{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);
+       border-radius:8px;padding:8px 10px;font-family:inherit;font-size:13px;resize:none;height:76px;outline:none}
 .ig-ta:focus{border-color:#555}
 .ig-row{display:flex;gap:6px;margin-top:9px;flex-wrap:nowrap}
-.ig-sel{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:7px;padding:7px 6px;font-size:11.5px;cursor:pointer;outline:none;flex:1;min-width:0}
-.ig-btn{background:var(--ac2);color:#fff;border:none;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;flex-shrink:0}
-.ig-btn:active{opacity:.85}
-.ig-btn:disabled{background:#444;cursor:not-allowed}
-.ig-err{color:var(--danger);font-size:11.5px;padding:5px 0}
+.ig-sel{background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:7px;
+        padding:7px 6px;font-size:11.5px;cursor:pointer;outline:none;flex:1;min-width:0}
+.ig-btn{background:var(--ac2);color:#fff;border:none;padding:7px 14px;border-radius:8px;
+        cursor:pointer;font-size:13px;font-weight:700;flex-shrink:0}
+.ig-btn:active{opacity:.85} .ig-btn:disabled{background:#444;cursor:not-allowed}
 .ig-sp{display:none;flex-direction:column;align-items:center;padding:24px;gap:10px;color:var(--mu);font-size:12px}
 .ig-sp.on{display:flex}
 .ig-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:9px;padding-bottom:16px}
@@ -347,7 +403,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .icard img{width:100%;display:block;aspect-ratio:1;object-fit:cover;background:var(--bg)}
 .icft{padding:7px 9px;display:flex;align-items:center;justify-content:space-between}
 .icp{font-size:10px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:62%}
-.icdl{background:transparent;border:1px solid var(--ac);color:var(--ac);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10px;font-weight:600;text-decoration:none}
+.icdl{background:transparent;border:1px solid var(--ac);color:var(--ac);
+      padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10px;font-weight:600;text-decoration:none}
 </style>
 </head>
 <body>
@@ -364,79 +421,152 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
       <button class="tab" id="tI" onclick="sw('i')">🎨</button>
     </div>
     <button class="mpick" id="mp" onclick="openSh()">
-      <span id="mb">🤖</span><span class="mn" id="mn">ذكي</span><span class="arr">▾</span>
+      <span id="mb">🤖</span>
+      <span class="mn" id="mn">ذكي</span>
+      <span class="arr">▾</span>
     </button>
-    <span class="smart-badge" id="smart-badge">AUTO</span>
   </div>
   <div class="hbts">
-    <button class="ibtn" onclick="openPanel('apis')" title="APIs البيانات">📡</button>
-    <button class="ibtn" onclick="openPanel('chats')" title="المحادثات">📋</button>
-    <button class="ibtn red" onclick="clearChat()" title="مسح">🗑️</button>
+    <button class="ibtn" onclick="openPanel('s2c')" title="صورة → كود">📸</button>
+    <button class="ibtn" onclick="openPanel('tpl')" title="قوالب">⚡</button>
+    <button class="ibtn" onclick="openPanel('apis')" title="APIs">📡</button>
+    <button class="ibtn" onclick="openPanel('chats')" title="محادثات">📋</button>
+    <button class="ibtn" onclick="clearChat()" title="مسح">🗑️</button>
     <a href="/logout" class="ibtn" title="خروج">🚪</a>
   </div>
 </div>
 
-<!-- MODEL SHEET -->
+<!-- OVERLAYS -->
 <div class="ov" id="ov" onclick="closeSh()"></div>
+<div class="panel-ov" id="panel-ov" onclick="closePanel()"></div>
+
+<!-- MODEL SHEET -->
 <div class="sheet" id="sh">
   <div class="sh-bar"></div>
   <div class="sh-head"><span class="sh-ttl">اختر الموديل</span><button class="sh-x" onclick="closeSh()">✕</button></div>
   <div class="sh-list" id="shl"></div>
 </div>
 
-<!-- PANEL OVERLAY -->
-<div class="panel-ov" id="panel-ov" onclick="closePanel()"></div>
+<!-- PANEL: Screenshot to Code -->
+<div class="panel" id="panel-s2c">
+  <div class="ph"><span class="ph-title">📸 صورة ← كود</span><button class="ph-x" onclick="closePanel()">✕</button></div>
+  <div class="pb">
+    <div class="s2c-drop" id="s2c-drop" onclick="document.getElementById('s2c-file').click()"
+         ondragover="event.preventDefault();this.classList.add('drag')"
+         ondragleave="this.classList.remove('drag')"
+         ondrop="handleDrop(event)">
+      <div class="s2c-icon">📸</div>
+      <div class="s2c-text">ارفع صورة الموقع</div>
+      <div class="s2c-sub">PNG • JPG • WebP</div>
+      <input type="file" id="s2c-file" accept="image/*" style="display:none" onchange="s2cFileSelected(this)">
+    </div>
+    <div class="s2c-preview" id="s2c-preview"><img id="s2c-img" src="" alt=""></div>
+    <div class="s2c-opts">
+      <div class="s2c-opt">
+        <label>الأسلوب</label>
+        <select id="s2c-style">
+          <option value="dark">🌑 داكن</option>
+          <option value="modern">☀️ حديث</option>
+          <option value="tailwind">🎨 Tailwind</option>
+        </select>
+      </div>
+      <div class="s2c-opt">
+        <label>الإطار</label>
+        <select id="s2c-fw">
+          <option value="html">HTML</option>
+          <option value="react">React</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="pf">
+    <button class="xbtn ac" id="s2c-btn" onclick="runS2C()" disabled>🔄 تحويل للكود</button>
+    <div id="s2c-status" style="font-size:11px;color:var(--mu);text-align:center"></div>
+  </div>
+</div>
 
-<!-- APIs Panel -->
+<!-- PANEL: Template Gallery -->
+<div class="panel" id="panel-tpl" style="width:min(340px,95vw)">
+  <div class="ph"><span class="ph-title">⚡ قوالب جاهزة</span><button class="ph-x" onclick="closePanel()">✕</button></div>
+  <div class="pb" style="padding:4px">
+    <div class="tpl-grid">
+      <div class="tpl-card" onclick="useTpl('stocks')">
+        <div class="tpl-thumb tpl-stocks">📈</div>
+        <div class="tpl-info"><div class="tpl-name">أسهم سعودي</div><div class="tpl-desc">تداول + بيانات حقيقية</div></div>
+      </div>
+      <div class="tpl-card" onclick="useTpl('crypto')">
+        <div class="tpl-thumb tpl-crypto">₿</div>
+        <div class="tpl-info"><div class="tpl-name">Crypto</div><div class="tpl-desc">CoinGecko API</div></div>
+      </div>
+      <div class="tpl-card" onclick="useTpl('game_flappy')">
+        <div class="tpl-thumb tpl-game">🎮</div>
+        <div class="tpl-info"><div class="tpl-name">Flappy Bird</div><div class="tpl-desc">لعبة جاهزة JS</div></div>
+      </div>
+      <div class="tpl-card" onclick="useTpl('weather')">
+        <div class="tpl-thumb tpl-weather">🌤️</div>
+        <div class="tpl-info"><div class="tpl-name">طقس</div><div class="tpl-desc">Open-Meteo API</div></div>
+      </div>
+      <div class="tpl-card" onclick="useTpl('portfolio')">
+        <div class="tpl-thumb tpl-portfolio">👤</div>
+        <div class="tpl-info"><div class="tpl-name">Portfolio</div><div class="tpl-desc">موقع شخصي</div></div>
+      </div>
+      <div class="tpl-card" onclick="useTpl('dashboard')">
+        <div class="tpl-thumb tpl-dashboard">📊</div>
+        <div class="tpl-info"><div class="tpl-name">Dashboard</div><div class="tpl-desc">لوحة تحكم كاملة</div></div>
+      </div>
+      <div class="tpl-card" onclick="useTpl('news')">
+        <div class="tpl-thumb tpl-news">📰</div>
+        <div class="tpl-info"><div class="tpl-name">أخبار</div><div class="tpl-desc">NewsAPI</div></div>
+      </div>
+      <div class="tpl-card" onclick="useTpl('game_snake')">
+        <div class="tpl-thumb tpl-game">🐍</div>
+        <div class="tpl-info"><div class="tpl-name">Snake Game</div><div class="tpl-desc">لعبة الثعبان</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL: APIs -->
 <div class="panel" id="panel-apis">
-  <div class="panel-head">
-    <span class="panel-title">📡 APIs البيانات المجانية</span>
-    <button class="panel-x" onclick="closePanel()">✕</button>
-  </div>
-  <div class="panel-body" id="apis-list">
-    <div style="color:var(--mu);font-size:12px;padding:10px">جاري التحميل...</div>
-  </div>
-  <div class="panel-footer">
-    <button class="pbtn ac" onclick="useApiInChat()">💬 اطلب من البوت يستخدم API</button>
+  <div class="ph"><span class="ph-title">📡 APIs مجانية</span><button class="ph-x" onclick="closePanel()">✕</button></div>
+  <div class="pb" id="apis-body"><div style="color:var(--mu);font-size:12px;padding:10px">⏳ جاري التحميل...</div></div>
+  <div class="pf">
+    <button class="xbtn ac" onclick="askAllApis()">💬 اطلب dashboard بكل البيانات</button>
   </div>
 </div>
 
-<!-- Saved Chats Panel -->
+<!-- PANEL: Saved Chats -->
 <div class="panel" id="panel-chats">
-  <div class="panel-head">
-    <span class="panel-title">📋 المحادثات</span>
-    <button class="panel-x" onclick="closePanel()">✕</button>
+  <div class="ph"><span class="ph-title">📋 المحادثات</span><button class="ph-x" onclick="closePanel()">✕</button></div>
+  <div class="pb"><div id="sc-list"><div class="sc-empty">لا توجد محادثات</div></div></div>
+  <div class="pf">
+    <button class="xbtn ac" onclick="saveChat()">💾 حفظ الحالية</button>
+    <button class="xbtn sec" onclick="shareChat()">🔗 مشاركة</button>
   </div>
-  <div class="panel-body"><div id="sc-list"><div class="sc-empty">لا توجد محادثات</div></div></div>
-  <div class="panel-footer">
-    <button class="pbtn ac" onclick="saveChat()">💾 حفظ الحالية</button>
-    <button class="pbtn sec" onclick="shareChat()">🔗 مشاركة</button>
-  </div>
-</div>
-
-<!-- Review Panel -->
-<div class="review-panel" id="review-panel">
-  <div class="rp-head">
-    <span class="rp-title" id="rp-title">🔍 مراجعة الكود</span>
-    <button class="rp-close" onclick="closeReview()">✕ إغلاق</button>
-  </div>
-  <div class="rp-body" id="rp-body"></div>
 </div>
 
 <!-- LIVE PREVIEW PANEL -->
-<div class="preview-panel" id="preview-panel">
+<div class="pv-panel" id="pv-panel">
   <div class="pv-head">
-    <span class="pv-title" id="pv-title">🖥️ Live Preview</span>
-    <div class="pv-btns">
-      <button class="pv-btn" onclick="reloadPreview()">🔄 إعادة تحميل</button>
-      <button class="pv-btn ac" onclick="openInCodepen()">🖊️ CodePen</button>
-      <button class="pv-btn" onclick="openInNewTab()">↗️ تبويب جديد</button>
-      <button class="pv-btn" onclick="togglePyOutput()">🐍 Python</button>
-      <button class="pv-btn danger" onclick="closePreview()">✕ إغلاق</button>
-    </div>
+    <span class="pv-title" id="pv-title">🖥️ Preview</span>
+    <button class="pv-btn" onclick="reloadPv()">🔄</button>
+    <button class="pv-btn ac" onclick="openCodepen()">🖊️ CodePen</button>
+    <button class="pv-btn" onclick="openNewTab()">↗️ تبويب</button>
+    <button class="pv-btn" onclick="togglePyOut()">🐍</button>
+    <button class="pv-btn danger" onclick="closePv()">✕</button>
   </div>
-  <iframe id="pv-frame" class="pv-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-modals"></iframe>
-  <div class="py-output" id="py-output"></div>
+  <iframe id="pv-frame" class="pv-frame"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe>
+  <div class="py-out" id="py-out"></div>
+</div>
+
+<!-- REVIEW PANEL -->
+<div class="full-ov" id="review-panel">
+  <div class="fo-head">
+    <span class="fo-title" id="rp-title">🔍 مراجعة الكود</span>
+    <button class="fo-close" onclick="closeReview()">✕ إغلاق</button>
+  </div>
+  <div class="fo-body" id="rp-body"></div>
 </div>
 
 <!-- PAGE: CHAT -->
@@ -446,17 +576,17 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
       <div class="wi">🤖</div>
       <div class="wt">مرحباً، أنا Leo-AI</div>
       {% if is_admin %}
-      <div class="ws">اختار "ذكي 🤖" للاختيار التلقائي للموديل • اضغط 📡 لبيانات حقيقية</div>
+      <div class="ws">📸 صورة ← كود • ⚡ قوالب • 📡 APIs حقيقية • 🖥️ Preview فوري</div>
       {% else %}
-      <div class="ws">مساعد برمجة جاهز لمساعدتك</div>
+      <div class="ws">مساعد برمجة احترافي — اكتب طلبك وشوف النتيجة فوراً</div>
       {% endif %}
       <div class="chips">
-        <span class="chip" onclick="sp('ابنِ dashboard أسهم سعودية احترافي مع بيانات حقيقية')">📈 أسهم</span>
-        <span class="chip" onclick="sp('ابنِ موقع portfolio احترافي HTML+CSS+JS')">🌐 موقع</span>
-        <span class="chip" onclick="sp('ابنِ لعبة Flappy Bird بالـ JavaScript')">🎮 لعبة</span>
-        <span class="chip" onclick="sp('ابنِ dashboard crypto مع بيانات CoinGecko')">₿ Crypto</span>
-        <span class="chip" onclick="sp('ابنِ صفحة تحليل طقس مع بيانات حقيقية')">🌤️ طقس</span>
-        <span class="chip" onclick="sp('صمم API بـ FastAPI مع SQLite')">⚡ API</span>
+        <span class="chip" onclick="sw('c');useTpl('stocks')">📈 أسهم</span>
+        <span class="chip" onclick="sw('c');useTpl('crypto')">₿ Crypto</span>
+        <span class="chip" onclick="sw('c');useTpl('game_flappy')">🎮 Flappy</span>
+        <span class="chip" onclick="sw('c');useTpl('weather')">🌤️ طقس</span>
+        <span class="chip" onclick="sw('c');useTpl('dashboard')">📊 Dashboard</span>
+        <span class="chip" onclick="sw('c');useTpl('portfolio')">👤 Portfolio</span>
         {% if is_admin %}<span class="chip" onclick="sw('g')">🐙 GitHub</span>{% endif %}
       </div>
     </div>
@@ -467,12 +597,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   <div class="ia">
     <div class="iw">
       <div class="vn" id="vn">👁️ سيُستخدم موديل يدعم رؤية الصور تلقائياً</div>
-      <div class="smart-bar" id="smart-bar">
-        🤖 سيستخدم: <strong id="smart-model-name">—</strong>
-      </div>
+      <div class="smart-bar" id="smart-bar">🤖 سيستخدم: <strong id="smart-name">—</strong></div>
       <div class="attach-bar" id="attach-bar"></div>
       <div class="ib">
-        <textarea id="pt" placeholder="اكتب طلبك..." rows="1" onkeydown="kd(event)" oninput="onInput(this)"></textarea>
+        <textarea id="pt" placeholder="اكتب طلبك..." rows="1"
+                  onkeydown="kd(event)" oninput="onInput(this)"></textarea>
         <div class="ib-btns">
           <label class="att-btn" for="fii"><span id="att-ico">📎</span></label>
           <input type="file" id="fii" multiple style="display:none"
@@ -484,7 +613,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
           </button>
         </div>
       </div>
-      <div class="hint">Enter إرسال • Shift+Enter سطر جديد • 🖥️ Preview فوري للكود</div>
+      <div class="hint">Enter إرسال • Shift+Enter سطر • 📸 صورة→كود • ⚡ قوالب • 📡 APIs</div>
     </div>
   </div>
 </div>
@@ -498,27 +627,28 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
     </div>
     <div id="gh-actions" style="display:none">
       <div class="gh-actions">
-        <button class="gha-btn load" id="btn-load-full" onclick="loadFullRepo()">⚡ تحميل الكل</button>
-        <button class="gha-btn" onclick="selectAllCode()">☑️ الكل</button>
-        <button class="gha-btn" onclick="clearSel()">✕</button>
-        <button class="gha-btn review" onclick="startReview()">🔍 مراجعة</button>
-        <button class="gha-btn ac" onclick="loadToChat()">💬 للمحادثة</button>
+        <button class="ga-btn load" id="btn-load" onclick="loadFullRepo()">⚡ تحميل الكل</button>
+        <button class="ga-btn" onclick="selAll()">☑️</button>
+        <button class="ga-btn" onclick="clearSel()">✕</button>
+        <button class="ga-btn review" onclick="startReview()">🔍</button>
+        <button class="ga-btn ac" onclick="loadToChat()">💬</button>
+        <button class="ga-btn push" onclick="pushFiles()">📤 رفع</button>
       </div>
     </div>
     <div class="mem-bar" id="mem-bar">
       <span>📁</span><span class="mem-count" id="mem-count">0</span>
-      <span class="mem-label" id="mem-label">ملف في الذاكرة</span>
-      <button class="mem-clear" onclick="clearProjMem()">مسح</button>
-      <button class="mem-go" onclick="goToChat()">💬 محادثة</button>
+      <span class="mem-label" id="mem-label">ملف</span>
+      <button class="mem-clear" onclick="clearMem()">مسح</button>
+      <button class="mem-go" onclick="goChat()">💬</button>
     </div>
     <div class="sel-bar" id="sel-bar">
-      <span class="sel-count" id="sel-count">0 ملف محدد</span>
+      <span class="sel-count" id="sel-count">0 محدد</span>
     </div>
     <div class="gh-search" id="gh-search">
-      <input id="repo-search" placeholder="🔍 ابحث في مستودعاتك..." oninput="filterRepos(this.value)">
+      <input id="repo-search" placeholder="🔍 ابحث..." oninput="filterRepos(this.value)">
     </div>
     <div class="gh-list" id="gh-list">
-      <div class="gh-loading"><div class="ring"></div><span>جاري التحميل...</span></div>
+      <div class="gh-empty">⏳ جاري التحميل...</div>
     </div>
   </div>
 </div>
@@ -526,34 +656,32 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 
 <!-- PAGE: IMAGE GEN -->
 <div class="page" id="pgI">
-  <div class="igw">
-    <div class="igi">
-      <div class="ig-t">🎨 توليد الصور</div>
-      <div class="ig-s">مجاني • Pollinations AI + Flux</div>
-      <div class="ig-f">
-        <label>وصف الصورة</label>
-        <textarea class="ig-ta" id="igp" placeholder="مثال: غروب الشمس على البحر..."></textarea>
-        <div class="ig-row">
-          <select class="ig-sel" id="igs"><option value="1024x1024">مربع</option><option value="1280x720">أفقي</option><option value="720x1280">عمودي</option></select>
-          <select class="ig-sel" id="igm"><option value="flux">Flux</option><option value="flux-realism">Realism</option><option value="flux-anime">Anime</option></select>
-          <button class="ig-btn" id="igb" onclick="genImg()">✨ توليد</button>
-        </div>
-        <div id="ige" class="ig-err"></div>
+  <div class="igw"><div class="igi">
+    <div class="ig-t">🎨 توليد الصور</div>
+    <div class="ig-s">مجاني • Pollinations AI + Flux</div>
+    <div class="ig-f">
+      <label>وصف الصورة</label>
+      <textarea class="ig-ta" id="igp" placeholder="غروب شمس على البحر..."></textarea>
+      <div class="ig-row">
+        <select class="ig-sel" id="igs"><option value="1024x1024">مربع</option><option value="1280x720">أفقي</option><option value="720x1280">عمودي</option></select>
+        <select class="ig-sel" id="igm"><option value="flux">Flux</option><option value="flux-realism">Realism</option><option value="flux-anime">Anime</option></select>
+        <button class="ig-btn" id="igb" onclick="genImg()">✨ توليد</button>
       </div>
-      <div id="igsp" class="ig-sp"><div class="ring" style="border-top-color:var(--ac2)"></div><span>جاري التوليد...</span></div>
-      <div class="ig-grid" id="igg"></div>
+      <div id="ige" style="color:var(--danger);font-size:11.5px;padding:5px 0"></div>
     </div>
-  </div>
+    <div id="igsp" class="ig-sp"><div class="ring" style="border-top-color:var(--ac2)"></div><span>جاري التوليد...</span></div>
+    <div class="ig-grid" id="igg"></div>
+  </div></div>
 </div>
 
 <script>
-const MODELS = {{ models | tojson }};
-const ROLE   = "{{ role }}";
+// ══ INIT ══════════════════════════════════════════════════════════════════════
+const MODELS   = {{ models | tojson }};
+const ROLE     = "{{ role }}";
 const IS_ADMIN = ROLE === "admin";
-const SID    = "default";
-const MAX_AT = 25;
+const SID      = "default";
+const MAX_AT   = 25;
 
-// وضع "ذكي" — الاختيار التلقائي
 let sel          = "auto";
 let streaming    = false;
 let ctrl         = null;
@@ -561,116 +689,79 @@ let pendingFiles = [];
 const pf         = {};
 
 // Preview state
-let previewCode  = "";
-let previewLang  = "";
-let pyRunCode    = "";
+let pvCode = ""; let pvLang = "";
 
 // GitHub state
-let allRepos      = [];
-let currentRepo   = null;
-let currentTree   = [];
-let selectedPaths = new Set();
-let projMemFiles  = [];
-let ghView        = 'repos';
+let allRepos=[]; let curRepo=null; let curTree=[]; let selPaths=new Set(); let projMem=[];
 
-/* ── DOM ─────────────────────────────────────────────────────────────────── */
-const cw_   = document.getElementById('cw');
-const msgs  = document.getElementById('msgs');
-const spin  = document.getElementById('spin');
-const stxEl = document.getElementById('stx');
-const wel   = document.getElementById('welcome');
-const fsec  = document.getElementById('fsec');
-const pt    = document.getElementById('pt');
-const sb    = document.getElementById('sb');
-const fii   = document.getElementById('fii');
-const vn    = document.getElementById('vn');
-const icoS  = document.getElementById('ico-s');
-const icoX  = document.getElementById('ico-x');
-const abar  = document.getElementById('attach-bar');
+// S2C state
+let s2cFile = null;
 
-/* ── Stream ──────────────────────────────────────────────────────────────── */
-function setStreaming(v){streaming=v;sb.classList.toggle('stop',v);icoS.style.display=v?'none':'';icoX.style.display=v?'':'none'}
+// Pyodide
+let pyodide=null; let pyLoaded=false; let pyLoading=false;
+
+/* ── DOM refs ── */
+const cw_=document.getElementById('cw'),msgs=document.getElementById('msgs'),
+      spin=document.getElementById('spin'),stxEl=document.getElementById('stx'),
+      wel=document.getElementById('welcome'),fsec=document.getElementById('fsec'),
+      pt=document.getElementById('pt'),sb=document.getElementById('sb'),
+      icoS=document.getElementById('ico-s'),icoX=document.getElementById('ico-x'),
+      abar=document.getElementById('attach-bar'),vn=document.getElementById('vn');
+
+/* ══ STREAMING ═══════════════════════════════════════════════════════════════ */
+function setStream(v){streaming=v;sb.classList.toggle('stop',v);icoS.style.display=v?'none':'';icoX.style.display=v?'':'none'}
 function toggleSend(){streaming?stopStream():send()}
 async function stopStream(){if(ctrl)ctrl.abort();try{const fd=new FormData();fd.append('sid',SID);await fetch('/stop',{method:'POST',body:fd})}catch(_){}}
 
-/* ── Smart Router — اقتراح الموديل أثناء الكتابة ─────────────────────────── */
-let smartTimer = null;
-function onInput(el){
-  ar(el);
-  if(sel !== 'auto') return;
-  clearTimeout(smartTimer);
-  smartTimer = setTimeout(async () => {
-    const txt = el.value.trim();
-    if(txt.length < 10) { document.getElementById('smart-bar').classList.remove('show'); return; }
-    try{
-      const r = await fetch(`/smart-route?prompt=${encodeURIComponent(txt)}`);
-      const d = await r.json();
-      document.getElementById('smart-model-name').textContent = d.badge + ' ' + d.model_name;
-      document.getElementById('smart-bar').classList.add('show');
-    }catch(_){}
-  }, 600);
-}
-
-/* ── Page switch ─────────────────────────────────────────────────────────── */
+/* ══ PAGE SWITCH ═════════════════════════════════════════════════════════════ */
 function sw(m){
-  const all=IS_ADMIN?['c','g','i']:['c','i'];
-  all.forEach(x=>{
-    const pg=document.getElementById('pg'+x.toUpperCase());
-    const tb=document.getElementById('t'+x.toUpperCase());
-    if(pg)pg.classList.toggle('on',m===x);
-    if(tb)tb.classList.toggle('on',m===x);
+  ['c','g','i'].forEach(x=>{
+    document.getElementById('pg'+x.toUpperCase())?.classList.toggle('on',m===x);
+    document.getElementById('t'+x.toUpperCase())?.classList.toggle('on',m===x);
   });
   document.getElementById('mp').style.display=m==='c'?'':'none';
   if(m==='g'&&IS_ADMIN&&!allRepos.length)loadRepos();
 }
 
-/* ── Model sheet ─────────────────────────────────────────────────────────── */
+/* ══ SMART ROUTER ════════════════════════════════════════════════════════════ */
+let smartT=null;
+function onInput(el){
+  ar(el);
+  if(sel!=='auto'){document.getElementById('smart-bar').classList.remove('show');return}
+  clearTimeout(smartT);
+  smartT=setTimeout(async()=>{
+    const txt=el.value.trim();
+    if(txt.length<10){document.getElementById('smart-bar').classList.remove('show');return}
+    try{
+      const r=await fetch('/smart-route?prompt='+encodeURIComponent(txt));
+      const d=await r.json();
+      document.getElementById('smart-name').textContent=d.badge+' '+d.model_name;
+      document.getElementById('smart-bar').classList.add('show');
+    }catch(_){}
+  },600);
+}
+
+/* ══ MODEL SHEET ═════════════════════════════════════════════════════════════ */
 function tagCls(m){return m.vision?'v':m.strength==='reasoning'?'r':m.strength==='projects'?'p':'c'}
 function buildSh(){
   const l=document.getElementById('shl');l.innerHTML='';
-  // Auto option at top
-  const auto=document.createElement('div');
-  auto.className='mi auto'+(sel==='auto'?' sel':'');
-  auto.innerHTML=`<div class="mi-ico">🤖</div>
-    <div class="mi-body">
-      <div class="mi-name">ذكي — اختيار تلقائي<span class="tg c">AUTO</span></div>
-      <div class="mi-desc">يختار أفضل موديل لكل طلب تلقائياً</div>
-    </div><div class="mi-chk">✓</div>`;
-  auto.onclick=()=>pickAuto();l.appendChild(auto);
-  // Separator
+  // Auto
+  const a=document.createElement('div');a.className='mi auto-mi'+(sel==='auto'?' sel':'');
+  a.innerHTML=`<div class="mi-ico">🤖</div><div class="mi-body"><div class="mi-name">ذكي — اختيار تلقائي<span class="tg c">AUTO</span></div><div class="mi-desc">يختار أفضل موديل لكل طلب</div></div><div class="mi-chk">✓</div>`;
+  a.onclick=()=>{sel='auto';document.getElementById('mb').textContent='🤖';document.getElementById('mn').textContent='ذكي';buildSh();closeSh()};
+  l.appendChild(a);
   const sep=document.createElement('div');sep.style.cssText='height:1px;background:var(--bd);margin:6px 0';l.appendChild(sep);
   MODELS.forEach(m=>{
     const d=document.createElement('div');d.className='mi'+(m.id===sel?' sel':'');
-    d.innerHTML=`<div class="mi-ico">${m.badge}</div>
-      <div class="mi-body">
-        <div class="mi-name">${m.name}<span class="tg ${tagCls(m)}">${m.tag}</span></div>
-        <div class="mi-desc">${m.desc}</div>
-        <div class="mi-meta"><span class="pl">📐 ${m.context}</span><span class="pl">⚡ ${m.speed}</span></div>
-      </div><div class="mi-chk">✓</div>`;
-    d.onclick=()=>pick(m);l.appendChild(d);
+    d.innerHTML=`<div class="mi-ico">${m.badge}</div><div class="mi-body"><div class="mi-name">${m.name}<span class="tg ${tagCls(m)}">${m.tag}</span></div><div class="mi-desc">${m.desc}</div></div><div class="mi-chk">✓</div>`;
+    d.onclick=()=>{sel=m.id;document.getElementById('mb').textContent=m.badge;document.getElementById('mn').textContent=m.name.split(' ').slice(0,2).join(' ');document.getElementById('smart-bar').classList.remove('show');buildSh();closeSh()};
+    l.appendChild(d);
   });
-}
-function pickAuto(){
-  sel='auto';
-  document.getElementById('mb').textContent='🤖';
-  document.getElementById('mn').textContent='ذكي';
-  document.getElementById('smart-badge').classList.add('show');
-  stxEl.textContent='يفكر...';
-  buildSh();closeSh();
-}
-function pick(m){
-  sel=m.id;
-  document.getElementById('mb').textContent=m.badge;
-  document.getElementById('mn').textContent=m.name.split(' ').slice(0,2).join(' ');
-  document.getElementById('smart-badge').classList.remove('show');
-  document.getElementById('smart-bar').classList.remove('show');
-  stxEl.textContent=m.name+' يفكر...';
-  buildSh();closeSh();
 }
 function openSh(){buildSh();document.getElementById('ov').classList.add('on');document.getElementById('sh').classList.add('on');document.getElementById('mp').classList.add('open')}
 function closeSh(){document.getElementById('ov').classList.remove('on');document.getElementById('sh').classList.remove('on');document.getElementById('mp').classList.remove('open')}
 
-/* ── Panel ───────────────────────────────────────────────────────────────── */
+/* ══ PANEL ════════════════════════════════════════════════════════════════════ */
 let activePanel=null;
 function openPanel(n){
   closePanel();activePanel=n;
@@ -679,230 +770,281 @@ function openPanel(n){
   if(n==='chats')renderSC();
   if(n==='apis')loadAPIs();
 }
-function closePanel(){if(activePanel){document.getElementById('panel-'+activePanel).classList.remove('on');activePanel=null}document.getElementById('panel-ov').classList.remove('on')}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSh();closePanel();closeReview();closePreview()}});
+function closePanel(){
+  if(activePanel)document.getElementById('panel-'+activePanel)?.classList.remove('on');
+  activePanel=null;
+  document.getElementById('panel-ov').classList.remove('on');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSh();closePanel();closeReview();closePv()}});
 
-/* ── APIs Panel ──────────────────────────────────────────────────────────── */
+/* ══ TEMPLATE GALLERY ════════════════════════════════════════════════════════ */
+const TPL = {
+  stocks:`ابنِ dashboard أسهم سعودية احترافي بـ HTML+CSS+JS مع:
+- تصميم داكن احترافي (#0f0f0f)
+- جدول أسهم بيانات واقعية للسوق السعودي (أرامكو، سابك، الراجحي...)
+- رسم بياني خطي للسعر يوضح أداء الأسهم
+- ألوان خضراء للارتفاع وحمراء للانخفاض
+- كارت ملخص: القيمة، التغيير، الحجم
+- شريط ترحيب علوي مع اسم المستثمر
+استخدم chart.js للرسوم البيانية وبيانات واقعية مبنية داخل الكود`,
+
+  crypto:`ابنِ dashboard عملات رقمية بـ HTML+CSS+JS يجلب بيانات حقيقية من:
+GET /proxy/crypto?coin=bitcoin,ethereum,solana,bnb
+
+التصميم:
+- بطاقات لكل عملة: السعر، التغيير 24h
+- رسم بياني مقارنة
+- ألوان: أخضر ارتفاع، أحمر انخفاض
+- تحديث تلقائي كل 30 ثانية
+- تصميم داكن + glowing effects`,
+
+  game_flappy:`ابنِ لعبة Flappy Bird كاملة بـ HTML5 Canvas + JavaScript:
+- طائر يتحرك بالضغط/Space
+- أنابيب تتحرك من اليمين
+- نقاط وHighscore محفوظ
+- شاشة Game Over وإعادة تشغيل
+- تصميم جميل مع خلفية متحركة
+- مستوى صعوبة يزيد مع الوقت`,
+
+  weather:`ابنِ صفحة طقس تجلب بيانات حقيقية من:
+GET /proxy/weather?lat=24.7&lon=46.7
+
+اعرض:
+- درجة الحرارة الحالية
+- رطوبة وسرعة الرياح
+- توقعات 7 أيام
+- خلفية تتغير حسب الجو (شمس/غيم/مطر)
+- تصميم gradient جميل`,
+
+  portfolio:`ابنِ موقع portfolio شخصي احترافي HTML+CSS+JS:
+- Hero section مع اسم وعنوان متحرك
+- قسم About مع مهارات
+- قسم Projects بـ cards
+- قسم Contact مع form
+- تصميم داكن + Animations
+- Responsive للجوال`,
+
+  dashboard:`ابنِ dashboard إدارة شامل HTML+CSS+JS:
+- Sidebar تنقل
+- بطاقات إحصاء (مبيعات، مستخدمين، طلبات)
+- رسم بياني خطي وشريطي
+- جدول بيانات مع بحث وفلتر
+- إشعارات
+- تصميم داكن احترافي`,
+
+  news:`ابنِ صفحة أخبار تجلب بيانات من:
+GET /proxy/news?q=technology&lang=ar
+
+اعرض:
+- Grid من بطاقات الأخبار
+- صورة، عنوان، ملخص، تاريخ
+- فلتر حسب الفئة
+- تصميم صحيفة إلكترونية داكن`,
+
+  game_snake:`ابنِ لعبة Snake كاملة بـ HTML5 Canvas:
+- ثعبان يتحرك بالأسهم/WASD
+- طعام يظهر عشوائياً
+- الثعبان يكبر عند الأكل
+- نقاط وأعلى سجل
+- Game Over عند الاصطدام
+- تصميم neon على خلفية داكنة`,
+};
+
+function useTpl(key){
+  closePanel();
+  if(TPL[key]){pt.value=TPL[key];ar(pt);sw('c');pt.focus();}
+}
+
+/* ══ APIs PANEL ══════════════════════════════════════════════════════════════ */
 async function loadAPIs(){
-  const list=document.getElementById('apis-list');
-  list.innerHTML='<div style="color:var(--mu);font-size:12px;padding:10px">⏳ جاري التحميل...</div>';
+  const b=document.getElementById('apis-body');
+  b.innerHTML='<div style="color:var(--mu);font-size:12px;padding:10px">⏳ جاري التحميل...</div>';
   try{
     const r=await fetch('/apis');const d=await r.json();
-    list.innerHTML='<div style="font-size:11px;color:var(--mu);padding:4px 2px 8px">اضغط "استخدم" وسيضيف البوت الـ API تلقائياً في الكود</div>';
-    const apiNames={
-      stocks_global:'📈 أسهم عالمية',
-      crypto:'₿ عملات رقمية',
-      currency:'💱 أسعار عملات',
-      news:'📰 أخبار',
-      weather:'🌤️ طقس',
-    };
-    for(const[key,api] of Object.entries(d)){
-      const item=document.createElement('div');
-      item.className='api-item';
-      item.innerHTML=`
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:5px">
-          <span class="api-name">${apiNames[key]||api.name}</span>
-          <span class="api-status ${api.configured?'ok':'no'}">${api.configured?'✅ جاهز':'⚠️ يحتاج مفتاح'}</span>
-        </div>
-        <div class="api-free">🆓 ${api.free_tier}</div>
+    const icons={stocks_global:'📈',crypto:'₿',currency:'💱',news:'📰',weather:'🌤️'};
+    const labels={stocks_global:'أسهم عالمية',crypto:'عملات رقمية',currency:'أسعار صرف',news:'أخبار',weather:'طقس'};
+    b.innerHTML='<div style="font-size:10.5px;color:var(--mu);padding:4px 2px 8px">كل الـ APIs تعمل عبر proxy داخل البوت</div>';
+    for(const[k,v] of Object.entries(d)){
+      const c=document.createElement('div');c.className='api-card';
+      c.innerHTML=`<div class="api-top"><span class="api-name">${icons[k]||'🔌'} ${labels[k]||v.name}</span><span class="api-dot ${v.configured?'ok':'no'}"></span></div>
+        <div class="api-free">🆓 ${v.free_tier}</div>
         <div class="api-btns">
-          <button class="api-btn use" onclick="useAPI('${key}','${api.name}')">💬 استخدم</button>
-          <a class="api-btn" href="${api.docs}" target="_blank">📖 Docs</a>
-          <button class="api-btn" onclick="testAPI('${key}')">🧪 اختبر</button>
+          <button class="api-btn use" onclick="useAPI('${k}','${labels[k]||v.name}')">💬 استخدم</button>
+          <button class="api-btn test" onclick="testAPI('${k}')">🧪 اختبر</button>
         </div>`;
-      list.appendChild(item);
+      b.appendChild(c);
     }
-  }catch(e){list.innerHTML=`<div style="color:var(--danger);padding:10px">❌ ${esc(String(e))}</div>`}
+  }catch(e){b.innerHTML=`<div style="color:var(--danger);padding:10px">❌ ${esc(e)}</div>`}
 }
 
-function useAPI(key, name){
+function useAPI(k,name){
   closePanel();
-  pt.value=`ابنِ صفحة HTML احترافية تستخدم ${name} API (المتاح على /proxy/${key}) مع بيانات حقيقية وتصميم داش بورد جميل`;
-  ar(pt);pt.focus();
-}
-
-function useApiInChat(){
-  closePanel();
-  pt.value='ابنِ dashboard يجمع بيانات حقيقية من: الأسهم العالمية، العملات الرقمية، وأسعار الصرف — كل ذلك في صفحة HTML واحدة احترافية';
-  ar(pt);pt.focus();
-}
-
-async function testAPI(key){
-  const endpoints={
-    crypto:'/proxy/crypto?coin=bitcoin',
-    currency:'/proxy/currency?base=USD',
-    stocks_global:'/proxy/stock?symbol=AAPL',
-    weather:'/proxy/weather?lat=24.7&lon=46.7',
-    news:'/proxy/news?q=technology',
+  const prompts={
+    crypto:`ابنِ dashboard عملات رقمية يجلب بيانات حقيقية من GET /proxy/crypto?coin=bitcoin,ethereum,solana`,
+    currency:`ابنِ محول عملات يجلب أسعار صرف حقيقية من GET /proxy/currency?base=SAR`,
+    stocks_global:`ابنِ صفحة تتبع أسهم عالمية تجلب بيانات من GET /proxy/stock?symbol=AAPL`,
+    weather:`ابنِ تطبيق طقس يجلب بيانات حقيقية من GET /proxy/weather?lat=24.7&lon=46.7`,
+    news:`ابنِ صفحة أخبار تجلب مقالات من GET /proxy/news?q=technology`,
   };
-  const url=endpoints[key];if(!url)return;
-  try{
-    const r=await fetch(url);const d=await r.json();
-    alert('✅ API يعمل!\n\n'+JSON.stringify(d).slice(0,300)+'...');
-  }catch(e){alert('❌ '+e)}
+  pt.value=prompts[k]||`ابنِ صفحة تستخدم بيانات ${name} من /proxy/${k}`;
+  ar(pt);pt.focus();
+}
+
+function askAllApis(){closePanel();pt.value='ابنِ dashboard شامل يجمع: أسعار عملات رقمية من /proxy/crypto، أسعار صرف من /proxy/currency، وبيانات طقس من /proxy/weather — كل شيء في صفحة HTML واحدة داكنة احترافية';ar(pt);pt.focus()}
+
+async function testAPI(k){
+  const urls={crypto:'/proxy/crypto?coin=bitcoin',currency:'/proxy/currency?base=SAR',stocks_global:'/proxy/stock?symbol=AAPL',weather:'/proxy/weather?lat=24.7&lon=46.7',news:'/proxy/news?q=technology'};
+  try{const r=await fetch(urls[k]);const d=await r.json();alert('✅ يعمل!\n'+JSON.stringify(d).slice(0,300)+'...')}catch(e){alert('❌ '+e)}
 }
 
 /* ══ LIVE PREVIEW ════════════════════════════════════════════════════════════ */
-function showPreview(code, lang, title='Preview'){
-  previewCode=code;previewLang=lang;
-  document.getElementById('pv-title').textContent=`🖥️ ${title}`;
+function showPreview(code,lang,title){
+  pvCode=code;pvLang=lang;
+  document.getElementById('pv-title').textContent='🖥️ '+(title||'Preview');
   const frame=document.getElementById('pv-frame');
-  document.getElementById('preview-panel').classList.add('show');
-
+  const pyOut=document.getElementById('py-out');
+  document.getElementById('pv-panel').classList.add('show');
+  pyOut.classList.remove('show');
   if(lang==='python'||lang==='py'){
-    // Python: run with Pyodide
     frame.style.display='none';
+    pyOut.classList.add('show');
     runPython(code);
   } else {
-    // HTML/JS: inject into iframe
     frame.style.display='block';
-    document.getElementById('py-output').classList.remove('show');
-    const html = lang==='html'||code.includes('<!DOCTYPE')||code.includes('<html')
-      ? code
-      : `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{background:#1a1a1a;color:#eee;font-family:sans-serif;padding:16px}</style></head><body><script>${code}<\/script></body></html>`;
-    frame.srcdoc=html;
+    const isHtml=lang==='html'||code.trim().toLowerCase().startsWith('<!doctype')||code.includes('<html');
+    frame.srcdoc=isHtml?code:`<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>body{background:#1a1a1a;color:#eee;font-family:sans-serif;padding:16px}</style></head>
+<body><script type="module">${code}<\/script></body></html>`;
   }
 }
-
-function reloadPreview(){showPreview(previewCode,previewLang)}
-function closePreview(){document.getElementById('preview-panel').classList.remove('show')}
-function openInNewTab(){
+function reloadPv(){showPreview(pvCode,pvLang)}
+function closePv(){document.getElementById('pv-panel').classList.remove('show')}
+function openNewTab(){
   const w=window.open('','_blank');
-  if(previewLang==='html'||previewCode.includes('<!DOCTYPE')||previewCode.includes('<html')){
-    w.document.write(previewCode);w.document.close();
-  }else{
-    w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><script>${previewCode}<\/script></body></html>`);
-    w.document.close();
-  }
+  const isHtml=pvLang==='html'||pvCode.trim().toLowerCase().startsWith('<!doctype');
+  w.document.write(isHtml?pvCode:`<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><script>${pvCode}<\/script></body></html>`);
+  w.document.close();
 }
-
-function openInCodepen(){
-  // CodePen prefill API
-  const isHTML = previewLang==='html'||previewCode.includes('<!DOCTYPE')||previewCode.includes('<html');
+function openCodepen(){
+  const isHtml=pvLang==='html'||pvCode.trim().toLowerCase().startsWith('<!doctype');
   let html='',css='',js='';
-  if(isHTML){
-    // Try to split HTML/CSS/JS
-    const cssMatch=previewCode.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
-    const jsMatch =previewCode.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
-    html=previewCode.replace(/<style[^>]*>[\s\S]*?<\/style>/gi,'').replace(/<script[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<\/?html[^>]*>/gi,'').replace(/<\/?head[^>]*>[\s\S]*?(?=<body|$)/gi,'').replace(/<\/?body[^>]*>/gi,'').trim();
-    css=cssMatch?cssMatch[1].trim():'';
-    js=jsMatch?jsMatch[1].trim():'';
-  }else{
-    js=previewCode;
-  }
-  const data=JSON.stringify({html,css,js,title:'Leo-AI Project'});
-  const form=document.createElement('form');
-  form.method='POST';form.action='https://codepen.io/pen/define';form.target='_blank';
-  const input=document.createElement('input');input.type='hidden';input.name='data';input.value=data;
-  form.appendChild(input);document.body.appendChild(form);form.submit();document.body.removeChild(form);
+  if(isHtml){
+    const cm=pvCode.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+    const jm=pvCode.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
+    css=cm?cm[1].trim():'';js=jm?jm[1].trim():'';
+    html=pvCode.replace(/<style[\s\S]*?<\/style>/gi,'').replace(/<script[\s\S]*?<\/script>/gi,'')
+               .replace(/<\/?html[^>]*>/gi,'').replace(/<head[\s\S]*?<\/head>/gi,'')
+               .replace(/<\/?body[^>]*>/gi,'').trim();
+  } else { js=pvCode; }
+  const form=document.createElement('form');form.method='POST';form.action='https://codepen.io/pen/define';form.target='_blank';
+  const inp=document.createElement('input');inp.type='hidden';inp.name='data';
+  inp.value=JSON.stringify({html,css,js,title:'Leo-AI'});
+  form.appendChild(inp);document.body.appendChild(form);form.submit();document.body.removeChild(form);
 }
+function togglePyOut(){document.getElementById('py-out').classList.toggle('show')}
 
-function togglePyOutput(){
-  const el=document.getElementById('py-output');
-  el.classList.toggle('show');
+/* Python Runner */
+async function loadPy(){
+  if(pyLoaded)return true;if(pyLoading)return false;pyLoading=true;
+  try{
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js';
+    document.head.appendChild(s);
+    await new Promise((res,rej)=>{s.onload=res;s.onerror=rej});
+    pyodide=await loadPyodide();pyLoaded=true;return true;
+  }catch(_){pyLoading=false;return false}
 }
-
-/* ── Python Runner ───────────────────────────────────────────────────────── */
 async function runPython(code){
-  const out=document.getElementById('py-output');
-  out.classList.add('show');
+  const out=document.getElementById('py-out');
   out.innerHTML='<span style="color:var(--mu)">⏳ جاري تحميل Python...</span>';
-  document.getElementById('pv-frame').style.display='none';
-
-  const loaded=await loadPyodideIfNeeded();
-  if(!loaded){out.innerHTML='<span class="py-err">❌ فشل تحميل Python. تحقق من الإنترنت.</span>';return}
-
-  // Capture stdout
+  const ok=await loadPy();
+  if(!ok){out.innerHTML='<span class="py-err">❌ فشل تحميل Pyodide</span>';return}
   let output='';
-  pyodide.setStdout({batched:(s)=>output+=s+'\n'});
-  pyodide.setStderr({batched:(s)=>output+='ERROR: '+s+'\n'});
-
+  pyodide.setStdout({batched:s=>output+=s+'\n'});
+  pyodide.setStderr({batched:s=>output+='ERR: '+s+'\n'});
   try{
     await pyodide.runPythonAsync(code);
-    out.innerHTML=output
-      ?`<span class="py-ok">✅ النتيجة:\n</span><span>${esc(output)}</span>`
-      :`<span class="py-ok">✅ اكتمل بدون مخرجات</span>`;
-  }catch(e){
-    out.innerHTML=`<span class="py-err">❌ خطأ:\n${esc(String(e))}</span>`;
-  }
+    out.innerHTML=output?`<span class="py-ok">✅ النتيجة:\n</span>${esc(output)}`:`<span class="py-ok">✅ اكتمل بدون مخرجات</span>`;
+  }catch(e){out.innerHTML=`<span class="py-err">❌ ${esc(String(e))}</span>`}
 }
 
-/* ── Helpers ─────────────────────────────────────────────────────────────── */
-function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,140)+'px'}
-function kd(e){if(e.key==='Enter'&&!e.shiftKey&&!streaming){e.preventDefault();send()}}
-function sp(t){pt.value=t;pt.focus();ar(pt)}
-function bot(){cw_.scrollTop=cw_.scrollHeight}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function fileIcon(path){const ext=path.split('.').pop().toLowerCase();const m={py:'🐍',js:'🟨',ts:'🔷',tsx:'🔷',jsx:'🟨',html:'🌐',css:'🎨',json:'📋',md:'📝',sh:'⚙️',go:'🐹',rs:'🦀',java:'☕',cpp:'⚡',c:'⚡',vue:'💚',php:'🐘',rb:'💎',sql:'🗄️',yml:'⚙️',yaml:'⚙️',toml:'⚙️',pdf:'📕',zip:'📦'};return m[ext]||'📄'}
+/* ══ SCREENSHOT TO CODE ══════════════════════════════════════════════════════ */
+function handleDrop(e){
+  e.preventDefault();document.getElementById('s2c-drop').classList.remove('drag');
+  const file=e.dataTransfer.files[0];if(file&&file.type.startsWith('image/'))setS2CFile(file);
+}
+function s2cFileSelected(inp){if(inp.files[0])setS2CFile(inp.files[0])}
+function setS2CFile(file){
+  s2cFile=file;
+  const img=document.getElementById('s2c-img');
+  img.src=URL.createObjectURL(file);
+  document.getElementById('s2c-preview').classList.add('show');
+  document.getElementById('s2c-btn').disabled=false;
+  document.getElementById('s2c-drop').querySelector('.s2c-text').textContent=file.name;
+}
+async function runS2C(){
+  if(!s2cFile)return;
+  const btn=document.getElementById('s2c-btn');
+  const status=document.getElementById('s2c-status');
+  btn.disabled=true;btn.textContent='⏳ جاري التحويل...';
+  status.textContent='';
+  const fd=new FormData();
+  fd.append('image',s2cFile);
+  fd.append('style',document.getElementById('s2c-style').value);
+  fd.append('framework',document.getElementById('s2c-fw').value);
+  closePanel();sw('c');wel.style.display='none';
+  // Show in chat
+  const aRow=document.createElement('div');aRow.className='row a';
+  const avEl=Object.assign(document.createElement('div'),{className:'av aa',textContent:'🤖'});
+  const wrap=document.createElement('div');wrap.className='ai-wrap';
+  const bbl=Object.assign(document.createElement('div'),{className:'bbl a'});
+  const cursor=Object.assign(document.createElement('span'),{className:'cursor'});
+  const mtag=Object.assign(document.createElement('div'),{className:'mtag'});
+  const mact=Object.assign(document.createElement('div'),{className:'mact'});
+  bbl.textContent='📸 جاري تحويل الصورة لكود...';bbl.appendChild(cursor);
+  wrap.append(bbl,mtag,mact);aRow.append(avEl,wrap);msgs.appendChild(aRow);bot();
+  try{
+    const res=await fetch('/screenshot-to-code',{method:'POST',body:fd});
+    const reader=res.body.getReader();const dec=new TextDecoder();let buf='';let rawText='';
+    while(true){
+      const{done,value}=await reader.read();if(done)break;
+      buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();
+      for(const line of lines){
+        if(!line.startsWith('data:'))continue;const ds=line.slice(5).trim();if(!ds)continue;
+        try{
+          const ev=JSON.parse(ds);
+          if(ev.token){rawText+=ev.token;bbl.textContent=rawText;bbl.appendChild(cursor);bot()}
+          if(ev.done){
+            cursor.remove();bbl.innerHTML=ev.html;
+            mtag.textContent='✦ Vision Model → كود';
+            if(ev.files){
+              showFiles(ev.files);
+              const code=atob(Object.values(ev.files)[0]);
+              mact.innerHTML=`<button class="mac-btn" onclick="showPreview(${JSON.stringify(code)},'html','Screenshot to Code')">🖥️ Preview</button>
+                <button class="mac-btn" onclick="openCodepenDirect(${JSON.stringify(code)})">🖊️ CodePen</button>`;
+            }
+            bot();
+          }
+        }catch(_){}
+      }
+    }
+  }catch(e){cursor.remove();bbl.innerHTML=`<p style="color:var(--danger)">❌ ${esc(String(e))}</p>`}
+  btn.disabled=false;btn.textContent='🔄 تحويل للكود';
+}
+function openCodepenDirect(code){pvCode=code;pvLang='html';openCodepen()}
 
-/* ── Attachments ─────────────────────────────────────────────────────────── */
-function addFiles(input){Array.from(input.files).slice(0,MAX_AT-pendingFiles.length).forEach(f=>pendingFiles.push(f));input.value='';renderAbar();vn.classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')))}
+/* ══ CHAT SEND ═══════════════════════════════════════════════════════════════ */
+function addFiles(inp){Array.from(inp.files).slice(0,MAX_AT-pendingFiles.length).forEach(f=>pendingFiles.push(f));inp.value='';renderAbar();vn.classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')))}
 function removeFile(i){pendingFiles.splice(i,1);renderAbar();vn.classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')))}
 function renderAbar(){abar.innerHTML='';if(!pendingFiles.length){document.getElementById('att-ico').innerHTML='📎';return}document.getElementById('att-ico').innerHTML=`📎<span class="att-count">${pendingFiles.length}</span>`;pendingFiles.forEach((f,i)=>{const el=document.createElement('div');el.className='atch';el.innerHTML=`<span>${fileIcon(f.name)}</span><span class="atch-name">${esc(f.name)}</span><button class="atch-del" onclick="removeFile(${i})">✕</button>`;abar.appendChild(el)})}
 
-/* ── Files panel ─────────────────────────────────────────────────────────── */
-function showFiles(filesB64){
-  if(!filesB64||!Object.keys(filesB64).length)return;
-  Object.assign(pf,filesB64);const names=Object.keys(filesB64);
-  let h=`<div class="fb"><div class="fbh"><span>📁 ملفات (${names.length})</span><button class="fbh-dl" onclick="dlZip()">📦 ZIP</button></div>`;
-  names.forEach(n=>{
-    const b64=filesB64[n];
-    const isWeb=n.endsWith('.html')||n.endsWith('.js')||n.endsWith('.css');
-    const isPy=n.endsWith('.py');
-    h+=`<div class="ffi"><span>${fileIcon(n)} ${esc(n)}</span><div class="ffi-btns">
-      ${isWeb||isPy?`<button onclick="previewFile('${esc(n)}','${b64}')">🖥️</button>`:''}
-      ${isWeb?`<button onclick="openCodepen('${esc(n)}','${b64}')">🖊️</button>`:''}
-      <button onclick="dlFile('${esc(n)}')">💾</button>
-    </div></div>`;
-  });
-  h+='</div>';fsec.innerHTML=h;
-}
-
-function previewFile(name, b64){
-  const code=atob(b64);
-  const lang=name.split('.').pop();
-  showPreview(code,lang,name);
-}
-
-function openCodepen(name, b64){
-  previewCode=atob(b64);previewLang=name.split('.').pop();
-  openInCodepen();
-}
-
-async function dlFile(name){const b64=pf[name];if(!b64)return;const fd=new FormData();fd.append('filename',name);fd.append('code_b64',b64);const blob=await(await fetch('/download',{method:'POST',body:fd})).blob();const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:name});a.click();URL.revokeObjectURL(a.href)}
-async function dlZip(){const blob=await(await fetch(`/download/zip/${SID}`)).blob();const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:'leo-ai.zip'});a.click();URL.revokeObjectURL(a.href)}
-
-function cpy(btn,b64){
-  navigator.clipboard.writeText(atob(b64)).then(()=>{
-    btn.textContent='✅ تم';btn.classList.add('ok');
-    setTimeout(()=>{btn.textContent='📋 نسخ';btn.classList.remove('ok')},1500);
-  });
-}
-
-function explainCode(btn,b64){pt.value=`اشرح هذا الكود:\n\`\`\`\n${atob(b64)}\n\`\`\``;ar(pt);sw('c');send()}
-
-function previewCode_btn(btn,b64,lang){
-  const code=atob(b64);
-  showPreview(code,lang,'Preview');
-}
-
-function runPythonCode(btn,b64){
-  const code=atob(b64);
-  showPreview(code,'python','Python Runner');
-}
-
-function cpyFull(btn,rawB64){navigator.clipboard.writeText(atob(rawB64)).then(()=>{btn.textContent='✅';setTimeout(()=>btn.textContent='📄 نسخ',1500)})}
-
-/* ══ STREAMING SEND ══════════════════════════════════════════════════════════ */
 async function send(){
   const txt=pt.value.trim();if(!txt||streaming)return;
-  wel.style.display='none';setStreaming(true);
+  wel.style.display='none';setStream(true);
   document.getElementById('smart-bar').classList.remove('show');
-
   const uRow=document.createElement('div');uRow.className='row u';
   uRow.innerHTML=`<div class="bbl u">${esc(txt)}${pendingFiles.length?`<br><span style="font-size:10px;color:var(--mu)">📎 ${pendingFiles.length}</span>`:''}</div><div class="av ua">👤</div>`;
   msgs.appendChild(uRow);pt.value='';pt.style.height='auto';vn.classList.remove('on');bot();
-
   const aRow=document.createElement('div');aRow.className='row a';
   const avEl=Object.assign(document.createElement('div'),{className:'av aa',textContent:'🤖'});
   const wrap=document.createElement('div');wrap.className='ai-wrap';
@@ -912,19 +1054,12 @@ async function send(){
   const mact=Object.assign(document.createElement('div'),{className:'mact'});
   bbl.appendChild(cursor);wrap.append(bbl,mtag,mact);aRow.append(avEl,wrap);msgs.appendChild(aRow);
   spin.classList.add('on');bot();
-
-  const fd=new FormData();
-  fd.append('prompt',txt);
-  fd.append('model_id',sel);  // 'auto' or specific model
-  fd.append('sid',SID);
+  const fd=new FormData();fd.append('prompt',txt);fd.append('model_id',sel);fd.append('sid',SID);
   pendingFiles.forEach(f=>fd.append('files',f));pendingFiles=[];renderAbar();
-
-  ctrl=new AbortController();let rawText='';let gotFirst=false;let fullRaw='';
-  let usedModelName='';let wasAuto=false;
-
+  ctrl=new AbortController();let rawText='';let gotFirst=false;let wasAuto=sel==='auto';
   try{
     const res=await fetch('/chat-stream',{method:'POST',body:fd,signal:ctrl.signal});
-    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    if(!res.ok)throw new Error('HTTP '+res.status);
     const reader=res.body.getReader();const dec=new TextDecoder();let buf='';
     while(true){
       const{done,value}=await reader.read();if(done)break;
@@ -934,31 +1069,24 @@ async function send(){
         try{
           const ev=JSON.parse(ds);
           if(ev.first&&!gotFirst){gotFirst=true;spin.classList.remove('on')}
-          if(ev.token!==undefined){if(!gotFirst){gotFirst=true;spin.classList.remove('on')}rawText+=ev.token;fullRaw=rawText;bbl.textContent=rawText;bbl.appendChild(cursor);bot()}
+          if(ev.token!==undefined){if(!gotFirst){gotFirst=true;spin.classList.remove('on')}rawText+=ev.token;bbl.textContent=rawText;bbl.appendChild(cursor);bot()}
           if(ev.done){
-            cursor.remove();bbl.innerHTML=ev.html;fullRaw=ev.raw||rawText;
-            usedModelName=ev.used_model||'';
-            wasAuto = (sel==='auto');
-            // Build model tag
-            mtag.innerHTML=`<span class="mtag-model">✦ ${ev.switched?ev.used_model+' ← تحويل':ev.used_model}</span>${wasAuto?'<span class="mtag-auto">AUTO</span>':''}`;
-
-            // Build action buttons
-            const rb=btoa(unescape(encodeURIComponent(fullRaw)));
-            // Detect code type for preview
-            const hasHTML=fullRaw.includes('<!DOCTYPE')||fullRaw.includes('<html')||fullRaw.includes('```html');
-            const hasJS=fullRaw.includes('```javascript')||fullRaw.includes('```js');
-            const hasPython=fullRaw.includes('```python')||fullRaw.includes('```py');
-            let previewBtn='';
-            if(hasHTML)previewBtn=`<button class="mac-btn" onclick="previewLastCode('html')">🖥️ Preview</button>`;
-            else if(hasJS)previewBtn=`<button class="mac-btn" onclick="previewLastCode('js')">🖥️ Preview</button>`;
-            else if(hasPython)previewBtn=`<button class="mac-btn" onclick="previewLastCode('python')">🐍 Run</button>`;
-
-            mact.innerHTML=`
-              ${previewBtn}
-              <button class="mac-btn" onclick="cpyFull(this,'${rb}')">📄 نسخ</button>
-              ${hasHTML?`<button class="mac-btn" onclick="exportToCodepen('${rb}')">🖊️ CodePen</button>`:''}`;
-            // Store for preview
-            window._lastResponse=fullRaw;
+            cursor.remove();bbl.innerHTML=ev.html;
+            window._lastRaw=ev.raw||rawText;
+            // Tags
+            const autoTag=wasAuto?`<span class="auto-tag-sm">AUTO</span>`:'';
+            mtag.innerHTML=`<span style="color:var(--mu)">✦ ${ev.used_model||''}</span>${autoTag}`;
+            // Detect code types
+            const raw=ev.raw||rawText;
+            const hasHtml=raw.includes('```html')||raw.includes('<!DOCTYPE')||raw.includes('<html');
+            const hasJs=raw.includes('```javascript')||raw.includes('```js');
+            const hasPy=raw.includes('```python')||raw.includes('```py');
+            const rb=btoa(unescape(encodeURIComponent(raw)));
+            let btns=`<button class="mac-btn" onclick="cpyFull(this,'${rb}')">📄 نسخ</button>`;
+            if(hasHtml)btns=`<button class="mac-btn" onclick="pvLast('html')">🖥️ Preview</button><button class="mac-btn" onclick="cpToCodepen('${rb}')">🖊️ CodePen</button>`+btns;
+            else if(hasJs)btns=`<button class="mac-btn" onclick="pvLast('js')">🖥️ Preview</button>`+btns;
+            else if(hasPy)btns=`<button class="mac-btn" onclick="pvLast('python')">🐍 Run</button>`+btns;
+            mact.innerHTML=btns;
             if(ev.files)showFiles(ev.files);bot();
           }
           if(ev.error){cursor.remove();bbl.innerHTML=`<p style="color:var(--danger)">❌ ${esc(ev.error)}</p>`;bot()}
@@ -967,159 +1095,200 @@ async function send(){
     }
   }catch(e){
     spin.classList.remove('on');cursor.remove();
-    bbl.innerHTML=e.name==='AbortError'?`<p style="color:var(--mu)">⏹ تم الإيقاف</p>`:`<p style="color:var(--danger)">❌ ${esc(String(e))}</p>`;bot();
+    bbl.innerHTML=e.name==='AbortError'?`<p style="color:var(--mu)">⏹ توقف</p>`:`<p style="color:var(--danger)">❌ ${esc(String(e))}</p>`;bot();
   }
-  setStreaming(false);ctrl=null;pt.focus();
+  setStream(false);ctrl=null;pt.focus();
 }
 
-/* ── Extract & Preview last code block ───────────────────────────────────── */
-function previewLastCode(lang){
-  const text=window._lastResponse||'';
-  // Extract first code block of given lang
-  const patterns={
-    html:/```(?:html|HTML)\n([\s\S]*?)```/,
-    js:/```(?:javascript|js|JS)\n([\s\S]*?)```/,
-    python:/```(?:python|py|Python)\n([\s\S]*?)```/,
-  };
-  // Try specific lang first, then fallback to any
-  let match=text.match(patterns[lang]);
-  if(!match){
-    // Fallback: get first code block
-    match=text.match(/```\w*\n([\s\S]*?)```/);
-  }
-  if(match){
-    showPreview(match[1],lang,'Preview');
-  } else if(lang==='html' && (text.includes('<!DOCTYPE')||text.includes('<html'))){
-    showPreview(text,'html','Preview');
-  } else {
-    alert('لم يُعثر على كود لعرضه');
-  }
+function pvLast(lang){
+  const raw=window._lastRaw||'';
+  const pats={html:/```html\n([\s\S]*?)```/,js:/```(?:javascript|js)\n([\s\S]*?)```/,python:/```(?:python|py)\n([\s\S]*?)```/};
+  const m=raw.match(pats[lang])||raw.match(/```\w*\n([\s\S]*?)```/);
+  const code=m?m[1]:(lang==='html'&&(raw.includes('<!DOCTYPE')||raw.includes('<html'))?raw:'');
+  if(code)showPreview(code,lang,'Preview');else alert('لم يُعثر على كود');
+}
+function cpToCodepen(rb){pvCode=atob(rb);pvLang='html';openCodepen()}
+
+/* ══ FILES PANEL ════════════════════════════════════════════════════════════ */
+function showFiles(filesB64){
+  if(!filesB64||!Object.keys(filesB64).length)return;
+  Object.assign(pf,filesB64);
+  const names=Object.keys(filesB64);
+  let h=`<div class="fb"><div class="fbh"><span>📁 ملفات (${names.length})</span><button class="fbh-dl" onclick="dlZip()">📦 ZIP</button></div>`;
+  names.forEach(n=>{
+    const b64=filesB64[n];
+    const isWeb=n.match(/\.(html|js|css)$/i);
+    const isPy=n.match(/\.py$/i);
+    h+=`<div class="fi2"><span>${fileIcon(n)} ${esc(n)}</span><div class="fi2-btns">
+      ${isWeb||isPy?`<button onclick="pvFile('${esc(n)}','${b64}')">🖥️</button>`:''}
+      ${isWeb?`<button onclick="cpFile('${esc(n)}','${b64}')">🖊️</button>`:''}
+      <button onclick="dlFile('${esc(n)}')">💾</button>
+      {% if is_admin %}<button onclick="pushFile('${esc(n)}','${b64}')">📤</button>{% endif %}
+    </div></div>`;
+  });
+  h+='</div>';fsec.innerHTML=h;
+}
+function pvFile(n,b64){showPreview(atob(b64),n.split('.').pop(),n)}
+function cpFile(n,b64){pvCode=atob(b64);pvLang='html';openCodepen()}
+async function dlFile(n){const b64=pf[n];if(!b64)return;const fd=new FormData();fd.append('filename',n);fd.append('code_b64',b64);const blob=await(await fetch('/download',{method:'POST',body:fd})).blob();const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:n});a.click();URL.revokeObjectURL(a.href)}
+async function dlZip(){const blob=await(await fetch(`/download/zip/${SID}`)).blob();const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:'leo-ai.zip'});a.click();URL.revokeObjectURL(a.href)}
+
+/* Push single file to GitHub */
+async function pushFile(filename,b64){
+  if(!curRepo){alert('افتح GitHub واختر repo أولاً');return}
+  const{owner,repo,branch}=curRepo;
+  const path=filename.includes('/')?filename:filename;
+  const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch||'main');
+  fd.append('files',JSON.stringify({[path]:b64}));
+  fd.append('message',`Leo-AI: add ${filename}`);
+  try{
+    const r=await fetch('/github/push',{method:'POST',body:fd});
+    const d=await r.json();
+    alert(d.ok?`✅ تم رفع ${filename} إلى ${owner}/${repo}`:`❌ ${d.errors.join('\n')}`);
+  }catch(e){alert('❌ '+e)}
 }
 
-function exportToCodepen(rawB64){
-  previewCode=atob(rawB64);previewLang='html';
-  openInCodepen();
-}
+function cpy(btn,b64){navigator.clipboard.writeText(atob(b64)).then(()=>{btn.textContent='✅';btn.classList.add('ok');setTimeout(()=>{btn.textContent='📋 نسخ';btn.classList.remove('ok')},1500)})}
+function explainCode(btn,b64){pt.value='اشرح هذا الكود:\n```\n'+atob(b64)+'\n```';ar(pt);sw('c');send()}
+function cpyFull(btn,rb){navigator.clipboard.writeText(atob(rb)).then(()=>{btn.textContent='✅';setTimeout(()=>btn.textContent='📄 نسخ',1500)})}
 
-/* ══ GITHUB ══════════════════════════════════════════════════════════════════ */
+/* ══ GITHUB ═════════════════════════════════════════════════════════════════ */
 function ghSetView(v){
-  ghView=v;
   document.getElementById('gh-actions').style.display=v==='files'?'block':'none';
   document.getElementById('gh-search').style.display=v==='repos'?'block':'none';
 }
 async function loadRepos(){
-  ghSetView('repos');
-  document.getElementById('gh-title').textContent='🐙 مستودعاتك';
-  document.getElementById('gh-list').innerHTML=`<div class="gh-loading"><div class="ring"></div><span>جاري التحميل...</span></div>`;
-  try{
-    const r=await fetch('/github/repos');const d=await r.json();
-    if(d.error){document.getElementById('gh-list').innerHTML=`<div class="gh-loading" style="color:var(--danger)">❌ ${esc(d.error)}</div>`;return}
-    allRepos=d;renderReposList(d);
-  }catch(e){document.getElementById('gh-list').innerHTML=`<div class="gh-loading" style="color:var(--danger)">❌ ${esc(String(e))}</div>`}
+  ghSetView('repos');document.getElementById('gh-title').textContent='🐙 مستودعاتك';
+  document.getElementById('gh-list').innerHTML='<div class="gh-empty">⏳ جاري التحميل...</div>';
+  try{const r=await fetch('/github/repos');const d=await r.json();
+    if(d.error){document.getElementById('gh-list').innerHTML=`<div class="gh-empty" style="color:var(--danger)">❌ ${esc(d.error)}</div>`;return}
+    allRepos=d;renderRepos(d);}
+  catch(e){document.getElementById('gh-list').innerHTML=`<div class="gh-empty" style="color:var(--danger)">❌ ${esc(String(e))}</div>`}
 }
-function renderReposList(repos){
-  if(!repos.length){document.getElementById('gh-list').innerHTML='<div class="gh-loading">لا توجد مستودعات</div>';return}
+function renderRepos(repos){
+  if(!repos.length){document.getElementById('gh-list').innerHTML='<div class="gh-empty">لا توجد مستودعات</div>';return}
   const frag=document.createDocumentFragment();
   repos.forEach(r=>{
     const div=document.createElement('div');div.className='repo-item';
-    const icon=r.language==='Python'?'🐍':r.language==='JavaScript'?'🟨':r.language==='TypeScript'?'🔷':r.language==='HTML'?'🌐':'📦';
-    div.innerHTML=`<div class="ri-icon">${icon}</div>
-      <div class="ri-body">
-        <div class="ri-name">${esc(r.name)} ${r.private?'<span class="ri-prv">خاص</span>':''}</div>
-        <div class="ri-meta"><span style="color:var(--ac)">${esc(r.language)}</span><span>⭐${r.stars}</span><span>${r.updated_at}</span></div>
-      </div><span class="ri-arr">›</span>`;
+    const icon=r.language==='Python'?'🐍':r.language==='JavaScript'?'🟨':r.language==='HTML'?'🌐':'📦';
+    div.innerHTML=`<div class="ri-icon">${icon}</div><div class="ri-body"><div class="ri-name">${esc(r.name)} ${r.private?'<span class="ri-prv">خاص</span>':''}</div><div class="ri-meta"><span style="color:var(--ac)">${esc(r.language)}</span><span>⭐${r.stars}</span><span>${r.updated_at}</span></div></div><span class="ri-arr">›</span>`;
     div.onclick=()=>loadRepo(r.full_name.split('/')[0],r.name,r.default_branch);
     frag.appendChild(div);
   });
   const list=document.getElementById('gh-list');list.innerHTML='';list.appendChild(frag);
 }
-function filterRepos(q){if(!q.trim()){renderReposList(allRepos);return}renderReposList(allRepos.filter(r=>r.name.toLowerCase().includes(q.toLowerCase())))}
-async function loadRepo(owner,repo,branch='main'){
-  currentRepo={owner,repo,branch};selectedPaths.clear();updateSelBar();ghSetView('files');
-  document.getElementById('gh-title').innerHTML=`<button class="gh-back" onclick="backToRepos()">‹ رجوع</button> ${esc(repo)}`;
-  document.getElementById('gh-list').innerHTML=`<div class="gh-loading"><div class="ring"></div><span>جاري جلب الملفات...</span></div>`;
-  try{
-    const r=await fetch(`/github/tree?owner=${owner}&repo=${repo}&branch=${branch}`);const d=await r.json();
-    if(d.error){document.getElementById('gh-list').innerHTML=`<div class="gh-loading" style="color:var(--danger)">❌ ${esc(d.error)}</div>`;return}
-    currentTree=d.files;currentRepo.branch=d.branch;renderFilesList(d.files);
-  }catch(e){document.getElementById('gh-list').innerHTML=`<div class="gh-loading" style="color:var(--danger)">❌ ${esc(String(e))}</div>`}
+function filterRepos(q){if(!q.trim()){renderRepos(allRepos);return}renderRepos(allRepos.filter(r=>r.name.toLowerCase().includes(q.toLowerCase())))}
+async function loadRepo(owner,repo,branch){
+  curRepo={owner,repo,branch};selPaths.clear();updSel();ghSetView('files');
+  document.getElementById('gh-title').innerHTML=`<button class="gh-back" onclick="backRepos()">‹</button> ${esc(repo)}`;
+  document.getElementById('gh-list').innerHTML='<div class="gh-empty">⏳ جاري جلب الملفات...</div>';
+  try{const r=await fetch(`/github/tree?owner=${owner}&repo=${repo}&branch=${branch}`);const d=await r.json();
+    if(d.error){document.getElementById('gh-list').innerHTML=`<div class="gh-empty" style="color:var(--danger)">❌ ${esc(d.error)}</div>`;return}
+    curTree=d.files;curRepo.branch=d.branch;renderFiles(d.files);}
+  catch(e){document.getElementById('gh-list').innerHTML=`<div class="gh-empty" style="color:var(--danger)">❌ ${esc(String(e))}</div>`}
 }
-function backToRepos(){ghSetView('repos');document.getElementById('gh-title').textContent='🐙 مستودعاتك';selectedPaths.clear();updateSelBar();currentRepo=null;currentTree=[];renderReposList(allRepos)}
-function renderFilesList(files){
-  if(!files.length){document.getElementById('gh-list').innerHTML='<div class="gh-loading">لا توجد ملفات كود</div>';return}
+function backRepos(){ghSetView('repos');document.getElementById('gh-title').textContent='🐙 مستودعاتك';selPaths.clear();updSel();curRepo=null;curTree=[];renderRepos(allRepos)}
+function renderFiles(files){
+  if(!files.length){document.getElementById('gh-list').innerHTML='<div class="gh-empty">لا توجد ملفات</div>';return}
   const frag=document.createDocumentFragment();
   files.forEach(f=>{
-    const inMem=projMemFiles.some(k=>k.endsWith(f.path));
+    const inMem=projMem.some(k=>k.endsWith(f.path));
     const div=document.createElement('div');div.className='file-item';div.dataset.path=f.path;
-    div.innerHTML=`<div class="fi-check"><span class="fi-check-inner">✓</span></div><span class="fi-icon">${fileIcon(f.path)}</span><span class="fi-name ${f.is_code?'code':'other'}">${esc(f.path)}</span><span class="fi-size">${f.size>1000?Math.round(f.size/1000)+'K':f.size+'B'}</span>${inMem?'<span class="fi-mem">💾</span>':''}`;
+    div.innerHTML=`<div class="fi-chk"><span class="fi-chi">✓</span></div><span class="fi-icon">${fileIcon(f.path)}</span><span class="fi-name ${f.is_code?'code':'other'}">${esc(f.path)}</span><span class="fi-size">${f.size>1000?Math.round(f.size/1000)+'K':f.size+'B'}</span>${inMem?'<span class="fi-mem">💾</span>':''}`;
     div.onclick=()=>toggleFile(f.path,div);frag.appendChild(div);
   });
   const list=document.getElementById('gh-list');list.innerHTML='';list.appendChild(frag);
 }
-function toggleFile(path,item){if(selectedPaths.has(path)){selectedPaths.delete(path);item.classList.remove('checked')}else{selectedPaths.add(path);item.classList.add('checked')}updateSelBar()}
-function selectAllCode(){currentTree.forEach(f=>{if(!f.is_code)return;selectedPaths.add(f.path);const el=document.querySelector(`.file-item[data-path="${CSS.escape(f.path)}"]`);if(el)el.classList.add('checked')});updateSelBar()}
-function clearSel(){selectedPaths.clear();document.querySelectorAll('.file-item.checked').forEach(el=>el.classList.remove('checked'));updateSelBar()}
-function updateSelBar(){const bar=document.getElementById('sel-bar');document.getElementById('sel-count').textContent=`${selectedPaths.size} ملف محدد`;bar.classList.toggle('show',selectedPaths.size>0)}
+function toggleFile(path,item){if(selPaths.has(path)){selPaths.delete(path);item.classList.remove('checked')}else{selPaths.add(path);item.classList.add('checked')}updSel()}
+function selAll(){curTree.forEach(f=>{if(!f.is_code)return;selPaths.add(f.path);document.querySelector(`.file-item[data-path="${CSS.escape(f.path)}"]`)?.classList.add('checked')});updSel()}
+function clearSel(){selPaths.clear();document.querySelectorAll('.file-item.checked').forEach(e=>e.classList.remove('checked'));updSel()}
+function updSel(){const b=document.getElementById('sel-bar');document.getElementById('sel-count').textContent=`${selPaths.size} محدد`;b.classList.toggle('show',selPaths.size>0)}
 async function loadFullRepo(){
-  if(!currentRepo)return;const btn=document.getElementById('btn-load-full');btn.textContent='⏳...';btn.disabled=true;
-  const{owner,repo,branch}=currentRepo;const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch);fd.append('sid',SID);
-  try{
-    const r=await fetch('/github/load-repo-full',{method:'POST',body:fd});const d=await r.json();
+  if(!curRepo)return;const btn=document.getElementById('btn-load');btn.textContent='⏳...';btn.disabled=true;
+  const{owner,repo,branch}=curRepo;const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch);fd.append('sid',SID);
+  try{const r=await fetch('/github/load-repo-full',{method:'POST',body:fd});const d=await r.json();
     if(d.error){alert('❌ '+d.error);btn.textContent='⚡ تحميل الكل';btn.disabled=false;return}
-    projMemFiles=d.files||[];updateMemBar(d);if(currentTree.length)renderFilesList(currentTree);
-    btn.textContent='✅ تم';setTimeout(()=>{btn.textContent='⚡ تحميل الكل';btn.disabled=false},2000);
-  }catch(e){alert('❌ '+e);btn.textContent='⚡ تحميل الكل';btn.disabled=false}
+    projMem=d.files||[];updMemBar(d);if(curTree.length)renderFiles(curTree);
+    btn.textContent='✅ تم';setTimeout(()=>{btn.textContent='⚡ تحميل الكل';btn.disabled=false},2000);}
+  catch(e){alert('❌ '+e);btn.textContent='⚡ تحميل الكل';btn.disabled=false}
 }
-function updateMemBar(d){const bar=document.getElementById('mem-bar');if(!d||!d.added){bar.classList.remove('show');return}bar.classList.add('show');document.getElementById('mem-count').textContent=d.added;document.getElementById('mem-label').textContent=`ملف من ${d.repo}`}
-async function clearProjMem(){if(!confirm('مسح ذاكرة المشروع؟'))return;const fd=new FormData();fd.append('sid',SID);await fetch('/project/clear',{method:'POST',body:fd});projMemFiles=[];document.getElementById('mem-bar').classList.remove('show');if(currentTree.length)renderFilesList(currentTree)}
-function goToChat(){sw('c');pt.value=`تم تحميل مشروع ${currentRepo?.repo} للذاكرة. راجعه وأخبرني بأبرز المشاكل والتحسينات.`;ar(pt);pt.focus()}
+function updMemBar(d){const b=document.getElementById('mem-bar');if(!d?.added){b.classList.remove('show');return}b.classList.add('show');document.getElementById('mem-count').textContent=d.added;document.getElementById('mem-label').textContent='ملف من '+d.repo}
+async function clearMem(){if(!confirm('مسح الذاكرة؟'))return;const fd=new FormData();fd.append('sid',SID);await fetch('/project/clear',{method:'POST',body:fd});projMem=[];document.getElementById('mem-bar').classList.remove('show');if(curTree.length)renderFiles(curTree)}
+function goChat(){sw('c');pt.value=`تم تحميل مشروع ${curRepo?.repo} للذاكرة. راجعه وأخبرني بأبرز المشاكل والتحسينات.`;ar(pt);pt.focus()}
+
 async function startReview(){
-  if(!currentRepo){alert('اختر مستودعاً');return}if(!selectedPaths.size){alert('حدد ملفات');return}
+  if(!curRepo){alert('اختر مستودعاً');return}if(!selPaths.size){alert('حدد ملفات');return}
   const panel=document.getElementById('review-panel');const body=document.getElementById('rp-body');
-  document.getElementById('rp-title').textContent=`🔍 مراجعة ${selectedPaths.size} ملف — ${currentRepo.repo}`;
-  panel.classList.add('show');body.innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;padding:40px;gap:12px;color:var(--mu)"><div class="ring" style="width:30px;height:30px;border-width:3px;border-top-color:var(--ac2)"></div><span>جاري تحليل الكود...</span></div>`;
-  const{owner,repo,branch}=currentRepo;const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch);fd.append('paths',Array.from(selectedPaths).join(','));fd.append('model_id',sel==='auto'?'':sel);
-  try{
-    const res=await fetch('/github/review',{method:'POST',body:fd});if(!res.ok)throw new Error(`HTTP ${res.status}`);
-    const reader=res.body.getReader();const dec=new TextDecoder();let buf='';let rawText='';
+  document.getElementById('rp-title').textContent=`🔍 مراجعة ${selPaths.size} ملف — ${curRepo.repo}`;
+  panel.classList.add('show');body.innerHTML='<div style="text-align:center;padding:40px"><div class="ring" style="margin:auto;border-top-color:var(--ac2)"></div><p style="margin-top:12px;color:var(--mu)">جاري تحليل الكود...</p></div>';
+  const{owner,repo,branch}=curRepo;const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch);fd.append('paths',Array.from(selPaths).join(','));fd.append('model_id',sel==='auto'?'':sel);
+  try{const res=await fetch('/github/review',{method:'POST',body:fd});const reader=res.body.getReader();const dec=new TextDecoder();let buf='';let rawText='';
     body.innerHTML='<div id="rc" class="bbl a" style="padding:0"></div>';
     const rc=document.getElementById('rc');const cur=document.createElement('span');cur.className='cursor';rc.appendChild(cur);
-    while(true){
-      const{done,value}=await reader.read();if(done)break;
-      buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();
+    while(true){const{done,value}=await reader.read();if(done)break;buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();
       for(const line of lines){if(!line.startsWith('data:'))continue;const ds=line.slice(5).trim();if(!ds)continue;
-        try{const ev=JSON.parse(ds);if(ev.token!==undefined){rawText+=ev.token;rc.textContent=rawText;rc.appendChild(cur)}if(ev.done){cur.remove();rc.innerHTML=ev.html}}catch(_){}
+        try{const ev=JSON.parse(ds);if(ev.token){rawText+=ev.token;rc.textContent=rawText;rc.appendChild(cur)}if(ev.done){cur.remove();rc.innerHTML=ev.html}}catch(_){}
       }
     }
   }catch(e){body.innerHTML=`<p style="color:var(--danger);padding:20px">❌ ${esc(String(e))}</p>`}
 }
 function closeReview(){document.getElementById('review-panel').classList.remove('show')}
+
 async function loadToChat(){
-  if(!currentRepo||!selectedPaths.size){alert('حدد ملفات');return}
-  const{owner,repo,branch}=currentRepo;const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch);fd.append('paths',Array.from(selectedPaths).join(','));fd.append('sid',SID);
-  try{const r=await fetch('/github/load-to-memory',{method:'POST',body:fd});const d=await r.json();if(d.error){alert('❌ '+d.error);return}projMemFiles=d.files||[];sw('c');pt.value=`تم تحميل ${d.added.length} ملف من ${owner}/${repo}. كيف أساعدك؟`;ar(pt);pt.focus()}catch(e){alert('❌ '+e)}
+  if(!curRepo||!selPaths.size){alert('حدد ملفات');return}
+  const{owner,repo,branch}=curRepo;const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch);fd.append('paths',Array.from(selPaths).join(','));fd.append('sid',SID);
+  try{const r=await fetch('/github/load-to-memory',{method:'POST',body:fd});const d=await r.json();if(d.error){alert('❌ '+d.error);return}projMem=d.files||[];sw('c');pt.value=`تم تحميل ${d.added.length} ملف من ${owner}/${repo}. كيف أساعدك؟`;ar(pt);pt.focus()}catch(e){alert('❌ '+e)}
 }
 
-/* ── Saved chats ─────────────────────────────────────────────────────────── */
+/* Push selected files */
+async function pushFiles(){
+  if(!curRepo||!selPaths.size){alert('حدد ملفات للرفع');return}
+  const{owner,repo,branch}=curRepo;
+  // Fetch file contents then push
+  const filesToPush={};
+  let failed=[];
+  for(const path of selPaths){
+    try{
+      const r=await fetch(`/github/file?owner=${owner}&repo=${repo}&path=${encodeURIComponent(path)}&branch=${branch}`);
+      const d=await r.json();
+      if(d.content)filesToPush[path]=btoa(unescape(encodeURIComponent(d.content)));
+    }catch(e){failed.push(path)}
+  }
+  if(!Object.keys(filesToPush).length){alert('❌ لم يتم جلب أي ملف');return}
+  const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch||'main');
+  fd.append('files',JSON.stringify(filesToPush));fd.append('message','Leo-AI: update files');
+  try{
+    const r=await fetch('/github/push',{method:'POST',body:fd});const d=await r.json();
+    alert(d.ok?`✅ تم رفع ${d.pushed.length} ملف إلى ${owner}/${repo}`:`⚠️ نجح: ${d.pushed.length}\nفشل: ${d.errors.join('\n')}`);
+  }catch(e){alert('❌ '+e)}
+}
+
+/* ══ SAVED CHATS ════════════════════════════════════════════════════════════ */
 function getSaved(){return JSON.parse(localStorage.getItem('leoai_'+ROLE)||'[]')}
 function setSaved(v){localStorage.setItem('leoai_'+ROLE,JSON.stringify(v))}
-function renderSC(){const saved=getSaved();const list=document.getElementById('sc-list');if(!saved.length){list.innerHTML='<div class="sc-empty">لا توجد محادثات</div>';return}list.innerHTML=saved.map((c,i)=>`<div class="sc-item" onclick="loadChat(${i})"><div class="sc-item-hdr"><span class="sc-item-title">${esc(c.title)}</span><button class="sc-item-del" onclick="event.stopPropagation();delChat(${i})">🗑️</button></div><div class="sc-item-date">${c.date}</div></div>`).join('')}
+function renderSC(){const s=getSaved();const l=document.getElementById('sc-list');if(!s.length){l.innerHTML='<div class="sc-empty">لا توجد محادثات</div>';return}l.innerHTML=s.map((c,i)=>`<div class="sc-item" onclick="loadChat(${i})"><div class="sc-item-top"><span class="sc-item-title">${esc(c.title)}</span><button class="sc-item-del" onclick="event.stopPropagation();delChat(${i})">🗑️</button></div><div class="sc-item-date">${c.date}</div></div>`).join('')}
 function loadChat(i){const c=getSaved()[i];if(!c)return;wel.style.display='none';msgs.innerHTML=c.html;bot();closePanel()}
 function delChat(i){const s=getSaved();s.splice(i,1);setSaved(s);renderSC()}
-function saveChat(){if(!msgs.children.length){alert('لا يوجد شيء للحفظ');return}const saved=getSaved();const first=msgs.querySelector('.bbl.u');saved.unshift({id:Date.now(),title:(first?.textContent||'محادثة').slice(0,50),date:new Date().toLocaleString('ar-SA'),html:msgs.innerHTML});if(saved.length>30)saved.pop();setSaved(saved);renderSC();alert('✅ تم الحفظ')}
-async function shareChat(){if(!msgs.children.length){alert('لا يوجد شيء');return}const first=msgs.querySelector('.bbl.u');const fd=new FormData();fd.append('html',msgs.innerHTML);fd.append('title',(first?.textContent||'محادثة').slice(0,50));try{const r=await fetch('/share',{method:'POST',body:fd});const d=await r.json();const url=window.location.origin+d.url;await navigator.clipboard.writeText(url);alert(`✅ تم نسخ الرابط:\n${url}`)}catch(e){alert('❌ '+e)}}
-async function clearChat(){if(!confirm('مسح المحادثة؟'))return;if(streaming)await stopStream();const fd=new FormData();fd.append('sid',SID);try{await fetch('/clear',{method:'POST',body:fd})}catch(_){}msgs.innerHTML='';fsec.innerHTML='';spin.classList.remove('on');setStreaming(false);ctrl=null;pendingFiles=[];renderAbar();wel.style.display='flex';Object.keys(pf).forEach(k=>delete pf[k])}
+function saveChat(){if(!msgs.children.length){alert('لا يوجد شيء');return}const s=getSaved();const f=msgs.querySelector('.bbl.u');s.unshift({id:Date.now(),title:(f?.textContent||'محادثة').slice(0,50),date:new Date().toLocaleString('ar-SA'),html:msgs.innerHTML});if(s.length>30)s.pop();setSaved(s);renderSC();alert('✅ تم الحفظ')}
+async function shareChat(){if(!msgs.children.length){alert('لا يوجد شيء');return}const f=msgs.querySelector('.bbl.u');const fd=new FormData();fd.append('html',msgs.innerHTML);fd.append('title',(f?.textContent||'محادثة').slice(0,50));try{const r=await fetch('/share',{method:'POST',body:fd});const d=await r.json();const url=window.location.origin+d.url;await navigator.clipboard.writeText(url);alert('✅ تم نسخ الرابط:\n'+url)}catch(e){alert('❌ '+e)}}
+async function clearChat(){if(!confirm('مسح المحادثة؟'))return;if(streaming)await stopStream();const fd=new FormData();fd.append('sid',SID);try{await fetch('/clear',{method:'POST',body:fd})}catch(_){}msgs.innerHTML='';fsec.innerHTML='';spin.classList.remove('on');setStream(false);ctrl=null;pendingFiles=[];renderAbar();wel.style.display='flex';Object.keys(pf).forEach(k=>delete pf[k])}
 
-/* ── Image Gen ───────────────────────────────────────────────────────────── */
-async function genImg(){const p=document.getElementById('igp').value.trim();if(!p){document.getElementById('ige').textContent='⚠️ اكتب وصف';return}document.getElementById('ige').textContent='';const btn=document.getElementById('igb'),sp2=document.getElementById('igsp');btn.disabled=true;sp2.classList.add('on');const fd=new FormData();fd.append('prompt',p);fd.append('size',document.getElementById('igs').value);fd.append('model',document.getElementById('igm').value);try{const data=await(await fetch('/generate-image',{method:'POST',body:fd})).json();sp2.classList.remove('on');btn.disabled=false;if(data.error){document.getElementById('ige').textContent='❌ '+data.error;return}const card=document.createElement('div');card.className='icard';card.innerHTML=`<img src="${data.url}" alt="${esc(p)}" loading="lazy"><div class="icft"><span class="icp">${esc(p)}</span><a class="icdl" href="${data.url}" download="leo-ai.jpg" target="_blank">⬇️</a></div>`;document.getElementById('igg').prepend(card)}catch(e){sp2.classList.remove('on');btn.disabled=false}}
+/* ══ IMAGE GEN ═══════════════════════════════════════════════════════════════ */
+async function genImg(){const p=document.getElementById('igp').value.trim();if(!p){document.getElementById('ige').textContent='⚠️ اكتب وصف';return}document.getElementById('ige').textContent='';const btn=document.getElementById('igb'),sp2=document.getElementById('igsp');btn.disabled=true;sp2.classList.add('on');const fd=new FormData();fd.append('prompt',p);fd.append('size',document.getElementById('igs').value);fd.append('model',document.getElementById('igm').value);try{const data=await(await fetch('/generate-image',{method:'POST',body:fd})).json();sp2.classList.remove('on');btn.disabled=false;if(data.error){document.getElementById('ige').textContent='❌ '+data.error;return}const card=document.createElement('div');card.className='icard';card.innerHTML=`<img src="${data.url}" loading="lazy"><div class="icft"><span class="icp">${esc(p)}</span><a class="icdl" href="${data.url}" download="leo.jpg" target="_blank">⬇️</a></div>`;document.getElementById('igg').prepend(card)}catch(e){sp2.classList.remove('on');btn.disabled=false}}
 document.getElementById('igp').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();genImg()}});
 
-/* ── Init ────────────────────────────────────────────────────────────────── */
+/* ══ HELPERS ════════════════════════════════════════════════════════════════ */
+function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,140)+'px'}
+function kd(e){if(e.key==='Enter'&&!e.shiftKey&&!streaming){e.preventDefault();send()}}
+function sp(t){pt.value=t;pt.focus();ar(pt)}
+function bot(){cw_.scrollTop=cw_.scrollHeight}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function fileIcon(p){const e=p.split('.').pop().toLowerCase();const m={py:'🐍',js:'🟨',ts:'🔷',tsx:'🔷',jsx:'🟨',html:'🌐',css:'🎨',json:'📋',md:'📝',sh:'⚙️',go:'🐹',rs:'🦀',java:'☕',cpp:'⚡',c:'⚡',vue:'💚',php:'🐘',rb:'💎',sql:'🗄️',yml:'⚙️',yaml:'⚙️',pdf:'📕',zip:'📦'};return m[e]||'📄'}
+
+/* ══ INIT ════════════════════════════════════════════════════════════════════ */
 buildSh();
-// Default: Auto mode
 document.getElementById('mb').textContent='🤖';
 document.getElementById('mn').textContent='ذكي';
-document.getElementById('smart-badge').classList.add('show');
 </script>
 </body>
 </html>
