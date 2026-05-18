@@ -193,8 +193,8 @@ MODELS: list[dict] = [
     {"id":"qwen/qwen2.5-vl-72b-instruct:free","name":"Qwen2.5 VL 72B","desc":"يقرأ الصور","badge":"👁️","context":"128K","speed":"متوسط","tag":"يرى الصور","vision":True,"strength":"vision"},
     {"id":"qwen/qwen2.5-vl-32b-instruct:free","name":"Qwen2.5 VL 32B","desc":"يقرأ الصور • سريع","badge":"🔍","context":"128K","speed":"سريع","tag":"يرى الصور","vision":True,"strength":"vision"},
     {"id":"google/gemma-4-31b-it:free","name":"Gemma 4 31B","desc":"يقرأ الصور • 256K","badge":"🌟","context":"256K","speed":"متوسط","tag":"يرى الصور","vision":True,"strength":"vision"},
-    {"id":"openai/gpt-oss-20b:free","name":"GPT-OSS 20B","desc":"سريع ودقيق","badge":"⚡","context":"128K","speed":"سريع","tag":"سريع","vision":False,"strength":"general"},
-    {"id":"meta-llama/llama-4-scout:free","name":"Llama 4 Scout","desc":"الأسرع","badge":"⚡","context":"128K","speed":"سريع جداً","tag":"الأسرع","vision":False,"strength":"general"},
+    {"id":"mistralai/mistral-small-3.1-24b-instruct:free","name":"Mistral Small","desc":"سريع وذكي","badge":"⚡","context":"128K","speed":"سريع","tag":"سريع","vision":False,"strength":"general"},
+    {"id":"google/gemma-3-27b-it:free","name":"Gemma 3 27B","desc":"متوازن وموثوق","badge":"💎","context":"128K","speed":"متوسط","tag":"متوازن","vision":False,"strength":"general"},
 ]
 VISION_IDS = [m["id"] for m in MODELS if m["vision"]]
 CODING_IDS = [m["id"] for m in MODELS if not m["vision"]]
@@ -212,12 +212,12 @@ def smart_route_model(prompt: str) -> str:
     # Large project building
     if any(w in p for w in ["مشروع كامل","منصة","نظام","full project","platform","system","architecture","هيكل"]):
         return "moonshotai/kimi-k2:free"
-    # Code / dashboard / web building (default for coding)
-    if any(w in p for w in ["كود","code","html","css","js","dashboard","داشبورد","موقع","صفحة","api","بناء","اكتب","build"]):
+    # Code / dashboard / web building
+    if any(w in p for w in ["كود","code","html","css","js","dashboard","داشبورد","موقع","صفحة","api","بناء","اكتب","build","لعبة","game"]):
         return "qwen/qwen3-coder-480b-a35b-instruct:free"
-    # Quick simple questions
+    # Quick simple questions — استخدم Mistral بدل Llama المتوقف
     if len(prompt) < 80:
-        return "meta-llama/llama-4-scout:free"
+        return "mistralai/mistral-small-3.1-24b-instruct:free"
     # Default: best coder
     return MODELS[0]["id"]
 
