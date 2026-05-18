@@ -108,15 +108,15 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 }
 .dd-btn:active,.dd-btn.open{background:var(--sf2);border-color:var(--bd2);color:var(--tx)}
 .dd-menu{
-  position:absolute;top:40px;left:0;
+  position:fixed;top:52px;left:0;
   background:var(--bg2);
   border:1px solid var(--bd2);
-  border-radius:12px;min-width:200px;z-index:500;
+  border-radius:0 12px 12px 12px;min-width:210px;z-index:9999;
   transform-origin:top left;
   transform:scale(.9) translateY(-8px);
   opacity:0;pointer-events:none;
   transition:transform .2s cubic-bezier(.4,0,.2,1),opacity .2s;
-  box-shadow:0 12px 40px rgba(0,0,0,.6);overflow:hidden;
+  box-shadow:0 16px 48px rgba(0,0,0,.8);overflow:hidden;
 }
 .dd-menu.show{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
 .dd-sec{padding:4px 0}
@@ -487,7 +487,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
       <div class="dd-sec">
         <button class="dd-item" onclick="ddAction('reconnect')"><span class="dd-ico">🔄</span><span class="dd-label">إعادة الاتصال</span></button>
         <button class="dd-item" onclick="ddAction('clear')"><span class="dd-ico">🗑️</span><span class="dd-label">مسح المحادثة</span></button>
-        <a href="/logout" class="dd-item danger" onclick="closeDD()"><span class="dd-ico">🚪</span><span class="dd-label">خروج</span></a>
+        <button class="dd-item danger" onclick="doLogout()"><span class="dd-ico">🚪</span><span class="dd-label">خروج</span></button>
       </div>
     </div>
   </div>
@@ -509,6 +509,13 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
       <span class="arr">▾</span>
     </button>
   </div>
+
+  <!-- زر تحديث ظاهر دائماً -->
+  <button onclick="manualReconnect()" title="حفظ وتحديث"
+    style="width:30px;height:30px;border-radius:7px;background:transparent;
+           border:1px solid var(--bd);color:var(--mu);font-size:14px;
+           display:flex;align-items:center;justify-content:center;
+           cursor:pointer;flex-shrink:0;">🔄</button>
 
 </div>
 
@@ -744,6 +751,13 @@ document.addEventListener('click',e=>{
   const w=document.getElementById('ddwrap');
   if(w&&!w.contains(e.target))closeDD();
 });
+
+function doLogout(){
+  closeDD();
+  const form=document.createElement('form');
+  form.method='POST';form.action='/logout';
+  document.body.appendChild(form);form.submit();
+}
 
 /* ══ STREAM ══════════════════════════════════════════════════════════════════ */
 function setStream(v){streaming=v;sb.classList.toggle('stop',v);icoS.style.display=v?'none':'';icoX.style.display=v?'':'none'}
