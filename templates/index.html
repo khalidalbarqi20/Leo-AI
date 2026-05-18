@@ -308,6 +308,52 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 
 /* Full overlay panels */
 .full-ov{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column}
+
+/* ══ ALERTS ══════════════════════════════════════════════════════════════════ */
+.alerts-fab{position:fixed;bottom:90px;left:10px;z-index:400;width:36px;height:36px;
+  border-radius:50%;background:var(--sf);border:1px solid var(--bd2);
+  display:none;align-items:center;justify-content:center;
+  cursor:pointer;font-size:16px;box-shadow:0 4px 12px rgba(0,0,0,.5);}
+.alerts-fab.visible{display:flex}
+.alerts-fab:active{transform:scale(.92)}
+.a-dot{position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;
+  background:var(--danger);border:2px solid var(--bg);font-size:8px;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;}
+.alerts-panel{position:fixed;bottom:134px;left:10px;z-index:401;
+  width:min(300px,calc(100vw - 20px));background:var(--bg2);
+  border:1px solid var(--bd2);border-radius:12px;overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,.7);
+  transform:scale(.9) translateY(10px);opacity:0;pointer-events:none;
+  transition:transform .2s cubic-bezier(.4,0,.2,1),opacity .2s;
+  max-height:65vh;display:flex;flex-direction:column;}
+.alerts-panel.show{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+.ap-head{padding:10px 12px;border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.ap-title{font-size:13px;font-weight:700;flex:1}
+.ap-refresh{background:transparent;border:1px solid var(--bd);color:var(--mu);
+  padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;}
+.ap-close{background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:14px;}
+.ap-body{overflow-y:auto;padding:7px;flex:1}
+.ap-body::-webkit-scrollbar{width:3px}
+.ap-body::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
+.a-item{display:flex;align-items:flex-start;gap:8px;padding:8px 9px;border-radius:8px;
+  margin-bottom:5px;border:1px solid transparent;}
+.a-item.error{background:rgba(232,93,106,.08);border-color:rgba(232,93,106,.2)}
+.a-item.warn{background:rgba(232,162,74,.07);border-color:rgba(232,162,74,.15)}
+.a-item.ok{background:rgba(62,207,142,.05);border-color:rgba(62,207,142,.12)}
+.a-ico{font-size:15px;flex-shrink:0;margin-top:1px}
+.a-body{flex:1;min-width:0}
+.a-title{font-size:11.5px;font-weight:700}
+.a-item.error .a-title{color:var(--danger)}
+.a-item.warn .a-title{color:var(--warn)}
+.a-item.ok .a-title{color:var(--success)}
+.a-detail{font-size:10px;color:var(--mu);margin-top:2px;line-height:1.5}
+.ap-foot{padding:7px 10px;border-top:1px solid var(--bd);flex-shrink:0;
+  display:flex;gap:5px;align-items:center;font-size:10px;color:var(--mu)}
+.a-stat{border-radius:4px;padding:2px 6px;font-weight:700;font-size:9.5px}
+.a-stat.e{background:rgba(232,93,106,.15);color:var(--danger)}
+.a-stat.w{background:rgba(232,162,74,.12);color:var(--warn)}
+.a-stat.o{background:rgba(62,207,142,.1);color:var(--success)}
 .full-ov.show{display:flex}
 .fo-head{background:var(--bg2);border-bottom:1px solid var(--bd);padding:10px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0}
 .fo-title{font-size:13px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -486,6 +532,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
       <div class="dd-sep"></div>
       <div class="dd-sec">
         <button class="dd-item" onclick="ddAction('reconnect')"><span class="dd-ico">🔄</span><span class="dd-label">إعادة الاتصال</span></button>
+        <button class="dd-item" onclick="ddAction('health')"><span class="dd-ico">🩺</span><span class="dd-label">فحص الموديلات</span></button>
         <button class="dd-item" onclick="ddAction('clear')"><span class="dd-ico">🗑️</span><span class="dd-label">مسح المحادثة</span></button>
         <button class="dd-item danger" onclick="doLogout()"><span class="dd-ico">🚪</span><span class="dd-label">خروج</span></button>
       </div>
@@ -522,6 +569,25 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 <!-- ══ OVERLAYS ════════════════════════════════════════════════════════════════ -->
 <div class="ov" id="ov" onclick="closeSh()"></div>
 <div class="panel-ov" id="panel-ov" onclick="closePanel()"></div>
+
+{% if is_admin %}
+<!-- زر التنبيهات العائم -->
+<div class="alerts-fab" id="alerts-fab" onclick="toggleAlerts()">
+  🔔<span class="a-dot" id="a-dot">0</span>
+</div>
+<!-- لوحة التنبيهات -->
+<div class="alerts-panel" id="alerts-panel">
+  <div class="ap-head">
+    <span class="ap-title">🔔 التنبيهات</span>
+    <button class="ap-refresh" onclick="loadAlerts()">🔄 تحديث</button>
+    <button class="ap-close" onclick="toggleAlerts()">✕</button>
+  </div>
+  <div class="ap-body" id="ap-body">
+    <div style="color:var(--mu);font-size:12px;padding:10px;text-align:center">⏳ جاري الفحص...</div>
+  </div>
+  <div class="ap-foot" id="ap-foot"></div>
+</div>
+{% endif %}
 
 <!-- MODEL SHEET -->
 <div class="sheet" id="sh">
@@ -745,7 +811,21 @@ function ddAction(a){
   closeDD();
   ({s2c:()=>openPanel('s2c'),tpl:()=>openPanel('tpl'),apis:()=>openPanel('apis'),
     chats:()=>openPanel('chats'),save:()=>saveChat(),share:()=>shareChat(),
-    reconnect:()=>manualReconnect(),clear:()=>clearChat()})[a]?.();
+    reconnect:()=>manualReconnect(),clear:()=>clearChat(),
+    health:()=>checkHealth(),alerts:()=>{toggleAlerts();if(!alertsOpen)loadAlerts()}})[a]?.();
+}
+
+async function checkHealth(){
+  const msg='🩺 جاري فحص الموديلات...';
+  pt.value=msg;ar(pt);
+  try{
+    const r=await fetch('/health');
+    const d=await r.json();
+    const ok=d.working.map(m=>`✅ ${m.badge} ${m.name}`).join('\n');
+    const bad=d.broken.map(m=>`❌ ${m.badge} ${m.name}: ${m.error}`).join('\n');
+    alert(`🩺 نتيجة الفحص (${d.total} موديل):\n\n${ok}\n\n${bad?'المتوقفة:\n'+bad:''}`);
+  }catch(e){alert('❌ فشل الفحص: '+e)}
+  pt.value='';
 }
 document.addEventListener('click',e=>{
   const w=document.getElementById('ddwrap');
@@ -1113,6 +1193,77 @@ function sp(t){pt.value=t;pt.focus();ar(pt)}
 function bot(){cw_.scrollTop=cw_.scrollHeight}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function fileIcon(p){const e=p.split('.').pop().toLowerCase();const m={py:'🐍',js:'🟨',ts:'🔷',tsx:'🔷',jsx:'🟨',html:'🌐',css:'🎨',json:'📋',md:'📝',sh:'⚙️',go:'🐹',rs:'🦀',java:'☕',cpp:'⚡',c:'⚡',vue:'💚',php:'🐘',rb:'💎',sql:'🗄️',yml:'⚙️',yaml:'⚙️',pdf:'📕',zip:'📦'};return m[e]||'📄'}
+
+/* ══ ALERTS (Admin only) ════════════════════════════════════════════════════ */
+let alertsOpen = false;
+
+function toggleAlerts(){
+  alertsOpen = !alertsOpen;
+  document.getElementById('alerts-panel')?.classList.toggle('show', alertsOpen);
+}
+
+async function loadAlerts(){
+  const body = document.getElementById('ap-body');
+  const foot = document.getElementById('ap-foot');
+  const fab  = document.getElementById('alerts-fab');
+  const dot  = document.getElementById('a-dot');
+  if(!body) return;
+
+  body.innerHTML = '<div style="color:var(--mu);font-size:12px;padding:12px;text-align:center">⏳ جاري الفحص الشامل...<br><small>قد يستغرق 10 ثوانٍ</small></div>';
+  if(foot) foot.innerHTML = '';
+
+  try{
+    const r = await fetch('/admin/alerts');
+    const d = await r.json();
+    const alerts = d.alerts || [];
+
+    // Render alerts
+    body.innerHTML = alerts.map(a => `
+      <div class="a-item ${a.level}">
+        <span class="a-ico">${a.icon}</span>
+        <div class="a-body">
+          <div class="a-title">${esc(a.title)}</div>
+          <div class="a-detail">${esc(a.detail)}</div>
+        </div>
+      </div>`).join('');
+
+    // Footer stats
+    if(foot){
+      foot.innerHTML =
+        `<span style="flex:1">آخر فحص: ${new Date().toLocaleTimeString('ar-SA')}</span>` +
+        (d.errors   ? `<span class="a-stat e">❌ ${d.errors}</span>` : '') +
+        (d.warnings ? `<span class="a-stat w">⚠️ ${d.warnings}</span>` : '') +
+        (d.ok       ? `<span class="a-stat o">✅ ${d.ok}</span>` : '');
+    }
+
+    // Update FAB badge
+    const total = d.errors + d.warnings;
+    if(fab && dot){
+      fab.classList.add('visible');
+      if(total > 0){
+        dot.textContent = total > 9 ? '9+' : total;
+        dot.style.display = 'flex';
+        // لون الزر حسب الخطورة
+        fab.style.borderColor = d.errors ? 'rgba(232,93,106,.5)' : 'rgba(232,162,74,.5)';
+        fab.textContent = d.errors ? '🚨' : '⚠️';
+        fab.appendChild(dot);
+      } else {
+        dot.style.display = 'none';
+        fab.textContent = '✅';
+        fab.style.borderColor = 'rgba(62,207,142,.3)';
+        fab.appendChild(dot);
+      }
+    }
+
+  }catch(e){
+    if(body) body.innerHTML = `<div class="a-item error"><span class="a-ico">❌</span><div class="a-body"><div class="a-title">فشل الفحص</div><div class="a-detail">${esc(String(e))}</div></div></div>`;
+  }
+}
+
+// تحميل التنبيهات عند فتح الصفحة (بعد 3 ثوانٍ لإعطاء الصفحة وقت التحميل)
+if(IS_ADMIN){
+  setTimeout(loadAlerts, 3000);
+}
 
 /* ══ INIT ════════════════════════════════════════════════════════════════════ */
 buildSh();
