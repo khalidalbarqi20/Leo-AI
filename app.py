@@ -77,6 +77,18 @@ CODING_IDS = [CLAUDE_ID]
 def smart_route(prompt: str) -> str:
     return CLAUDE_ID
 
+# تكلفة Claude Sonnet 4.6 لكل مليون token
+COST_INPUT_PER_M  = 3.0   # $3 per 1M input tokens
+COST_OUTPUT_PER_M = 15.0  # $15 per 1M output tokens
+
+# عداد الاستخدام — يُحفظ في الذاكرة
+usage_stats: dict = {
+    "input_tokens":  0,
+    "output_tokens": 0,
+    "total_cost_usd": 0.0,
+    "requests": 0,
+}
+
 # ── Free APIs ──────────────────────────────────────────────────────────────────
 FREE_APIS = {
     "crypto":        {"name":"CoinGecko",        "url":"https://api.coingecko.com/api/v3",    "key_env":None,              "free_tier":"مجاني بدون مفتاح"},
@@ -944,6 +956,16 @@ async def chat_stream(request: Request, prompt: str = Form(...), model_id: str =
         files_found = extract_files(full_text)
         generated_files.setdefault(sid, {}).update(files_found)
         files_b64 = {n: base64.b64encode(c.encode()).decode() for n, c in files_found.items()}
+
+        # حساب التكلفة التقريبية (1 token ≈ 4 حروف)
+        input_est  = len(" ".join(m.get("content","") if isinstance(m.get("content",""),str) else str(m.get("content","")) for m in an_messages)) // 4
+        output_est = len(full_text) // 4
+        cost = (input_est * COST_INPUT_PER_M + output_est * COST_OUTPUT_PER_M) / 1_000_000
+        usage_stats["input_tokens"]  += input_est
+        usage_stats["output_tokens"] += output_est
+        usage_stats["total_cost_usd"] += cost
+        usage_stats["requests"]       += 1
+
         yield "data: " + json.dumps({
             "done": True,
             "html": markdown_to_html(full_text),
@@ -952,6 +974,8 @@ async def chat_stream(request: Request, prompt: str = Form(...), model_id: str =
             "switched": False,
             "raw": full_text,
             "role": role,
+            "cost": round(cost, 5),
+            "total_cost": round(usage_stats["total_cost_usd"], 4),
         }) + "\n\n"
 
     return StreamingResponse(streamer(), media_type="text/event-stream",
@@ -1032,4 +1056,20 @@ async def health():
         "models": len(MODELS),
         "model_names": [m["name"] for m in MODELS],
         "claude_ready": bool(ANTHROPIC_API_KEY),
+    })
+
+@app.get("/usage")
+async def get_usage(leo_session: str | None = Cookie(default=None)):
+    """عداد الاستخدام والتكلفة"""
+    if r := check_admin(leo_session): return r
+    remaining = max(0.0, 6.0 - usage_stats["total_cost_usd"])
+    return JSONResponse({
+        "input_tokens":    usage_stats["input_tokens"],
+        "output_tokens":   usage_stats["output_tokens"],
+        "total_tokens":    usage_stats["input_tokens"] + usage_stats["output_tokens"],
+        "total_cost_usd":  round(usage_stats["total_cost_usd"], 4),
+        "requests":        usage_stats["requests"],
+        "budget_usd":      6.0,
+        "remaining_usd":   round(remaining, 4),
+        "remaining_pct":   round(remaining / 6.0 * 100, 1),
     })
