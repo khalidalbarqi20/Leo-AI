@@ -114,190 +114,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .michk{color:var(--ac);font-size:15px;font-weight:700;opacity:0;flex-shrink:0}
 .mi.sel .michk{opacity:1}
 
-/* SIDE PANEL */
-.pov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;
-     opacity:0;pointer-events:none;transition:opacity .25s}
-.pov.on{opacity:1;pointer-events:all}
-.panel{position:fixed;top:0;right:0;bottom:0;width:min(310px,90vw);
-       background:var(--bg2);border-left:1px solid var(--bd2);z-index:51;
-       transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
-       display:flex;flex-direction:column}
-.panel.on{transform:translateX(0)}
-.ph{display:flex;align-items:center;justify-content:space-between;
-    padding:13px;border-bottom:1px solid var(--bd);flex-shrink:0}
-.phttl{font-size:14px;font-weight:700}
-.phx{width:26px;height:26px;background:var(--sf);border:none;border-radius:50%;
-     color:var(--mu);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
-.pb{flex:1;overflow-y:auto;padding:8px}
-.pb::-webkit-scrollbar{width:3px}
-.pb::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
-.pf{padding:8px;border-top:1px solid var(--bd);flex-shrink:0;display:flex;flex-direction:column;gap:5px}
-.xbtn{padding:10px;border:none;border-radius:9px;font-size:13px;font-weight:700;
-      cursor:pointer;text-align:center;transition:opacity .15s}
-.xbtn:active{opacity:.85}
-.xbtn.ac{background:linear-gradient(135deg,#b8c5d6,#8fa3bf);color:#0a0f1e}
-.xbtn.sec{background:var(--sf);color:var(--tx);border:1px solid var(--bd)}
-.sci{padding:9px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px;transition:background .12s}
-.sci:active,.sci:hover{background:var(--sf)}
-.scit{display:flex;align-items:center;justify-content:space-between}
-.sctl{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.scdl{background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:0 2px}
-.scdl:active{color:var(--danger)}
-.scdt{font-size:10px;color:var(--mu);margin-top:2px}
-.scmt{text-align:center;color:var(--mu);font-size:12px;padding:24px}
-.apic{background:var(--sf);border:1px solid var(--bd);border-radius:9px;padding:10px;margin-bottom:8px}
-.apit{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.apin{font-size:12.5px;font-weight:700;color:var(--ac)}
-.apidot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.apidot.ok{background:var(--ok)} .apidot.no{background:var(--warn)}
-.apif{font-size:10px;color:var(--mu);margin-bottom:7px}
-.apib{display:flex;gap:5px}
-.apibtn{background:transparent;border:1px solid var(--bd);color:var(--mu);
-        border-radius:5px;padding:3px 9px;font-size:10.5px;cursor:pointer;
-        text-decoration:none;display:inline-block;transition:all .12s}
-.apibtn.use{border-color:var(--ac);color:var(--ac)}
-.apibtn.test{border-color:var(--ac2);color:var(--ac2)}
-
-/* GITHUB */
-.page{display:none;flex:1;flex-direction:column;overflow:hidden}
-.page.on{display:flex}
-.ghpage{display:flex;flex:1;flex-direction:column;overflow:hidden}
-.ghtopbar{background:var(--bg2);border-bottom:1px solid var(--bd);
-          padding:8px 10px;flex-shrink:0;display:flex;align-items:center;gap:7px}
-.ghback{background:transparent;border:1px solid var(--bd);color:var(--tx);
-        padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0}
-.ghback:active{background:var(--sf)}
-.ghtitle{font-size:13px;font-weight:700;flex:1;min-width:0;
-         overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ghacts{display:flex;gap:5px;padding:7px 10px;border-bottom:1px solid var(--bd);
-        flex-shrink:0;flex-wrap:wrap}
-.gha{flex:1;min-width:0;padding:7px 4px;border:1px solid var(--bd);border-radius:7px;
-     background:var(--sf);color:var(--tx);font-size:10px;font-weight:600;
-     cursor:pointer;text-align:center;white-space:nowrap;transition:background .12s}
-.gha:active{background:var(--sf2)}
-.gha.ac{background:rgba(184,197,214,.12);color:var(--ac);border-color:var(--bd2)}
-.gha.rv{background:rgba(107,159,212,.1);color:var(--ac2);border-color:rgba(107,159,212,.3)}
-.gha.ld{background:rgba(62,207,142,.08);color:var(--ok);border-color:rgba(62,207,142,.3)}
-.gha.pu{background:rgba(107,159,212,.08);color:var(--ac2);border-color:rgba(107,159,212,.25)}
-.membar{background:rgba(62,207,142,.05);border-bottom:1px solid rgba(62,207,142,.15);
-        padding:6px 10px;flex-shrink:0;display:none;align-items:center;gap:6px;font-size:11px}
-.membar.show{display:flex}
-.memcnt{background:rgba(62,207,142,.15);color:var(--ok);border-radius:4px;
-        padding:1px 7px;font-weight:700;flex-shrink:0}
-.memlbl{color:var(--mu);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.memclr{background:transparent;border:1px solid var(--bd);color:var(--mu);
-        padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;flex-shrink:0}
-.memgo{background:rgba(184,197,214,.12);color:var(--ac);border:none;
-       padding:3px 9px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;flex-shrink:0}
-.selbar{background:rgba(184,197,214,.04);border-bottom:1px solid rgba(184,197,214,.1);
-        padding:6px 10px;display:none;align-items:center;gap:6px;flex-shrink:0}
-.selbar.show{display:flex}
-.selcnt{font-size:11px;color:var(--ac);font-weight:600}
-.ghsrch{padding:8px 10px;border-bottom:1px solid var(--bd);flex-shrink:0}
-.ghsrch input{width:100%;background:var(--sf);color:var(--tx);border:1px solid var(--bd);
-              border-radius:8px;padding:7px 11px;font-size:13px;outline:none;font-family:inherit}
-.ghsrch input:focus{border-color:var(--bd2)}
-.ghlist{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.ghlist::-webkit-scrollbar{width:3px}
-.ghlist::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
-.repoi{display:flex;align-items:center;gap:10px;padding:11px 12px;
-       border-bottom:1px solid var(--bd);cursor:pointer;transition:background .1s}
-.repoi:active,.repoi:hover{background:var(--sf)}
-.riico{width:34px;height:34px;background:var(--sf);border-radius:8px;
-       display:flex;align-items:center;justify-content:center;font-size:18px;
-       flex-shrink:0;border:1px solid var(--bd)}
-.ribody{flex:1;min-width:0}
-.riname{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;
-        white-space:nowrap;display:flex;align-items:center;gap:5px}
-.riprv{background:rgba(232,162,74,.12);color:var(--warn);border-radius:3px;
-       padding:1px 4px;font-size:8.5px;font-weight:700;flex-shrink:0}
-.rimeta{font-size:10px;color:var(--mu);margin-top:2px;display:flex;gap:8px}
-.riarr{color:var(--mu);font-size:14px;flex-shrink:0}
-.filei{display:flex;align-items:center;gap:8px;padding:8px 12px;
-       border-bottom:1px solid var(--bd);cursor:pointer;transition:background .1s}
-.filei:active,.filei:hover{background:var(--sf)}
-.filei.chk{background:rgba(184,197,214,.04)}
-.fichk{width:17px;height:17px;border:1.5px solid var(--bd2);border-radius:4px;
-       flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--ac)}
-.filei.chk .fichk{background:rgba(184,197,214,.1);border-color:var(--ac)}
-.fichi{opacity:0}.filei.chk .fichi{opacity:1}
-.fiico{font-size:14px;flex-shrink:0}
-.finame{font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.finame.code{color:var(--tx)}.finame.other{color:var(--mu)}
-.fisz{font-size:9.5px;color:var(--mu);flex-shrink:0}
-.fimem{font-size:8px;background:rgba(62,207,142,.12);color:var(--ok);
-       border-radius:3px;padding:1px 4px;flex-shrink:0}
-.ghmt{text-align:center;color:var(--mu);font-size:12.5px;padding:40px 20px}
-.fov{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column}
-.fov.show{display:flex}
-.fovh{background:var(--bg2);border-bottom:1px solid var(--bd);padding:10px 12px;
-      display:flex;align-items:center;gap:8px;flex-shrink:0}
-.fovt{font-size:13px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fovc{background:var(--sf);border:1px solid var(--bd);color:var(--tx);
-      padding:5px 11px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;flex-shrink:0}
-.fovb{flex:1;overflow-y:auto;padding:14px}
-.fovb::-webkit-scrollbar{width:4px}
-.fovb::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
-
-/* LIVE PREVIEW */
-.pvp{position:fixed;inset:0;background:var(--bg);z-index:150;display:none;flex-direction:column}
-.pvp.show{display:flex}
-.pvh{background:var(--bg2);border-bottom:1px solid var(--bd);padding:8px 10px;
-     display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap}
-.pvtitle{font-size:12.5px;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;
-         white-space:nowrap;color:var(--ac)}
-.pvbtn{background:var(--sf);border:1px solid var(--bd);color:var(--tx);
-       padding:5px 9px;border-radius:6px;font-size:10.5px;font-weight:600;
-       cursor:pointer;white-space:nowrap;flex-shrink:0;transition:background .12s}
-.pvbtn:active,.pvbtn:hover{background:var(--sf2)}
-.pvbtn.ac{background:rgba(184,197,214,.12);color:var(--ac);border-color:var(--bd2)}
-.pvbtn.d{border-color:rgba(232,93,106,.4);color:var(--danger)}
-#pvframe{flex:1;border:none;background:#fff;width:100%}
-.pyout{background:var(--cbg);border-top:1px solid var(--bd);padding:10px 12px;
-       font-family:'Fira Code',monospace;font-size:12px;max-height:200px;
-       overflow-y:auto;flex-shrink:0;display:none;white-space:pre-wrap;color:var(--tx)}
-.pyout.show{display:block}
-.pyok{color:var(--ok)}.pyerr{color:var(--danger)}
-
-/* ALERTS */
-.alfab{position:fixed;bottom:88px;left:10px;z-index:400;width:36px;height:36px;
-       border-radius:50%;background:var(--sf);border:1px solid var(--bd2);
-       display:none;align-items:center;justify-content:center;
-       cursor:pointer;font-size:16px;box-shadow:0 4px 16px rgba(0,0,0,.5);
-       transition:all .2s}
-.alfab.vis{display:flex}
-.alfab:active{transform:scale(.92)}
-.aldot{position:absolute;top:-3px;right:-3px;width:14px;height:14px;
-       border-radius:50%;background:var(--danger);border:2px solid var(--bg);
-       font-size:8px;color:#fff;display:flex;align-items:center;justify-content:center;
-       font-weight:700;display:none}
-.aldot.show{display:flex}
-.alp{position:fixed;bottom:132px;left:10px;z-index:401;
-     width:min(300px,calc(100vw - 20px));background:var(--bg2);
-     border:1px solid var(--bd2);border-radius:12px;overflow:hidden;
-     box-shadow:0 8px 32px rgba(0,0,0,.7);
-     transform:scale(.9) translateY(10px);opacity:0;pointer-events:none;
-     transition:transform .2s cubic-bezier(.4,0,.2,1),opacity .2s;
-     max-height:65vh;display:flex;flex-direction:column}
-.alp.show{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
-.alph{padding:10px 12px;border-bottom:1px solid var(--bd);
-      display:flex;align-items:center;gap:6px;flex-shrink:0}
-.alpttl{font-size:13px;font-weight:700;flex:1}
-.alpref{background:transparent;border:1px solid var(--bd);color:var(--mu);
-        padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;transition:background .12s}
-.alpref:active{background:var(--sf)}
-.alpx{background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:14px}
-.alpb{overflow-y:auto;padding:7px;flex:1}
-.alpb::-webkit-scrollbar{width:3px}
-.alpb::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
-.alpi{padding:8px 10px;border-radius:7px;font-size:11.5px;margin-bottom:4px;
-      border-left:3px solid transparent;transition:background .12s;cursor:pointer}
-.alpi:hover{background:var(--sf)}
-.alpi.err{border-left-color:var(--danger);color:var(--danger)}
-.alpi.warn{border-left-color:var(--warn);color:var(--warn)}
-.alpi.ok{border-left-color:var(--ok);color:var(--ok)}
-.alpi .ts{font-size:9px;color:var(--mu);margin-top:2px;display:block}
-
 /* CHAT */
 .chat{flex:1;overflow-y:auto;padding:14px 10px;display:flex;flex-direction:column;gap:12px;
       -webkit-overflow-scrolling:touch;scroll-behavior:smooth}
@@ -309,10 +125,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
               display:flex;align-items:center;justify-content:center;font-size:28px;border:1px solid var(--bd2)}
 .empty h2{font-size:18px;font-weight:700;color:var(--ac)}
 .empty p{font-size:12.5px;color:var(--mu);max-width:260px;line-height:1.6}
-.sugs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:320px}
-.sug{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;
-     font-size:11.5px;color:var(--tx);cursor:pointer;transition:all .15s}
-.sug:active{background:var(--sf2);border-color:var(--bd2)}
 .row{display:flex;gap:10px;margin:2px 0;padding:2px 0}
 .row.u{justify-content:flex-end}
 .bbl{padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.75;max-width:88%;word-wrap:break-word}
@@ -322,25 +134,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
     font-size:13px;flex-shrink:0;margin-top:2px}
 .av.aa{background:linear-gradient(135deg,#19c37d,#ab68ff);order:-1}
 .av.ua{background:linear-gradient(135deg,#ab68ff,#6b3fa0);order:-1}
-.cw2{background:var(--cbg);border-radius:9px;margin:8px 0;border:1px solid var(--bd);overflow:hidden}
-.ch{display:flex;padding:6px 12px;background:var(--sf);border-bottom:1px solid var(--bd);
-    justify-content:space-between;align-items:center}
-.ch span{color:var(--mu);font-size:11px;font-family:monospace}
-.ch-btns{display:flex;gap:5px}
-.ch-btns button{background:transparent;border:1px solid var(--bd);color:var(--mu);
-               border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer;transition:all .12s}
-.ch-btns button:active{background:var(--sf2);color:var(--ac)}
-pre{margin:0;padding:12px;overflow-x:auto;font-size:12px;color:#cdd6f4;line-height:1.6}
-code{font-family:'Fira Code','Consolas',monospace}
 .think{display:flex;align-items:center;gap:6px;padding:10px 14px;color:var(--mu);font-size:13px}
 .think .dot{width:6px;height:6px;border-radius:50%;background:var(--ac2);animation:blink 1.4s infinite}
 .think .dot:nth-child(2){animation-delay:.2s}
 .think .dot:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
-.stopbtn{align-self:center;background:var(--sf);border:1px solid var(--bd);color:var(--danger);
-         border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;cursor:pointer;
-         margin:4px 0;transition:all .15s}
-.stopbtn:active{background:rgba(232,93,106,.1)}
 
 /* INPUT */
 .inpw{background:var(--bg2);border-top:1px solid var(--bd);padding:8px 10px 10px;flex-shrink:0}
@@ -358,695 +156,238 @@ code{font-family:'Fira Code','Consolas',monospace}
 .inpbtn.send{background:linear-gradient(135deg,#1a2d4a,#0f1e38);color:var(--ac);border-color:var(--bd2)}
 .inpbtn.send:active{opacity:.85}
 .inpbtn:disabled{opacity:.4;cursor:not-allowed}
-.filechip{display:flex;align-items:center;gap:4px;background:rgba(107,159,212,.1);
-          border:1px solid rgba(107,159,212,.2);border-radius:5px;padding:3px 8px;
-          font-size:10px;color:var(--ac2);margin-top:4px}
-.filechip .x{cursor:pointer;color:var(--mu)}
-.filechip .x:active{color:var(--danger)}
-
-/* MODALS */
-.modal{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;
-       background:rgba(0,0,0,.7)}
-.modal.show{display:flex}
-.mdl{background:var(--bg2);border:1px solid var(--bd2);border-radius:14px;
-     width:min(320px,90vw);padding:20px;box-shadow:0 16px 48px rgba(0,0,0,.8)}
-.mdlt{font-size:15px;font-weight:700;margin-bottom:12px}
-.mdlp{font-size:13px;color:var(--mu);margin-bottom:16px;line-height:1.6}
-.mdlin{width:100%;background:var(--sf);border:1px solid var(--bd);border-radius:8px;
-       padding:9px 11px;font-size:13px;color:var(--tx);font-family:inherit;outline:none;margin-bottom:14px}
-.mdlin:focus{border-color:var(--bd2)}
-.mdlbtns{display:flex;gap:8px;justify-content:flex-end}
-.mdlbtn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none}
-.mdlbtn.prim{background:linear-gradient(135deg,#1a2d4a,#0f1e38);color:var(--ac)}
-.mdlbtn.sec{background:var(--sf);color:var(--tx);border:1px solid var(--bd)}
-
-/* SAVE CONFIRMATION */
-.savecf{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;
-        background:rgba(0,0,0,.8)}
-.savecf.show{display:flex}
-.savebox{background:var(--bg2);border:1px solid var(--bd2);border-radius:16px;
-         width:min(300px,85vw);padding:24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.9)}
-.saveicon{font-size:40px;margin-bottom:12px}
-.saveh{font-size:16px;font-weight:700;margin-bottom:8px}
-.savep{font-size:13px;color:var(--mu);margin-bottom:20px;line-height:1.5}
-.savebtns{display:flex;gap:10px;justify-content:center}
-.savebtn{padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:opacity .15s}
-.savebtn:active{opacity:.85}
-.savebtn.yes{background:var(--ok);color:#0a0f1e}
-.savebtn.no{background:var(--sf);color:var(--tx);border:1px solid var(--bd)}
-.savebtn.discard{background:var(--danger);color:#fff}
-
-/* SCROLL TO BOTTOM */
-.stb{position:fixed;bottom:70px;right:14px;z-index:30;width:36px;height:36px;
-     border-radius:50%;background:var(--sf);border:1px solid var(--bd2);
-     color:var(--ac);cursor:pointer;font-size:14px;display:none;
-     align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.5);
-     transition:all .2s}
-.stb.show{display:flex}
-.stb:active{transform:scale(.92)}
-
-/* LOADING */
-.ldg{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;
-     background:var(--bg)}
-.ldg.show{display:flex}
-.ldgsp{width:40px;height:40px;border:3px solid var(--bd);border-top-color:var(--ac2);
-       border-radius:50%;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* RESPONSIVE */
-@media(min-width:768px){
-  .chat{padding:18px 16px}
-  .bbl{max-width:75%}
-}
 </style>
 </head>
 <body>
 
-<header class="hdr">
-  <div class="ddw">
-    <button class="ddbtn" id="menuBtn" title="القائمة">☰</button>
-    <div class="ddov" id="ddOv"></div>
-    <div class="ddm" id="ddMenu">
-      <div class="dds">
-        <button class="ddi" onclick="openPanel('history')">
-          <span class="ico">💬</span><span class="lbl">سجل المحادثات</span>
-        </button>
-        <button class="ddi" onclick="openPanel('api')">
-          <span class="ico">🔑</span><span class="lbl">مفاتيح API</span>
-        </button>
-        <button class="ddi" onclick="openPage('github')">
-          <span class="ico">📦</span><span class="lbl">مستودعات GitHub</span>
-        </button>
-        <div class="ddsep"></div>
-        <button class="ddi danger" onclick="clearAllData()">
-          <span class="ico">🗑️</span><span class="lbl">مسح البيانات</span>
-        </button>
+  <header class="hdr">
+    <div class="ddw">
+      <button class="ddbtn" id="menuBtn" title="القائمة">☰</button>
+    </div>
+    <div class="hdrmid">
+      <div class="mpick" id="modelPickBtn">
+        <span class="mn" id="currentModelName">تحميل...</span>
+        <span class="arr">▼</span>
       </div>
     </div>
-  </div>
+  </header>
 
-  <div class="logo">🦁</div>
-  <span class="rbadge" id="roleBadge">...</span>
-
-  <div class="hdrmid">
-    <div class="tabs">
-      <button class="tab on" id="tChat" onclick="setTab('chat')">شات</button>
-      <button class="tab" id="tPrv" onclick="setTab('preview')">معاينة</button>
+  <main class="chat" id="chatContainer">
+    <div class="empty" id="emptyState">
+      <div class="elogo">🤖</div>
+      <h2>مرحباً بك في Leo-AI</h2>
+      <p>اسألني عن أي شيء برمجياً أو تقنياً لأساعدك فيه بدقة.</p>
     </div>
-    <div class="mpick" id="modelBtn" onclick="openModels()">
-      <span class="mn" id="modelName">تحميل...</span>
-      <span class="arr">▼</span>
-    </div>
-    <button class="rfbtn" onclick="newChat()" title="محادثة جديدة">＋</button>
-  </div>
-</header>
-
-<div class="ov" id="ov" onclick="closeAll()"></div>
-
-<div class="sheet" id="modelSheet">
-  <div class="shbar"></div>
-  <div class="shhead">
-    <span class="shttl">اختر النموذج</span>
-    <button class="shx" onclick="closeAll()">✕</button>
-  </div>
-  <div class="shlist" id="modelsList"></div>
-</div>
-
-<div class="pov" id="pov" onclick="closeAll()"></div>
-<div class="panel" id="panel">
-  <div class="ph">
-    <span class="phttl" id="panelTitle">...</span>
-    <button class="phx" onclick="closeAll()">✕</button>
-  </div>
-  <div class="pb" id="panelBody"></div>
-  <div class="pf" id="panelFoot"></div>
-</div>
-
-<div class="page on" id="pMain">
-  <div class="chat" id="chat">
-    <div class="empty">
-      <div class="elogo">🦁</div>
-      <h2>كيف يمكنني مساعدتك اليوم؟</h2>
-      <p>أنا Leo-AI، مساعدك الذكي المطور لإدارة المشاريع، كتابة الأكواد، وتصفح ملفات GitHub.</p>
-      <div class="sugs">
-        <div class="sug" onclick="setPrompt('اكتب كود صفحة هبوط بسيطة وجذابة بالـ HTML و CSS')">صفحة هبوط جذابة ✨</div>
-        <div class="sug" onclick="setPrompt('كيف أقوم بربط قاعدة بيانات SQLite مع نظام FastAPI؟')">ربط SQLite مع FastAPI 🚀</div>
-      </div>
-    </div>
-  </div>
-  <button class="stb" id="stbBtn" onclick="scrollToBottom()">▼</button>
+  </main>
 
   <div class="inpw">
-    <div id="fileChips"></div>
     <div class="inpb">
-      <button class="inpbtn" onclick="el('fileInput').click()" title="إرفاق ملف">📎</button>
-      <input type="file" id="fileInput" style="display:none" multiple onchange="handleFileSelect(this)">
       <textarea class="inpta" id="msgInput" placeholder="اكتب رسالتك هنا..." rows="1"></textarea>
       <div class="inpbtns">
-        <button class="inpbtn send" id="sendBtn" onclick="sendMessage()">➔</button>
+        <button class="inpbtn send" id="sendBtn" title="إرسال">⏎</button>
       </div>
     </div>
   </div>
-</div>
 
-<div class="page" id="pGithub">
-  <div class="ghpage">
-    <div class="ghtopbar">
-      <button class="ghback" onclick="ghBack()">➔ عودة</button>
-      <span class="ghtitle" id="ghTitle">GitHub</span>
+  <div class="ov" id="sheetOverlay"></div>
+  <div class="sheet" id="modelSheet">
+    <div class="shbar"></div>
+    <div class="shhead">
+      <span class="shttl">اختر الموديل</span>
+      <button class="shx" id="closeSheetBtn">✕</button>
     </div>
-    <div class="ghacts" id="ghActs"></div>
-    <div class="membar" id="memBar">
-      <span class="memcnt" id="memCount">0</span>
-      <span class="memlbl" id="memLbl">ملفات في الذاكرة</span>
-      <button class="memclr" onclick="clearMemory()">تفريغ</button>
-      <button class="memgo" onclick="sendMemoryToChat()">إرسال للشات</button>
-    </div>
-    <div class="selbar" id="selBar">
-      <span class="selcnt" id="selCount">تم تحديد 0 ملف</span>
-    </div>
-    <div class="ghsrch" id="ghSrch" style="display:none">
-      <input type="text" id="ghSrchInp" placeholder="بحث..." oninput="handleGhSearch(this.value)">
-    </div>
-    <div class="ghlist" id="ghList"></div>
+    <div class="shlist" id="modelsList">
+      </div>
   </div>
-</div>
-
-<div class="pvp" id="pPreview">
-  <div class="pvh">
-    <span class="pvtitle" id="pvTitle">لا يوجد معاينة نشطة</span>
-    <button class="pvbtn ac" onclick="runPreviewCode()">🔄 تحديث</button>
-    <button class="pvbtn" onclick="togglePyOut()" id="pyOutBtn" style="display:none">📝 مخرجات الكود</button>
-    <button class="pvbtn d" onclick="setTab('chat')">✕ إغلاق</button>
-  </div>
-  <iframe id="pvframe" sandbox="allow-scripts allow-modals"></iframe>
-  <div class="pyout" id="pyOut"></div>
-</div>
-
-<button class="alfab" id="alFab" onclick="toggleAlp()">🔔
-  <span class="aldot" id="alDot">0</span>
-</button>
-<div class="alp" id="alPanel">
-  <div class="alph">
-    <span class="alpttl">التنبيهات والأخطاء</span>
-    <button class="alpref" onclick="refreshAlerts()">تحديث</button>
-    <button class="alpx" onclick="toggleAlp()">✕</button>
-  </div>
-  <div class="alpb" id="alBody"></div>
-</div>
-
-<div class="modal" id="modal">
-  <div class="mdl">
-    <div class="mdlt" id="mdlTitle">...</div>
-    <div class="mdlp" id="mdlText">...</div>
-    <input type="text" class="mdlin" id="mdlInput" style="display:none">
-    <div class="mdlbtns">
-      <button class="mdlbtn sec" id="mdlCancel" onclick="closeModal()">إلغاء</button>
-      <button class="mdlbtn prim" id="mdlConfirm">تأكيد</button>
-    </div>
-  </div>
-</div>
-
-<div class="savecf" id="saveCfModal">
-  <div class="savebox">
-    <div class="saveicon">💾</div>
-    <div class="saveh">لم يتم حفظ التعديلات!</div>
-    <div class="savep">هل تريد حفظ التغييرات الحالية في المشروع قبل الانتقال؟</div>
-    <div class="savebtns">
-      <button class="savebtn yes" onclick="handleSaveCf('yes')">حفظ الآن</button>
-      <button class="savebtn discard" onclick="handleSaveCf('discard')">تجاهل</button>
-      <button class="savebtn no" onclick="handleSaveCf('no')">إلغاء</button>
-    </div>
-  </div>
-</div>
-
-<div class="ldg" id="loading">
-  <div class="ldgsp"></div>
-</div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════════════════
-//  GLOBALS & UTILS
-// ═══════════════════════════════════════════════════════════════════════════════
-let state = {
-  role: 'guest', chats: [], currentChatId: null, models: [], currentModel: '',
-  files: [], mode: 'chat', ghPath: [], ghRepo: null, ghFiles: [], ghSearch: '',
-  memoryCount: 0, alertsCount: 0, isGenerating: false, activePreviewId: null
-};
-
+// تعريف المتغيرات والعناصر الأساسية
 const el = id => document.getElementById(id);
+let models = [];
+let currentModel = localStorage.getItem('selectedModel') || '';
+let currentChatId = localStorage.getItem('currentChatId') || null;
 
-function closeAll() {
-  ['modelSheet','ov','panel','pov','ddMenu','ddOv'].forEach(id => {
-    const e = el(id); if(e) { e.classList.remove('on','show','open'); }
-  });
-}
-
-// Menu Dropdown
-if (el('menuBtn')) {
-  el('menuBtn').addEventListener('click', function(e) {
-    e.stopPropagation();
-    el('ddMenu').classList.toggle('show');
-    el('ddOv').classList.toggle('show');
-  });
-}
-if (el('ddOv')) { el('ddOv').addEventListener('click', closeAll); }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  TABS & VIEWS
-// ═══════════════════════════════════════════════════════════════════════════════
-function setTab(tab) {
-  state.mode = tab;
-  ['tChat','tPrv'].forEach(id => { if(el(id)) el(id).classList.remove('on'); });
-  ['pMain','pPreview'].forEach(id => { if(el(id)) el(id).classList.remove('on','show'); });
-  
-  if (tab === 'chat') {
-    if(el('tChat')) el('tChat').classList.add('on');
-    if(el('pMain')) el('pMain').classList.add('on');
-  } else if (tab === 'preview') {
-    if(el('tPrv')) el('tPrv').classList.add('on');
-    if(el('pPreview')) el('pPreview').classList.add('show');
-    runPreviewCode();
-  }
-}
-
-function openPage(page) {
-  closeAll();
-  ['pMain','pGithub'].forEach(id => { if(el(id)) el(id).classList.remove('on'); });
-  if (page === 'github') {
-    if(el('pGithub')) el('pGithub').classList.add('on');
-    loadRepos();
-  }
-}
-
-function ghBack() {
-  if (state.ghPath.length > 0) {
-    state.ghPath.pop();
-    loadFiles();
-  } else if (state.ghRepo) {
-    state.ghRepo = null;
-    loadRepos();
-  } else {
-    ['pMain','pGithub'].forEach(id => { if(id==='pMain') el(id).classList.add('on'); else el(id).classList.remove('on'); });
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  MODELS
-// ═══════════════════════════════════════════════════════════════════════════════
-function openModels() {
-  closeAll();
-  if(el('modelSheet')) el('modelSheet').classList.add('on');
-  if(el('ov')) el('ov').classList.add('on');
-}
-
-async function renderModels() {
+// جلب الموديلات المتوفرة من الباك إيند
+async function loadModels() {
   try {
-    const r = await fetch('/api/models');
-    if (!r.ok) throw new Error('API error');
-    const data = await r.json();
-    state.models = data.models || [];
-    state.currentModel = data.current || '';
-    if(el('modelName')) el('modelName').textContent = state.currentModel.split('/').pop() || 'اختر النموذج';
+    const res = await fetch('/api/models');
+    const data = await res.json();
+    models = data.models || data;
     
-    let h = '';
-    state.models.forEach(m => {
-      const isSel = m.id === state.currentModel ? 'sel' : '';
-      h += `
-        <div class="mi ${isSel}" onclick="selectModel('${m.id}')">
-          <div class="miico">🤖</div>
-          <div class="mibody">
-            <div class="miname">${m.name} <span class="tg p">Free</span></div>
-            <div class="midesc">${m.id}</div>
-          </div>
-          <div class="michk">✓</div>
-        </div>`;
-    });
-    if(el('modelsList')) el('modelsList').innerHTML = h || '<div class="ghmt">لا توجد نماذج متوفرة</div>';
-  } catch (e) {
-    console.error("فشل تحميل النماذج ولكن تم تجنب الانهيار:", e);
-    if(el('modelName')) el('modelName').textContent = 'خطأ في التحميل';
-  }
-}
-
-async function selectModel(id) {
-  try {
-    closeAll();
-    const r = await fetch('/api/models', {
-      method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({model: id})
-    });
-    if (r.ok) { await renderModels(); }
-  } catch (e) {
-    console.error("فشل تغيير النموذج:", e);
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  CHATS MANAGEMENT
-// ═══════════════════════════════════════════════════════════════════════════════
-async function loadChats() {
-  try {
-    const r = await fetch('/api/chats');
-    if (!r.ok) throw new Error('Network status error');
-    const data = await r.json();
-    state.chats = data.chats || [];
-    state.role = data.role || 'guest';
-    
-    const rb = el('roleBadge');
-    if (rb) {
-      rb.textContent = state.role === 'admin' ? '⚙️ أدمن' : '👤 زائر';
-      rb.className = `rbadge ${state.role}`;
-    }
-    
-    // التحديث التلقائي للسجل في القائمة الجانبية إذا كان مفتوحاً
-    if (el('panel') && el('panel').classList.contains('on') && el('panelTitle').textContent === 'سجل المحادثات') {
-      openPanel('history');
-    }
-  } catch (e) {
-    console.error("فشل تحميل المحادثات ولكن تم تجنب الانهيار:", e);
-  }
-}
-
-async function loadChat(id) {
-  if (!id) return;
-  try {
-    if(el('loading')) el('loading').classList.add('show');
-    const r = await fetch(`/api/chats/${id}`);
-    if (!r.ok) throw new Error('Chat data loading failed');
-    const data = await r.json();
-    state.currentChatId = id;
-    localStorage.setItem('currentChat', id);
-    renderMessages(data.messages || []);
-  } catch (e) {
-    console.error("فشل جلب المحادثة:", e);
-  } finally {
-    if(el('loading')) el('loading').classList.remove('show');
-  }
-}
-
-function renderMessages(msgs) {
-  const c = el('chat');
-  if (!c) return;
-  if (msgs.length === 0) {
-    c.innerHTML = `
-      <div class="empty">
-        <div class="elogo">🦁</div>
-        <h2>كيف يمكنني مساعدتك اليوم؟</h2>
-        <p>أنا Leo-AI، مساعدك الذكي المطور لإدارة المشاريع، كتابة الأكواد، وتصفح ملفات GitHub.</p>
-        <div class="sugs">
-          <div class="sug" onclick="setPrompt('اكتب كود صفحة هبوط بسيطة وجذابة بالـ HTML و CSS')">صفحة هبوط جذابة ✨</div>
-          <div class="sug" onclick="setPrompt('كيف أقوم بربط قاعدة بيانات SQLite مع نظام FastAPI؟')">ربط SQLite مع FastAPI 🚀</div>
-        </div>
-      </div>`;
-    return;
-  }
-  
-  let h = '';
-  msgs.forEach(m => {
-    if (!m.role || m.role === 'system') return;
-    const isU = m.role === 'user';
-    const cls = isU ? 'u' : 'a';
-    const avCls = isU ? 'ua' : 'aa';
-    const avTxt = isU ? '👤' : '🦁';
-    
-    let body = m.content || '';
-    if (!isU) { body = formatMarkdown(body); } else { body = escapeHtml(body).replace(/\n/g, '<br>'); }
-    
-    h += `
-      <div class="row ${cls}">
-        <div class="av ${avCls}">${avTxt}</div>
-        <div class="bbl ${cls}">${body}</div>
-      </div>`;
-  });
-  c.innerHTML = h;
-  scrollToBottom();
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  SEND MESSAGE
-// ═══════════════════════════════════════════════════════════════════════════════
-async function sendMessage() {
-  const inp = el('msgInput');
-  if (!inp || state.isGenerating) return;
-  const txt = inp.value.trim();
-  if (!txt && state.files.length === 0) return;
-  
-  inp.value = '';
-  inp.style.height = 'auto';
-  state.isGenerating = true;
-  if(el('sendBtn')) el('sendBtn').disabled = true;
-  
-  // إنشاء محادثة جديدة على الخادم إذا لم تكن موجودة
-  if (!state.currentChatId) {
-    try {
-      const r = await fetch('/api/chats', {method: 'POST'});
-      const d = await r.json();
-      state.currentChatId = d.id;
-      localStorage.setItem('currentChat', d.id);
-      await loadChats();
-    } catch (e) {
-      console.error("فشل إنشاء محادثة جديدة:", e);
-      state.isGenerating = false;
-      if(el('sendBtn')) el('sendBtn').disabled = false;
-      return;
-    }
-  }
-  
-  // إرسال البيانات للـ API
-  try {
-    const fd = new FormData();
-    fd.append('message', txt);
-    state.files.forEach(f => fd.append('files', f));
-    
-    // مسح مصفوفة الملفات المرفقة بعد البناء
-    state.files = [];
-    if(el('fileChips')) el('fileChips').innerHTML = '';
-    
-    const response = await fetch(`/api/chats/${state.currentChatId}/message`, {
-      method: 'POST', body: fd
-    });
-    
-    if (!response.ok) throw new Error('Error inside processing endpoint');
-    
-    // جلب المحادثة كاملة لتحديث العرض
-    await loadChat(state.currentChatId);
-  } catch (e) {
-    console.error("فشل إرسال الرسالة:", e);
-  } finally {
-    state.isGenerating = false;
-    if(el('sendBtn')) el('sendBtn').disabled = false;
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  PANELS (HISTORY / API KEYS)
-// ═══════════════════════════════════════════════════════════════════════════════
-function openPanel(type) {
-  closeAll();
-  const p = el('panel');
-  const ttl = el('panelTitle');
-  const bdy = el('panelBody');
-  const ft = el('panelFoot');
-  
-  if (!p || !ttl || !bdy || !ft) return;
-  
-  p.classList.add('on');
-  if(el('pov')) el('pov').classList.add('on');
-  
-  if (type === 'history') {
-    ttl.textContent = 'سجل المحادثات';
-    let h = '';
-    state.chats.forEach(c => {
-      h += `
-        <div class="sci" onclick="selectHistoryChat('${c.id}')">
-          <div class="scit">
-            <span class="sctl">💬 ${escapeHtml(c.title || 'محادثة بدون عنوان')}</span>
-            <button class="scdl" onclick="deleteChat(event, '${c.id}')">🗑️</button>
-          </div>
-          <div class="scdt">${c.updated_at || ''}</div>
-        </div>`;
-    });
-    bdy.innerHTML = h || '<div class="scmt">لا توجد محادثات سابقة</div>';
-    ft.innerHTML = '';
-  } else if (type === 'api') {
-    ttl.textContent = 'مفاتيح الـ API';
-    bdy.innerHTML = `
-      <div class="apic">
-        <div class="apit"><span class="apin">OpenRouter API</span></div>
-        <p class="apif">مفاتيح النظام الأساسي تعمل بشكل كامل ومحفوظة بالـ Backend تلقائياً.</p>
-      </div>`;
-    ft.innerHTML = '';
-  }
-}
-
-function selectHistoryChat(id) {
-  closeAll();
-  loadChat(id);
-}
-
-async function deleteChat(e, id) {
-  e.stopPropagation();
-  if (!confirm('هل أنت متأكد من حذف هذه المحادثة نهائياً؟')) return;
-  try {
-    const r = await fetch(`/api/chats/${id}`, {method: 'DELETE'});
-    if (r.ok) {
-      if (state.currentChatId === id) {
-        state.currentChatId = null;
-        localStorage.removeItem('currentChat');
-        renderMessages([]);
+    if (models.length > 0) {
+      if (!currentModel || !models.find(m => m.id === currentModel)) {
+        currentModel = models[0].id;
       }
-      await loadChats();
-      openPanel('history');
+      renderModels();
+      updateModelUI();
     }
   } catch (err) {
-    console.error("فشل حذف المحادثة:", err);
+    console.error("خطأ في جلب الموديلات:", err);
+    el('currentModelName').textContent = "خطأ في التحميل";
   }
 }
 
-async function newChat() {
-  state.currentChatId = null;
-  localStorage.removeItem('currentChat');
-  renderMessages([]);
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  MARKDOWN PARSER & HELPERS
-// ═══════════════════════════════════════════════════════════════════════════════
-function setPrompt(val) { inp = el('msgInput'); if(inp) { inp.value = val; inp.focus(); } }
-function scrollToBottom() { const c = el('chat'); if(c) c.scrollTop = c.scrollHeight; }
-function escapeHtml(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-
-function handleFileSelect(inp) {
-  state.files = Array.from(inp.files);
-  let h = '';
-  state.files.forEach((f, i) => {
-    h += `<div class="filechip">📄 ${f.name} <span class="x" onclick="removeAttachedFile(${i})">✕</span></div>`;
-  });
-  if(el('fileChips')) el('fileChips').innerHTML = h;
-}
-
-function removeAttachedFile(i) {
-  state.files.splice(i, 1);
-  let h = '';
-  state.files.forEach((f, i) => {
-    h += `<div class="filechip">📄 ${f.name} <span class="x" onclick="removeAttachedFile(${i})">✕</span></div>`;
-  });
-  if(el('fileChips')) el('fileChips').innerHTML = h;
-}
-
-function formatMarkdown(src) {
-  let html = escapeHtml(src);
+// عرض الموديلات داخل القائمة المنسدلة (Sheet)
+function renderModels() {
+  const container = el('modelsList');
+  container.innerHTML = '';
   
-  // Code Blocks
-  html = html.replace(/```([\s\S]*?)```/gm, (match, code) => {
-    const b64 = btoa(unescape(encodeURIComponent(code.trim())));
-    return `
-      <div class="cw2">
-        <div class="ch"><span>CODE</span>
-          <div class="ch-btns">
-            <button onclick="cpy(this, '${b64}')">📋 نسخ</button>
-            <button onclick="explainCode(this, '${b64}')">💡 اشرح لي</button>
-          </div>
-        </div>
-        <pre><code>${code.trim()}</code></pre>
-      </div>`;
+  models.forEach(model => {
+    const isSelected = model.id === currentModel;
+    const item = document.createElement('div');
+    item.className = `mi ${isSelected ? 'sel' : ''}`;
+    item.onclick = () => selectModel(model.id);
+    
+    item.innerHTML = `
+      <div class="miico">🧠</div>
+      <div class="mibody">
+        <div class="miname">${model.name || model.id}</div>
+        <div class="midesc">${model.description || 'موديل ذكاء اصطناعي متقدم'}</div>
+      </div>
+      <div class="michk">✓</div>
+    `;
+    container.appendChild(item);
   });
+}
 
-  // Inline code
+// تغيير الموديل المختار
+function selectModel(modelId) {
+  currentModel = modelId;
+  localStorage.setItem('selectedModel', modelId);
+  updateModelUI();
+  renderModels();
+  toggleSheet(false);
+}
+
+// تحديث اسم الموديل الظاهر في الهيدر
+function updateModelUI() {
+  const found = models.find(m => m.id === currentModel);
+  el('currentModelName').textContent = found ? (found.name || found.id) : currentModel;
+}
+
+// فتح وإغلاق قائمة الموديلات
+function toggleSheet(show) {
+  el('modelSheet').classList.toggle('on', show);
+  el('sheetOverlay').classList.toggle('on', show);
+}
+
+// إرسال الرسالة إلى السيرفر
+async function sendMessage() {
+  const input = el('msgInput');
+  const text = input.value.trim();
+  if (!text) return;
+  
+  // تصفير الحقل وتحديث الارتفاع
+  input.value = '';
+  input.style.height = 'auto';
+  
+  // إخفاء الحالة الفارغة إن وجدت
+  el('emptyState').style.display = 'none';
+  
+  // إضافة رسالة المستخدم للواجهة
+  appendMessage(text, 'u');
+  
+  // إضافة فقرة الانتظار (Thinking)
+  const thinkDiv = appendThinking();
+  
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: text,
+        model: currentModel,
+        chat_id: currentChatId
+      })
+    });
+    
+    thinkDiv.remove(); // إزالة تأثير التفكير بعد الرد
+    
+    if (!response.ok) throw new Error("فشل السيرفر في الرد");
+    
+    const data = await response.json();
+    if (data.chat_id) {
+      currentChatId = data.chat_id;
+      localStorage.setItem('currentChatId', currentChatId);
+    }
+    
+    appendMessage(data.response, 'a');
+    
+  } catch (err) {
+    console.error(err);
+    thinkDiv.remove();
+    appendMessage("⚠️ حدث خطأ أثناء إرسال الرسالة، يرجى المحاولة مرة أخرى.", 'a');
+  }
+}
+
+// إضافة الفقاعات للدردشة
+function appendMessage(text, role) {
+  const container = el('chatContainer');
+  const row = document.createElement('div');
+  row.className = `row ${role}`;
+  
+  const bbl = document.createElement('div');
+  bbl.className = `bbl ${role}`;
+  bbl.innerHTML = role === 'a' ? parseMarkdown(text) : escapeHTML(text);
+  
+  const av = document.createElement('div');
+  av.className = `av ${role === 'u' ? 'ua' : 'aa'}`;
+  av.textContent = role === 'u' ? '👤' : '🤖';
+  
+  row.appendChild(av);
+  row.appendChild(bbl);
+  container.appendChild(row);
+  container.scrollTop = container.scrollHeight;
+}
+
+function appendThinking() {
+  const container = el('chatContainer');
+  const div = document.createElement('div');
+  div.className = 'think';
+  div.innerHTML = '<span>جاري التفكير</span><div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+  return div;
+}
+
+// معالجة النصوص البرمجية البسيطة (Markdown)
+function parseMarkdown(html) {
+  html = html.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  // تحويل الأكواد البرمجية المحاطة بـ ```
+  html = html.replace(/```([\s\S]+?)```/g, '<div class="cw2"><pre><code>$1</code></pre></div>');
+  // تحويل الأكواد السطرية المحاطة بـ `
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-  // Bold
-  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  // Titles
-  html = html.replace(/^### (.*$)/gim, '<h3 style="margin:8px 0;color:var(--ac)">$1</h3>');
-  html = html.replace(/^## (.*$)/gim, '<h2 style="margin:10px 0;color:var(--ac2)">$1</h2>');
-  
+  // الروابط الجديدة
+  html = html.replace(/\n/g, '<br>');
   return html;
 }
 
-function cpy(btn, b64) {
-  try {
-    const code = decodeURIComponent(escape(atob(b64)));
-    navigator.clipboard.writeText(code).then(() => {
-      btn.textContent = '✓ تم!';
-      setTimeout(() => btn.textContent = '📋 نسخ', 2000);
-    });
-  } catch (e) { console.error(e); }
+function escapeHTML(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, '<br>');
 }
 
-function explainCode(btn, b64) {
-  try {
-    const code = decodeURIComponent(escape(atob(b64)));
-    setPrompt(`اشرح لي هذا الكود بالتفصيل والسطور المحددة:\n\n\`\`\`\n${code}\n\`\`\``);
-  } catch (e) { console.error(e); }
-}
-
-function runPreviewCode() {
-  const fr = el('pvframe');
-  if (!fr) return;
-  // محاولة البحث عن آخر كود HTML تم توليده في الشات لعرضه
-  const codes = document.querySelectorAll('pre code');
-  if (codes.length > 0) {
-    let lastHtml = '';
-    for (let i = codes.length - 1; i >= 0; i--) {
-      const txt = codes[i].innerText;
-      if (txt.includes('<!DOCTYPE') || txt.includes('<html') || txt.includes('<div')) {
-        lastHtml = txt;
-        break;
-      }
-    }
-    if (lastHtml) {
-      if(el('pvTitle')) el('pvTitle').textContent = "معاينة حية للكود المكتوب";
-      const doc = fr.contentWindow.document;
-      doc.open();
-      doc.write(lastHtml);
-      doc.close();
-      return;
-    }
-  }
-  if(el('pvTitle')) el('pvTitle').textContent = "لا يوجد كود واجهة جاهز للمعاينة الحالية";
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════════════════════════════════════════
+// تشغيل المستمعات (Event Listeners) عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', () => {
-  // محاولة تحميل البيانات الأساسية بشكل مستقل لمنع التجمد
-  try {
-    renderModels();
-  } catch (e) { console.error("خطأ في تشغيل النماذج البداية:", e); }
-
-  try {
-    loadChats();
-  } catch (e) { console.error("خطأ في تشغيل المحادثات البداية:", e); }
-
-  try {
-    const savedChat = localStorage.getItem('currentChat');
-    if (savedChat) {
-      loadChat(savedChat).catch(() => {});
+  loadModels();
+  
+  el('modelPickBtn').addEventListener('click', () => toggleSheet(true));
+  el('closeSheetBtn').addEventListener('click', () => toggleSheet(false));
+  el('sheetOverlay').addEventListener('click', () => toggleSheet(false));
+  
+  el('sendBtn').addEventListener('click', sendMessage);
+  
+  el('msgInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
     }
-  } catch (e) { console.error("خطأ في استرجاع كود المحادثة السابقة من localStorage:", e); }
-
-  // تفعيل مستمعات الأحداث لعناصر الإدخال والواجهة بشكل آمن تماماً
-  try {
-    const msgInp = el('msgInput');
-    if (msgInp) {
-      msgInp.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-      });
-    }
-  } catch (e) { console.error("خطأ في تعيين مستمع أحداث حقل الإدخال:", e); }
-
-  try {
-    document.addEventListener('click', (e) => {
-      const menu = el('ddMenu');
-      const btn = el('menuBtn');
-      if (menu && menu.classList.contains('show') && e.target !== btn && !btn.contains(e.target) && !menu.contains(e.target)) {
-        closeAll();
-      }
-    });
-  } catch (e) { console.error("خطأ في مستمع النقر العام:", e); }
+  });
+  
+  // تمدد تلقائي لحقل النص عند الكتابة
+  el('msgInput').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+  });
 });
 </script>
 </body>
