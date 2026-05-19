@@ -19,11 +19,10 @@ html,body{height:100%;overflow:hidden}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);
      display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
 
-/* ══ HEADER ══════════════════════════════════════════════════════════════════ */
+/* HEADER */
 .hdr{background:var(--bg2);border-bottom:1px solid var(--bd);height:52px;
      padding:0 7px;display:flex;align-items:center;gap:5px;
      flex-shrink:0;z-index:20;overflow:hidden}
-/* Dropdown */
 .ddw{position:relative;flex-shrink:0}
 .ddbtn{width:34px;height:34px;border-radius:8px;background:var(--sf);
        border:1px solid var(--bd);color:var(--ac);cursor:pointer;font-size:17px;
@@ -45,7 +44,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .ddi .lbl{flex:1}
 .ddi.danger:active,.ddi.danger:hover{background:rgba(232,93,106,.08)}
 .ddi.danger .lbl{color:var(--danger)}
-/* Logo + badge */
 .logo{width:28px;height:28px;flex-shrink:0;background:linear-gradient(135deg,#1a2d4a,#0f1e38);
       border:1px solid var(--bd2);border-radius:8px;
       display:flex;align-items:center;justify-content:center;font-size:14px}
@@ -53,7 +51,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
         flex-shrink:0;white-space:nowrap;letter-spacing:.4px}
 .rbadge.admin{background:rgba(184,197,214,.1);color:var(--ac);border:1px solid rgba(184,197,214,.2)}
 .rbadge.guest{background:rgba(107,159,212,.1);color:var(--ac2);border:1px solid rgba(107,159,212,.2)}
-/* Center */
 .hdrmid{flex:1;display:flex;justify-content:center;align-items:center;
         gap:4px;min-width:0;overflow:hidden}
 .tabs{display:flex;background:var(--sf);border:1px solid var(--bd);
@@ -68,22 +65,20 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .mpick .mn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;min-width:0;flex:1}
 .mpick .arr{color:var(--mu);font-size:9px;flex-shrink:0;transition:transform .2s}
 .mpick.open .arr{transform:rotate(180deg)}
-/* Refresh btn */
 .rfbtn{width:30px;height:30px;border-radius:7px;background:transparent;
        border:1px solid var(--bd);color:var(--mu);cursor:pointer;
        font-size:14px;display:flex;align-items:center;justify-content:center;
        flex-shrink:0;transition:all .15s}
 .rfbtn:active{background:var(--sf2);color:var(--ac)}
 
-/* ══ OVERLAY ════════════════════════════════════════════════════════════════ */
+/* OVERLAY */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;
     opacity:0;pointer-events:none;transition:opacity .25s}
 .ov.on{opacity:1;pointer-events:all}
-/* DD overlay (closes menu) */
 .ddov{position:fixed;inset:0;z-index:9998;display:none}
 .ddov.show{display:block}
 
-/* ══ MODEL SHEET ════════════════════════════════════════════════════════════ */
+/* MODEL SHEET */
 .sheet{position:fixed;bottom:0;left:0;right:0;z-index:101;background:var(--bg2);
        border-radius:16px 16px 0 0;border-top:1px solid var(--bd2);
        transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
@@ -119,7 +114,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .michk{color:var(--ac);font-size:15px;font-weight:700;opacity:0;flex-shrink:0}
 .mi.sel .michk{opacity:1}
 
-/* ══ SIDE PANEL ══════════════════════════════════════════════════════════════ */
+/* SIDE PANEL */
 .pov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:50;
      opacity:0;pointer-events:none;transition:opacity .25s}
 .pov.on{opacity:1;pointer-events:all}
@@ -142,7 +137,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .xbtn:active{opacity:.85}
 .xbtn.ac{background:linear-gradient(135deg,#b8c5d6,#8fa3bf);color:#0a0f1e}
 .xbtn.sec{background:var(--sf);color:var(--tx);border:1px solid var(--bd)}
-/* Saved chats */
 .sci{padding:9px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px;transition:background .12s}
 .sci:active,.sci:hover{background:var(--sf)}
 .scit{display:flex;align-items:center;justify-content:space-between}
@@ -151,7 +145,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .scdl:active{color:var(--danger)}
 .scdt{font-size:10px;color:var(--mu);margin-top:2px}
 .scmt{text-align:center;color:var(--mu);font-size:12px;padding:24px}
-/* API cards */
 .apic{background:var(--sf);border:1px solid var(--bd);border-radius:9px;padding:10px;margin-bottom:8px}
 .apit{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
 .apin{font-size:12.5px;font-weight:700;color:var(--ac)}
@@ -164,35 +157,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
         text-decoration:none;display:inline-block;transition:all .12s}
 .apibtn.use{border-color:var(--ac);color:var(--ac)}
 .apibtn.test{border-color:var(--ac2);color:var(--ac2)}
-/* Templates */
-.tplg{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;padding:8px}
-.tplc{background:var(--sf);border:1px solid var(--bd);border-radius:10px;
-      overflow:hidden;cursor:pointer;transition:border-color .15s,transform .1s}
-.tplc:active{border-color:var(--ac);transform:scale(.97)}
-.tplt{width:100%;height:76px;display:flex;align-items:center;justify-content:center;font-size:30px}
-.t1{background:linear-gradient(135deg,#0a1628,#0f2040)}
-.t2{background:linear-gradient(135deg,#0a1020,#0d1a35)}
-.t3{background:linear-gradient(135deg,#0d1428,#1a1040)}
-.t4{background:linear-gradient(135deg,#0a1830,#0d2545)}
-.t5{background:linear-gradient(135deg,#0f1828,#162035)}
-.t6{background:linear-gradient(135deg,#080e20,#0f1a30)}
-.tpli{padding:7px 9px}
-.tpln{font-size:11.5px;font-weight:700;color:var(--tx)}
-.tpld{font-size:10px;color:var(--mu);margin-top:1px}
-/* S2C */
-.s2cd{border:2px dashed var(--bd2);border-radius:11px;padding:24px 16px;
-      text-align:center;cursor:pointer;transition:all .2s;margin:10px}
-.s2cd:active,.s2cd.drag{border-color:var(--ac);background:rgba(184,197,214,.04)}
-.s2co{padding:0 10px 10px;display:flex;gap:6px}
-.s2col{flex:1}
-.s2col label{font-size:10.5px;color:var(--mu);display:block;margin-bottom:4px}
-.s2col select{width:100%;background:var(--sf);color:var(--tx);border:1px solid var(--bd);
-              border-radius:7px;padding:6px 8px;font-size:12px;outline:none;cursor:pointer}
-.s2cp{margin:0 10px 10px;border-radius:8px;overflow:hidden;border:1px solid var(--bd);display:none}
-.s2cp.show{display:block}
-.s2cp img{width:100%;display:block;max-height:130px;object-fit:cover}
 
-/* ══ GITHUB ══════════════════════════════════════════════════════════════════ */
+/* GITHUB */
 .page{display:none;flex:1;flex-direction:column;overflow:hidden}
 .page.on{display:flex}
 .ghpage{display:flex;flex:1;flex-direction:column;overflow:hidden}
@@ -262,7 +228,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .fimem{font-size:8px;background:rgba(62,207,142,.12);color:var(--ok);
        border-radius:3px;padding:1px 4px;flex-shrink:0}
 .ghmt{text-align:center;color:var(--mu);font-size:12.5px;padding:40px 20px}
-/* Full overlays */
 .fov{position:fixed;inset:0;background:var(--bg);z-index:200;display:none;flex-direction:column}
 .fov.show{display:flex}
 .fovh{background:var(--bg2);border-bottom:1px solid var(--bd);padding:10px 12px;
@@ -274,7 +239,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .fovb::-webkit-scrollbar{width:4px}
 .fovb::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
 
-/* ══ LIVE PREVIEW ════════════════════════════════════════════════════════════ */
+/* LIVE PREVIEW */
 .pvp{position:fixed;inset:0;background:var(--bg);z-index:150;display:none;flex-direction:column}
 .pvp.show{display:flex}
 .pvh{background:var(--bg2);border-bottom:1px solid var(--bd);padding:8px 10px;
@@ -294,7 +259,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .pyout.show{display:block}
 .pyok{color:var(--ok)}.pyerr{color:var(--danger)}
 
-/* ══ ALERTS ══════════════════════════════════════════════════════════════════ */
+/* ALERTS */
 .alfab{position:fixed;bottom:88px;left:10px;z-index:400;width:36px;height:36px;
        border-radius:50%;background:var(--sf);border:1px solid var(--bd2);
        display:none;align-items:center;justify-content:center;
@@ -325,823 +290,1537 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .alpb{overflow-y:auto;padding:7px;flex:1}
 .alpb::-webkit-scrollbar{width:3px}
 .alpb::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
-.ali{display:flex;align-items:flex-start;gap:8px;padding:8px 9px;border-radius:8px;
-     margin-bottom:5px;border:1px solid transparent}
-.ali.error{background:rgba(232,93,106,.08);border-color:rgba(232,93,106,.2)}
-.ali.warn{background:rgba(232,162,74,.07);border-color:rgba(232,162,74,.15)}
-.ali.ok{background:rgba(62,207,142,.05);border-color:rgba(62,207,142,.12)}
-.aliico{font-size:15px;flex-shrink:0;margin-top:1px}
-.alibody{flex:1;min-width:0}
-.alit{font-size:11.5px;font-weight:700}
-.ali.error .alit{color:var(--danger)}
-.ali.warn .alit{color:var(--warn)}
-.ali.ok .alit{color:var(--ok)}
-.alid{font-size:10px;color:var(--mu);margin-top:2px;line-height:1.5}
-.alpf{padding:7px 10px;border-top:1px solid var(--bd);flex-shrink:0;
-      display:flex;gap:5px;align-items:center;font-size:10px;color:var(--mu)}
-.alstat{border-radius:4px;padding:2px 6px;font-weight:700;font-size:9.5px}
-.alstat.e{background:rgba(232,93,106,.15);color:var(--danger)}
-.alstat.w{background:rgba(232,162,74,.12);color:var(--warn)}
-.alstat.o{background:rgba(62,207,142,.1);color:var(--ok)}
+.alpi{padding:8px 10px;border-radius:7px;font-size:11.5px;margin-bottom:4px;
+      border-left:3px solid transparent;transition:background .12s;cursor:pointer}
+.alpi:hover{background:var(--sf)}
+.alpi.err{border-left-color:var(--danger);color:var(--danger)}
+.alpi.warn{border-left-color:var(--warn);color:var(--warn)}
+.alpi.ok{border-left-color:var(--ok);color:var(--ok)}
+.alpi .ts{font-size:9px;color:var(--mu);margin-top:2px;display:block}
 
-/* ══ CHAT ════════════════════════════════════════════════════════════════════ */
-.cw{flex:1;overflow-y:auto;scroll-behavior:smooth;padding:4px 0 8px;
-    -webkit-overflow-scrolling:touch}
-.cw::-webkit-scrollbar{width:3px}
-.cw::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
-#welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;
-         min-height:calc(100svh - 160px);padding:20px 14px;text-align:center;animation:fu .4s ease}
-@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.wi{width:56px;height:56px;background:linear-gradient(135deg,#1a2d4a,#0f1e38);
-    border:1px solid var(--bd2);border-radius:16px;display:flex;
-    align-items:center;justify-content:center;font-size:24px;margin-bottom:14px}
-.wt{font-size:18px;font-weight:700;margin-bottom:6px}
-.ws{color:var(--mu);font-size:12px;margin-bottom:18px;line-height:1.7;max-width:320px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:480px}
-.chip{background:var(--sf);border:1px solid var(--bd);padding:6px 12px;border-radius:20px;
-      font-size:11.5px;cursor:pointer;color:var(--mu);transition:all .15s}
-.chip:active,.chip:hover{border-color:var(--ac);color:var(--ac);background:rgba(184,197,214,.06)}
-#msgs{padding:4px 0}
-.row{display:flex;gap:8px;padding:3px 10px;animation:fu .2s ease;width:100%}
-.row.u{justify-content:flex-end}.row.a{justify-content:flex-start}
-.av{width:26px;height:26px;border-radius:8px;flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:3px}
-.av.aa{background:linear-gradient(135deg,#1a2d4a,#0f1e38);border:1px solid var(--bd2);order:-1}
-.av.ua{background:var(--sf);border:1px solid var(--bd)}
-.bbl{padding:9px 12px;border-radius:var(--r);font-size:13.5px;line-height:1.75;word-break:break-word}
-.bbl.u{max-width:82%;background:var(--sf);border:1px solid var(--bd);border-bottom-left-radius:4px}
-.bbl.a{flex:1;min-width:0;max-width:100%;background:transparent}
-.aiwrap{flex:1;min-width:0;display:flex;flex-direction:column}
-.mtag{font-size:10px;color:var(--mu);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-.autotag{font-size:8px;background:rgba(184,197,214,.1);color:var(--ac);
-         border-radius:3px;padding:1px 4px;font-weight:700}
-.mact{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
-.mbtn{background:transparent;border:1px solid var(--bd);color:var(--mu);
-      font-size:10.5px;cursor:pointer;padding:4px 9px;border-radius:5px;
-      white-space:nowrap;transition:all .12s}
-.mbtn:active,.mbtn:hover{color:var(--ac);border-color:var(--bd2);background:rgba(184,197,214,.06)}
-.cur{display:inline-block;width:2px;height:1em;background:var(--ac);
-     margin-right:1px;vertical-align:text-bottom;animation:blink .5s step-end infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.bbl.a h1,.bbl.a h2,.bbl.a h3{color:var(--ac);margin:10px 0 4px;font-weight:600}
-.bbl.a h1{font-size:15px}.bbl.a h2{font-size:14px}.bbl.a h3{font-size:13px}
-.bbl.a p{margin:4px 0}
-.bbl.a code{background:var(--cbg);padding:2px 5px;border-radius:4px;
-            font-family:'Fira Code',monospace;font-size:11.5px;color:#a8b8d0;border:1px solid var(--bd)}
-.bbl.a blockquote{border-right:2px solid var(--bd2);padding-right:9px;margin:6px 0;color:var(--mu)}
-.bbl.a li{margin:3px 0}.bbl.a strong{color:var(--ac)}
-.cw2{background:var(--cbg);border-radius:9px;margin:8px 0;border:1px solid var(--bd);
-     overflow:hidden;width:calc(100vw - 20px);max-width:100%}
-.ch{display:flex;justify-content:space-between;align-items:center;
-    padding:6px 11px;background:var(--bg2);border-bottom:1px solid var(--bd)}
-.ch span{color:var(--mu);font-size:11px;font-family:monospace;font-weight:600}
-.chbtns{display:flex;gap:4px;flex-wrap:wrap}
-.ch button{background:transparent;color:var(--mu);border:1px solid var(--bd);
-           padding:3px 7px;border-radius:4px;cursor:pointer;font-size:10px;transition:all .12s}
-.ch button:active{background:var(--sf);color:var(--tx)}
-.ch button.ok{color:var(--ok);border-color:var(--ok)}
-.cw2 pre{margin:0;padding:11px 12px;overflow-x:auto;font-size:12px;line-height:1.6}
-.cw2 pre code{background:none!important;padding:0!important;border:none!important;
-              color:#a8b8d0;font-family:'Fira Code',monospace}
-.vn{background:rgba(107,159,212,.08);border:1px solid rgba(107,159,212,.2);
-    border-radius:7px;padding:6px 10px;font-size:11px;color:var(--ac2);margin-bottom:6px;display:none}
-.vn.on{display:block}
-.sbar{display:none;background:rgba(184,197,214,.05);border:1px solid rgba(184,197,214,.1);
-      border-radius:7px;padding:4px 10px;margin-bottom:5px;font-size:11px;
-      color:var(--mu);align-items:center;gap:6px}
-.sbar.show{display:flex}
-.sbar strong{color:var(--ac)}
-#spin{display:none;padding:5px 12px;gap:9px;align-items:center}
-#spin.on{display:flex}
-.ring{width:20px;height:20px;border:2.5px solid var(--bd2);border-top-color:var(--ac);
-      border-radius:50%;animation:sp .7s linear infinite;flex-shrink:0}
-@keyframes sp{to{transform:rotate(360deg)}}
-.stx{color:var(--mu);font-size:12px}
-#fsec{padding:0 10px}
-.fb{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin:4px 0}
-.fbh{display:flex;align-items:center;justify-content:space-between;
-     padding:7px 11px;border-bottom:1px solid var(--bd);font-size:12px}
-.fbh span{color:var(--ac);font-weight:600}
-.fbhdl{background:transparent;border:1px solid var(--bd2);color:var(--ac);
-       padding:3px 9px;border-radius:5px;cursor:pointer;font-size:10.5px;font-weight:600}
-.fi2{display:flex;justify-content:space-between;align-items:center;
-     padding:7px 11px;border-bottom:1px solid var(--bd)}
-.fi2:last-child{border-bottom:none}
-.fi2 span{font-size:11.5px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;
-          white-space:nowrap;max-width:50%}
-.fi2btns{display:flex;gap:4px;flex-shrink:0}
-.fi2btns button,.fi2btns a{background:transparent;border:1px solid var(--bd);color:var(--mu);
-  padding:3px 7px;border-radius:5px;cursor:pointer;font-size:10.5px;
-  text-decoration:none;white-space:nowrap;transition:all .12s}
-.fi2btns button:active{color:var(--ac);border-color:var(--bd2)}
-/* Input */
-.abar{display:flex;flex-wrap:wrap;gap:5px;padding:0 0 5px;max-height:70px;overflow-y:auto}
-.atch{display:flex;align-items:center;gap:4px;background:var(--sf);border:1px solid var(--bd);
-      border-radius:6px;padding:3px 7px;font-size:11px;color:var(--mu);max-width:130px}
-.atchn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.atchd{background:transparent;border:none;color:var(--mu);cursor:pointer;font-size:12px;padding:0}
-.ia{background:var(--bg2);padding:5px 10px 10px;flex-shrink:0;
-    border-top:1px solid var(--bd);padding-bottom:max(10px,env(safe-area-inset-bottom))}
-.iw{max-width:700px;margin:0 auto}
-.ib{background:var(--sf);border:1px solid var(--bd);border-radius:12px;
-    padding:7px 7px 7px 11px;display:flex;align-items:flex-end;gap:5px;transition:border-color .15s}
-.ib:focus-within{border-color:var(--bd2)}
-.ib textarea{flex:1;background:transparent;color:var(--tx);border:none;outline:none;
-             font-family:inherit;font-size:14px;line-height:1.55;resize:none;
-             min-height:22px;max-height:140px;padding:2px 0}
-.ib textarea::placeholder{color:var(--mu)}
-.ibbtns{display:flex;flex-direction:column;gap:3px}
-.attbtn{width:30px;height:30px;background:transparent;border:1px solid var(--bd);
-        border-radius:7px;cursor:pointer;display:flex;align-items:center;
-        justify-content:center;font-size:14px;color:var(--mu);transition:all .15s}
-.attbtn:active{border-color:var(--ac);color:var(--ac)}
-.snd{width:30px;height:30px;background:linear-gradient(135deg,#b8c5d6,#8fa3bf);
-     border:none;border-radius:7px;cursor:pointer;display:flex;align-items:center;
-     justify-content:center;flex-shrink:0;transition:opacity .15s}
-.snd:active{opacity:.85}
-.snd svg{width:13px;height:13px;fill:#0a0f1e}
-.snd.stop{background:var(--danger)!important;animation:pulse 1.2s ease-in-out infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(232,93,106,.4)}60%{box-shadow:0 0 0 6px rgba(232,93,106,0)}}
-.attcnt{font-size:8px;background:var(--ac);color:#0a0f1e;border-radius:3px;padding:1px 3px;font-weight:700}
-.hint{text-align:center;font-size:10px;color:var(--mu);margin-top:4px;opacity:.6}
-/* Image gen */
-.igw{flex:1;overflow-y:auto;padding:14px 10px 0}
-.igi{max-width:100%;margin:0 auto}
-.igt{font-size:17px;font-weight:700;margin-bottom:4px}
-.igs{color:var(--mu);font-size:11.5px;margin-bottom:14px}
-.igf{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:12px;margin-bottom:12px}
-.igf label{font-size:12px;color:var(--mu);display:block;margin-bottom:5px}
-.igta{width:100%;background:var(--cbg);color:var(--tx);border:1px solid var(--bd);
-      border-radius:8px;padding:8px 10px;font-family:inherit;font-size:13px;
-      resize:none;height:76px;outline:none;transition:border-color .15s}
-.igta:focus{border-color:var(--bd2)}
-.igrow{display:flex;gap:6px;margin-top:9px}
-.igsel{background:var(--cbg);color:var(--tx);border:1px solid var(--bd);border-radius:7px;
-       padding:7px 6px;font-size:11.5px;cursor:pointer;outline:none;flex:1;min-width:0}
-.igbtn{background:linear-gradient(135deg,#b8c5d6,#8fa3bf);color:#0a0f1e;border:none;
-       padding:7px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;flex-shrink:0}
-.igbtn:active{opacity:.85}.igbtn:disabled{background:var(--sf);color:var(--mu);cursor:not-allowed}
-.igsp{display:none;flex-direction:column;align-items:center;padding:24px;gap:10px;color:var(--mu);font-size:12px}
-.igsp.on{display:flex}
-.iggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:9px;padding-bottom:16px}
-.icard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;animation:fu .3s ease}
-.icard img{width:100%;display:block;aspect-ratio:1;object-fit:cover;background:var(--bg)}
-.icft{padding:7px 9px;display:flex;align-items:center;justify-content:space-between}
-.icp{font-size:10px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:62%}
-.icdl{background:transparent;border:1px solid var(--bd2);color:var(--ac);
-      padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10px;font-weight:600;text-decoration:none}
+/* CHAT */
+.chat{flex:1;overflow-y:auto;padding:14px 10px;display:flex;flex-direction:column;gap:12px;
+      -webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+.chat::-webkit-scrollbar{width:4px}
+.chat::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
+       flex:1;gap:16px;padding:20px;text-align:center}
+.empty .elogo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#1a2d4a,#0f1e38);
+              display:flex;align-items:center;justify-content:center;font-size:28px;border:1px solid var(--bd2)}
+.empty h2{font-size:18px;font-weight:700;color:var(--ac)}
+.empty p{font-size:12.5px;color:var(--mu);max-width:260px;line-height:1.6}
+.sugs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:320px}
+.sug{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;
+     font-size:11.5px;color:var(--tx);cursor:pointer;transition:all .15s}
+.sug:active{background:var(--sf2);border-color:var(--bd2)}
+.row{display:flex;gap:10px;margin:2px 0;padding:2px 0}
+.row.u{justify-content:flex-end}
+.bbl{padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.75;max-width:88%;word-wrap:break-word}
+.bbl.u{background:var(--sf2);border:1px solid var(--bd2);color:var(--tx)}
+.bbl.a{background:transparent;border:none;color:var(--tx);width:100%;max-width:100%;padding:4px 0}
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:13px;flex-shrink:0;margin-top:2px}
+.av.aa{background:linear-gradient(135deg,#19c37d,#ab68ff);order:-1}
+.av.ua{background:linear-gradient(135deg,#ab68ff,#6b3fa0);order:-1}
+.cw2{background:var(--cbg);border-radius:9px;margin:8px 0;border:1px solid var(--bd);overflow:hidden}
+.ch{display:flex;padding:6px 12px;background:var(--sf);border-bottom:1px solid var(--bd);
+    justify-content:space-between;align-items:center}
+.ch span{color:var(--mu);font-size:11px;font-family:monospace}
+.ch-btns{display:flex;gap:5px}
+.ch-btns button{background:transparent;border:1px solid var(--bd);color:var(--mu);
+               border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer;transition:all .12s}
+.ch-btns button:active{background:var(--sf2);color:var(--ac)}
+pre{margin:0;padding:12px;overflow-x:auto;font-size:12px;color:#cdd6f4;line-height:1.6}
+code{font-family:'Fira Code','Consolas',monospace}
+.think{display:flex;align-items:center;gap:6px;padding:10px 14px;color:var(--mu);font-size:13px}
+.think .dot{width:6px;height:6px;border-radius:50%;background:var(--ac2);animation:blink 1.4s infinite}
+.think .dot:nth-child(2){animation-delay:.2s}
+.think .dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.stopbtn{align-self:center;background:var(--sf);border:1px solid var(--bd);color:var(--danger);
+         border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;cursor:pointer;
+         margin:4px 0;transition:all .15s}
+.stopbtn:active{background:rgba(232,93,106,.1)}
+
+/* INPUT */
+.inpw{background:var(--bg2);border-top:1px solid var(--bd);padding:8px 10px 10px;flex-shrink:0}
+.inpb{display:flex;gap:6px;align-items:flex-end}
+.inpta{flex:1;background:var(--sf);border:1px solid var(--bd);border-radius:10px;
+       padding:9px 12px;font-size:14px;color:var(--tx);font-family:inherit;
+       outline:none;resize:none;max-height:120px;min-height:40px;line-height:1.5}
+.inpta:focus{border-color:var(--bd2)}
+.inpta::placeholder{color:var(--mu)}
+.inpbtns{display:flex;gap:5px;align-items:center}
+.inpbtn{width:34px;height:34px;border-radius:8px;background:var(--sf);border:1px solid var(--bd);
+        color:var(--mu);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;
+        transition:all .15s;flex-shrink:0}
+.inpbtn:active{background:var(--sf2);color:var(--ac)}
+.inpbtn.send{background:linear-gradient(135deg,#1a2d4a,#0f1e38);color:var(--ac);border-color:var(--bd2)}
+.inpbtn.send:active{opacity:.85}
+.inpbtn:disabled{opacity:.4;cursor:not-allowed}
+.filechip{display:flex;align-items:center;gap:4px;background:rgba(107,159,212,.1);
+          border:1px solid rgba(107,159,212,.2);border-radius:5px;padding:3px 8px;
+          font-size:10px;color:var(--ac2);margin-top:4px}
+.filechip .x{cursor:pointer;color:var(--mu)}
+.filechip .x:active{color:var(--danger)}
+
+/* MODALS */
+.modal{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;
+       background:rgba(0,0,0,.7)}
+.modal.show{display:flex}
+.mdl{background:var(--bg2);border:1px solid var(--bd2);border-radius:14px;
+     width:min(320px,90vw);padding:20px;box-shadow:0 16px 48px rgba(0,0,0,.8)}
+.mdlt{font-size:15px;font-weight:700;margin-bottom:12px}
+.mdlp{font-size:13px;color:var(--mu);margin-bottom:16px;line-height:1.6}
+.mdlin{width:100%;background:var(--sf);border:1px solid var(--bd);border-radius:8px;
+       padding:9px 11px;font-size:13px;color:var(--tx);font-family:inherit;outline:none;margin-bottom:14px}
+.mdlin:focus{border-color:var(--bd2)}
+.mdlbtns{display:flex;gap:8px;justify-content:flex-end}
+.mdlbtn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none}
+.mdlbtn.prim{background:linear-gradient(135deg,#1a2d4a,#0f1e38);color:var(--ac)}
+.mdlbtn.sec{background:var(--sf);color:var(--tx);border:1px solid var(--bd)}
+
+/* SAVE CONFIRMATION */
+.savecf{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;
+        background:rgba(0,0,0,.8)}
+.savecf.show{display:flex}
+.savebox{background:var(--bg2);border:1px solid var(--bd2);border-radius:16px;
+         width:min(300px,85vw);padding:24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.9)}
+.saveicon{font-size:40px;margin-bottom:12px}
+.saveh{font-size:16px;font-weight:700;margin-bottom:8px}
+.savep{font-size:13px;color:var(--mu);margin-bottom:20px;line-height:1.5}
+.savebtns{display:flex;gap:10px;justify-content:center}
+.savebtn{padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:opacity .15s}
+.savebtn:active{opacity:.85}
+.savebtn.yes{background:var(--ok);color:#0a0f1e}
+.savebtn.no{background:var(--sf);color:var(--tx);border:1px solid var(--bd)}
+.savebtn.discard{background:var(--danger);color:#fff}
+
+/* SCROLL TO BOTTOM */
+.stb{position:fixed;bottom:70px;right:14px;z-index:30;width:36px;height:36px;
+     border-radius:50%;background:var(--sf);border:1px solid var(--bd2);
+     color:var(--ac);cursor:pointer;font-size:14px;display:none;
+     align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.5);
+     transition:all .2s}
+.stb.show{display:flex}
+.stb:active{transform:scale(.92)}
+
+/* LOADING */
+.ldg{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;
+     background:var(--bg)}
+.ldg.show{display:flex}
+.ldgsp{width:40px;height:40px;border:3px solid var(--bd);border-top-color:var(--ac2);
+       border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* RESPONSIVE */
+@media(min-width:768px){
+  .chat{padding:18px 16px}
+  .bbl{max-width:75%}
+}
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
-<div class="hdr">
-  <!-- Dropdown -->
-  <div class="ddw" id="ddw">
-    <button class="ddbtn" id="ddbtn" onclick="toggleDD()">☰</button>
-  </div>
-  <div class="ddov" id="ddov" onclick="closeDD()"></div>
-  <div class="ddm" id="ddm">
-    <div class="dds">
-      <button class="ddi" onclick="ddA('s2c')"><span class="ico">📸</span><span class="lbl">صورة → كود</span></button>
-      <button class="ddi" onclick="ddA('tpl')"><span class="ico">⚡</span><span class="lbl">قوالب جاهزة</span></button>
-      <button class="ddi" onclick="ddA('apis')"><span class="ico">📡</span><span class="lbl">APIs البيانات</span></button>
-    </div>
-    <div class="ddsep"></div>
-    <div class="dds">
-      <button class="ddi" onclick="ddA('chats')"><span class="ico">📋</span><span class="lbl">المحادثات</span></button>
-      <button class="ddi" onclick="ddA('save')"><span class="ico">💾</span><span class="lbl">حفظ المحادثة</span></button>
-      <button class="ddi" onclick="ddA('share')"><span class="ico">🔗</span><span class="lbl">مشاركة</span></button>
-    </div>
-    <div class="ddsep"></div>
-    <div class="dds">
-      {% if is_admin %}<button class="ddi" onclick="ddA('alerts')"><span class="ico">🔔</span><span class="lbl">التنبيهات</span></button>{% endif %}
-      <button class="ddi" onclick="ddA('reconnect')"><span class="ico">🔄</span><span class="lbl">إعادة الاتصال</span></button>
-      <button class="ddi" onclick="ddA('clear')"><span class="ico">🗑️</span><span class="lbl">مسح المحادثة</span></button>
-      <button class="ddi danger" onclick="doLogout()"><span class="ico">🚪</span><span class="lbl">خروج</span></button>
+<header class="hdr">
+  <div class="ddw">
+    <button class="ddbtn" id="menuBtn" title="القائمة">☰</button>
+    <div class="ddov" id="ddOv"></div>
+    <div class="ddm" id="ddMenu">
+      <div class="dds">
+        <button class="ddi" onclick="newChat()"><span class="ico">💬</span><span class="lbl">محادثة جديدة</span></button>
+        <button class="ddi" onclick="openPanel('chats')"><span class="ico">📁</span><span class="lbl">المحادثات المحفوظة</span></button>
+        <div class="ddsep"></div>
+        {% if is_admin %}
+        <button class="ddi" onclick="switchTab('github')"><span class="ico">🐙</span><span class="lbl">GitHub</span></button>
+        <button class="ddi" onclick="openPanel('project')"><span class="ico">📦</span><span class="lbl">ذاكرة المشروع</span></button>
+        <button class="ddi" onclick="openPanel('settings')"><span class="ico">⚙️</span><span class="lbl">الإعدادات</span></button>
+        <div class="ddsep"></div>
+        {% endif %}
+        <button class="ddi" onclick="shareChat()"><span class="ico">🔗</span><span class="lbl">مشاركة المحادثة</span></button>
+        <button class="ddi" onclick="clearChat()"><span class="ico">🗑️</span><span class="lbl">مسح المحادثة</span></button>
+        <div class="ddsep"></div>
+        <a class="ddi danger" href="/logout"><span class="ico">🚪</span><span class="lbl">خروج</span></a>
+      </div>
     </div>
   </div>
-
-  <!-- Logo + badge -->
-  <div class="logo">🤖</div>
-  {% if is_admin %}<span class="rbadge admin">ADMIN</span>
-  {% else %}<span class="rbadge guest">GUEST</span>{% endif %}
-
-  <!-- Center tabs + model -->
+  <div class="logo">🚀</div>
+  <span class="rbadge {{ 'admin' if is_admin else 'guest' }}">{{ 'رئيسي' if is_admin else 'ضيف' }}</span>
   <div class="hdrmid">
     <div class="tabs">
-      <button class="tab on" id="tC" onclick="sw('c')">💬</button>
-      {% if is_admin %}<button class="tab" id="tG" onclick="sw('g')">🐙</button>{% endif %}
-      <button class="tab" id="tI" onclick="sw('i')">🎨</button>
+      <button class="tab on" data-tab="chat" onclick="switchTab('chat')">💬 محادثة</button>
+      {% if is_admin %}
+      <button class="tab" data-tab="github" onclick="switchTab('github')">🐙 GitHub</button>
+      {% endif %}
     </div>
-    <button class="mpick" id="mp" onclick="openSh()">
-      <span id="mb">🤖</span><span class="mn" id="mn">ذكي</span><span class="arr">▾</span>
-    </button>
+    <div class="mpick" id="modelPick" onclick="toggleSheet()">
+      <span class="mn" id="modelName">Qwen3 Coder</span>
+      <span class="arr">▼</span>
+    </div>
   </div>
-
-  <!-- Refresh -->
-  <button class="rfbtn" onclick="doReconnect()" title="حفظ وتحديث">🔄</button>
-</div>
+  <button class="rfbtn" id="refreshBtn" onclick="location.reload()" title="تحديث">↻</button>
+</header>
 
 <!-- OVERLAYS -->
-<div class="ov" id="ov" onclick="closeSh()"></div>
-<div class="pov" id="pov" onclick="closePanel()"></div>
+<div class="ov" id="overlay"></div>
+<div class="ddov" id="ddOverlay"></div>
 
 <!-- MODEL SHEET -->
-<div class="sheet" id="sh">
+<div class="sheet" id="modelSheet">
   <div class="shbar"></div>
-  <div class="shhead"><span class="shttl">اختر الموديل</span><button class="shx" onclick="closeSh()">✕</button></div>
-  <div class="shlist" id="shlist"></div>
+  <div class="shhead"><span class="shttl">اختيار النموذج</span><button class="shx" onclick="toggleSheet()">✕</button></div>
+  <div class="shlist" id="modelList"></div>
 </div>
 
-{% if is_admin %}
-<!-- ALERTS FAB -->
-<div class="alfab" id="alfab" onclick="toggleAlerts()">
-  🔔<span class="aldot" id="aldot"></span>
+<!-- SIDE PANELS -->
+<div class="pov" id="panelOv" onclick="closePanel()"></div>
+<div class="panel" id="sidePanel">
+  <div class="ph"><span class="phttl" id="panelTitle">اللوحة</span><button class="phx" onclick="closePanel()">✕</button></div>
+  <div class="pb" id="panelBody"></div>
+  <div class="pf" id="panelFoot"></div>
 </div>
-<!-- ALERTS PANEL -->
-<div class="alp" id="alp">
-  <div class="alph">
-    <span class="alpttl">🔔 التنبيهات</span>
-    <button class="alpref" onclick="loadAlerts()">🔄</button>
-    <button class="alpx" onclick="toggleAlerts()">✕</button>
+
+<!-- CHAT PAGE -->
+<div class="page on" id="page-chat">
+  <div class="chat" id="chatBox">
+    <div class="empty" id="emptyState">
+      <div class="elogo">🚀</div>
+      <h2>Leo-AI</h2>
+      <p>مساعد البرمجة الاحترافي. اكتب رسالتك أو اسحب ملفات للرفع.</p>
+      <div class="sugs">
+        <button class="sug" onclick="setPrompt('اكتب لي تطبيق React كامل')">⚛️ تطبيق React</button>
+        <button class="sug" onclick="setPrompt('اشرح لي كيف أعمل API بـ FastAPI')">🔧 FastAPI</button>
+        <button class="sug" onclick="setPrompt('حلل هذا الكود واصلح الأخطاء')">🔍 مراجعة كود</button>
+      </div>
+    </div>
   </div>
-  <div class="alpb" id="alpb"><div style="color:var(--mu);font-size:12px;padding:12px;text-align:center">⏳ جاري الفحص...</div></div>
-  <div class="alpf" id="alpf"></div>
+  <div class="inpw">
+    <div id="fileChips"></div>
+    <div class="inpb">
+      <textarea class="inpta" id="msgInput" rows="1" placeholder="اكتب رسالتك..." onkeydown="handleKey(event)"></textarea>
+      <div class="inpbtns">
+        <button class="inpbtn" id="fileBtn" onclick="document.getElementById('fileInput').click()" title="رفع ملف">📎</button>
+        <button class="inpbtn" id="imgBtn" onclick="document.getElementById('imgInput').click()" title="صورة">🖼️</button>
+        <button class="inpbtn send" id="sendBtn" onclick="sendMessage()" title="إرسال">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileInput" multiple style="display:none" onchange="handleFiles(this)">
+<input type="file" id="imgInput" accept="image/*" multiple style="display:none" onchange="handleFiles(this)">
+
+<!-- GITHUB PAGE -->
+{% if is_admin %}
+<div class="page" id="page-github">
+  <div class="ghpage" id="ghPage">
+    <div class="ghtopbar">
+      <button class="ghback" onclick="ghBack()">← رجوع</button>
+      <span class="ghtitle" id="ghTitle">GitHub Repos</span>
+    </div>
+    <div class="ghsrch"><input type="text" id="ghSearch" placeholder="بحث..." oninput="filterRepos(this.value)"></div>
+    <div class="ghlist" id="ghList"></div>
+  </div>
 </div>
 {% endif %}
 
-<!-- PANEL: S2C -->
-<div class="panel" id="panel-s2c">
-  <div class="ph"><span class="phttl">📸 صورة ← كود</span><button class="phx" onclick="closePanel()">✕</button></div>
-  <div class="pb">
-    <div class="s2cd" id="s2cd" onclick="document.getElementById('s2cfile').click()"
-         ondragover="event.preventDefault();this.classList.add('drag')"
-         ondragleave="this.classList.remove('drag')" ondrop="s2cDrop(event)">
-      <div style="font-size:34px;margin-bottom:7px">📸</div>
-      <div style="font-size:13px;font-weight:600;margin-bottom:3px" id="s2ctxt">ارفع صورة الموقع</div>
-      <div style="font-size:11px;color:var(--mu)">PNG • JPG • WebP</div>
-      <input type="file" id="s2cfile" accept="image/*" style="display:none" onchange="s2cSel(this)">
-    </div>
-    <div class="s2cp" id="s2cp"><img id="s2cimg" src="" alt=""></div>
-    <div class="s2co">
-      <div class="s2col"><label>الأسلوب</label>
-        <select id="s2cstyle"><option value="dark">🌑 داكن</option><option value="modern">☀️ حديث</option></select></div>
-      <div class="s2col"><label>الإطار</label>
-        <select id="s2cfw"><option value="html">HTML</option><option value="react">React</option></select></div>
-    </div>
-  </div>
-  <div class="pf">
-    <button class="xbtn ac" id="s2cbtn" onclick="runS2C()" disabled>🔄 تحويل للكود</button>
-    <div id="s2cst" style="font-size:11px;color:var(--mu);text-align:center;margin-top:4px"></div>
-  </div>
-</div>
-
-<!-- PANEL: Templates -->
-<div class="panel" id="panel-tpl" style="width:min(340px,95vw)">
-  <div class="ph"><span class="phttl">⚡ قوالب جاهزة</span><button class="phx" onclick="closePanel()">✕</button></div>
-  <div class="pb" style="padding:4px">
-    <div class="tplg">
-      <div class="tplc" onclick="useTpl('stocks')"><div class="tplt t1">📈</div><div class="tpli"><div class="tpln">أسهم سعودي</div><div class="tpld">بيانات حقيقية</div></div></div>
-      <div class="tplc" onclick="useTpl('crypto')"><div class="tplt t2">₿</div><div class="tpli"><div class="tpln">Crypto</div><div class="tpld">CoinGecko API</div></div></div>
-      <div class="tplc" onclick="useTpl('game_flappy')"><div class="tplt t3">🎮</div><div class="tpli"><div class="tpln">Flappy Bird</div><div class="tpld">لعبة جاهزة</div></div></div>
-      <div class="tplc" onclick="useTpl('weather')"><div class="tplt t4">🌤️</div><div class="tpli"><div class="tpln">طقس</div><div class="tpld">Open-Meteo</div></div></div>
-      <div class="tplc" onclick="useTpl('portfolio')"><div class="tplt t5">👤</div><div class="tpli"><div class="tpln">Portfolio</div><div class="tpld">موقع شخصي</div></div></div>
-      <div class="tplc" onclick="useTpl('dashboard')"><div class="tplt t6">📊</div><div class="tpli"><div class="tpln">Dashboard</div><div class="tpld">لوحة تحكم</div></div></div>
-      <div class="tplc" onclick="useTpl('news')"><div class="tplt t2">📰</div><div class="tpli"><div class="tpln">أخبار</div><div class="tpld">NewsAPI</div></div></div>
-      <div class="tplc" onclick="useTpl('game_snake')"><div class="tplt t3">🐍</div><div class="tpli"><div class="tpln">Snake Game</div><div class="tpld">لعبة الثعبان</div></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- PANEL: APIs -->
-<div class="panel" id="panel-apis">
-  <div class="ph"><span class="phttl">📡 APIs مجانية</span><button class="phx" onclick="closePanel()">✕</button></div>
-  <div class="pb" id="apibody"><div style="color:var(--mu);font-size:12px;padding:10px">⏳ جاري التحميل...</div></div>
-  <div class="pf"><button class="xbtn ac" onclick="askAllApis()">💬 dashboard بكل البيانات</button></div>
-</div>
-
-<!-- PANEL: Chats -->
-<div class="panel" id="panel-chats">
-  <div class="ph"><span class="phttl">📋 المحادثات</span><button class="phx" onclick="closePanel()">✕</button></div>
-  <div class="pb"><div id="sclist"><div class="scmt">لا توجد محادثات</div></div></div>
-  <div class="pf">
-    <button class="xbtn ac" onclick="saveChat()">💾 حفظ الحالية</button>
-    <button class="xbtn sec" onclick="shareChat()">🔗 مشاركة</button>
-  </div>
-</div>
-
-<!-- LIVE PREVIEW -->
-<div class="pvp" id="pvp">
+<!-- PREVIEW -->
+<div class="pvp" id="previewPanel">
   <div class="pvh">
-    <span class="pvtitle" id="pvtitle">🖥️ Preview</span>
-    <button class="pvbtn" onclick="reloadPv()">🔄</button>
-    <button class="pvbtn ac" onclick="openCodepen()">🖊️ CodePen</button>
-    <button class="pvbtn" onclick="openNewTab()">↗️</button>
-    <button class="pvbtn" onclick="togglePyOut()">🐍</button>
-    <button class="pvbtn d" onclick="closePv()">✕</button>
+    <span class="pvtitle" id="pvTitle">معاينة</span>
+    <button class="pvbtn" onclick="updatePreview()">🔄 تحديث</button>
+    <button class="pvbtn" onclick="openPreviewTab()">↗️ فتح</button>
+    <button class="pvbtn d" onclick="closePreview()">✕ إغلاق</button>
   </div>
-  <iframe id="pvframe" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" style="flex:1;border:none;background:#fff;width:100%"></iframe>
-  <div class="pyout" id="pyout"></div>
+  <iframe id="pvframe" sandbox="allow-scripts allow-same-origin"></iframe>
+  <div class="pyout" id="pyOutput"></div>
 </div>
 
-<!-- REVIEW -->
-<div class="fov" id="rvp">
-  <div class="fovh"><span class="fovt" id="rvtitle">🔍 مراجعة الكود</span><button class="fovc" onclick="closeRv()">✕ إغلاق</button></div>
-  <div class="fovb" id="rvbody"></div>
+<!-- ALERTS -->
+<button class="alfab" id="alertFab" onclick="toggleAlerts()">🔔</button>
+<div class="alp" id="alertPanel">
+  <div class="alph"><span class="alpttl">التنبيهات</span><button class="alpref" onclick="clearAlerts()">مسح</button><button class="alpx" onclick="toggleAlerts()">✕</button></div>
+  <div class="alpb" id="alertBox"></div>
 </div>
 
-<!-- PAGE: CHAT -->
-<div class="page on" id="pgC">
-  <div class="cw" id="cw">
-    <div id="welcome">
-      <div class="wi">🤖</div>
-      <div class="wt">مرحباً، أنا Leo-AI</div>
-      {% if is_admin %}
-      <div class="ws">📸 صورة→كود • ⚡ قوالب • 📡 APIs • 🖥️ Preview فوري</div>
-      {% else %}
-      <div class="ws">مساعد برمجة احترافي — اكتب طلبك وشوف النتيجة فوراً</div>
-      {% endif %}
-      <div class="chips">
-        <span class="chip" onclick="useTpl('stocks')">📈 أسهم</span>
-        <span class="chip" onclick="useTpl('crypto')">₿ Crypto</span>
-        <span class="chip" onclick="useTpl('game_flappy')">🎮 Flappy</span>
-        <span class="chip" onclick="useTpl('weather')">🌤️ طقس</span>
-        <span class="chip" onclick="useTpl('dashboard')">📊 Dashboard</span>
-        <span class="chip" onclick="useTpl('portfolio')">👤 Portfolio</span>
-        {% if is_admin %}<span class="chip" onclick="sw('g')">🐙 GitHub</span>{% endif %}
-      </div>
-    </div>
-    <div id="msgs"></div>
-    <div id="spin"><div class="ring"></div><span class="stx" id="stx">يفكر...</span></div>
-  </div>
-  <div id="fsec"></div>
-  <div class="ia"><div class="iw">
-    <div class="vn" id="vn">👁️ سيُستخدم موديل يدعم رؤية الصور</div>
-    <div class="sbar" id="sbar">🤖 سيستخدم: <strong id="sbarname">—</strong></div>
-    <div class="abar" id="abar"></div>
-    <div class="ib">
-      <textarea id="pt" placeholder="اكتب طلبك..." rows="1" onkeydown="kd(event)" oninput="onInput(this)"></textarea>
-      <div class="ibbtns">
-        <label class="attbtn" for="fii"><span id="attico">📎</span></label>
-        <input type="file" id="fii" multiple style="display:none"
-          accept="image/*,.txt,.py,.js,.ts,.tsx,.jsx,.html,.css,.json,.md,.vue,.php,.java,.cpp,.c,.go,.rs,.rb,.sql,.xml,.yaml,.yml,.zip,.tar,.tar.gz,.pdf"
-          onchange="addFiles(this)">
-        <button class="snd" id="snd" onclick="toggleSend()">
-          <svg id="icos" viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
-          <svg id="icox" viewBox="0 0 24 24" style="display:none"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
-        </button>
-      </div>
-    </div>
-    <div class="hint">Enter إرسال • Shift+Enter سطر • ☰ القائمة</div>
-  </div></div>
-</div>
+<!-- SCROLL TO BOTTOM -->
+<button class="stb" id="scrollBtn" onclick="scrollToBottom()">↓</button>
 
-{% if is_admin %}
-<!-- PAGE: GITHUB -->
-<div class="page" id="pgG">
-  <div class="ghpage">
-    <div class="ghtopbar" id="ghtopbar"><span class="ghtitle" id="ghtitle">🐙 مستودعاتك</span></div>
-    <div id="ghacts" style="display:none">
-      <div class="ghacts">
-        <button class="gha ld" id="btnload" onclick="loadFullRepo()">⚡ تحميل الكل</button>
-        <button class="gha" onclick="selAll()">☑️</button>
-        <button class="gha" onclick="clearSel()">✕</button>
-        <button class="gha rv" onclick="startRv()">🔍</button>
-        <button class="gha ac" onclick="loadToChat()">💬</button>
-        <button class="gha pu" onclick="pushFiles()">📤</button>
-      </div>
+<!-- LOADING -->
+<div class="ldg" id="loading"><div class="ldgsp"></div></div>
+
+<!-- MODALS -->
+<div class="modal" id="modal">
+  <div class="mdl">
+    <div class="mdlt" id="modalTitle">عنوان</div>
+    <div class="mdlp" id="modalBody">محتوى</div>
+    <input type="text" class="mdlin" id="modalInput" style="display:none">
+    <div class="mdlbtns" id="modalBtns">
+      <button class="mdlbtn sec" onclick="closeModal()">إلغاء</button>
+      <button class="mdlbtn prim" onclick="modalConfirm()">تأكيد</button>
     </div>
-    <div class="membar" id="membar">
-      <span>📁</span><span class="memcnt" id="memcnt">0</span>
-      <span class="memlbl" id="memlbl">ملف</span>
-      <button class="memclr" onclick="clearMem()">مسح</button>
-      <button class="memgo" onclick="goChat()">💬</button>
-    </div>
-    <div class="selbar" id="selbar"><span class="selcnt" id="selcnt">0 محدد</span></div>
-    <div class="ghsrch" id="ghsrch"><input id="ghsrchq" placeholder="🔍 ابحث..." oninput="filterRepos(this.value)"></div>
-    <div class="ghlist" id="ghlist"><div class="ghmt">⏳ جاري التحميل...</div></div>
   </div>
 </div>
-{% endif %}
 
-<!-- PAGE: IMAGE GEN -->
-<div class="page" id="pgI">
-  <div class="igw"><div class="igi">
-    <div class="igt">🎨 توليد الصور</div>
-    <div class="igs">مجاني • Pollinations AI + Flux</div>
-    <div class="igf">
-      <label>وصف الصورة</label>
-      <textarea class="igta" id="igp" placeholder="غروب شمس على البحر..."></textarea>
-      <div class="igrow">
-        <select class="igsel" id="igsize"><option value="1024x1024">مربع</option><option value="1280x720">أفقي</option><option value="720x1280">عمودي</option></select>
-        <select class="igsel" id="igmod"><option value="flux">Flux</option><option value="flux-realism">Realism</option><option value="flux-anime">Anime</option></select>
-        <button class="igbtn" id="igbtn" onclick="genImg()">✨ توليد</button>
-      </div>
-      <div id="ige" style="color:var(--danger);font-size:11.5px;padding:5px 0"></div>
+<!-- SAVE CONFIRMATION -->
+<div class="savecf" id="saveConfirm">
+  <div class="savebox">
+    <div class="saveicon">💾</div>
+    <div class="saveh">هل تريد حفظ هذه المحادثة؟</div>
+    <div class="savep">يمكنك العودة إليها لاحقاً من قائمة المحادثات المحفوظة</div>
+    <div class="savebtns">
+      <button class="savebtn yes" onclick="confirmSave(true)">✓ نعم، احفظ</button>
+      <button class="savebtn no" onclick="confirmSave(false)">✕ لا، امسح</button>
     </div>
-    <div id="igsp" class="igsp"><div class="ring" style="border-top-color:var(--ac2)"></div><span>جاري التوليد...</span></div>
-    <div class="iggrid" id="igg"></div>
-  </div></div>
+  </div>
 </div>
 
 <script>
-const MODELS={{models|tojson}}, ROLE="{{role}}", IS_ADMIN=ROLE==="admin", SID="default", MAX_AT=25;
-let sel="auto", streaming=false, ctrl=null, pendingFiles=[], pvCode="", pvLang="";
-let allRepos=[], curRepo=null, curTree=[], selPaths=new Set(), projMem=[];
-let s2cFile=null, pyodide=null, pyLoaded=false, pyLoading=false;
-let alertsOpen=false, watchdog=null;
-const pf={};
-
-const cw_=e('cw'), msgs=e('msgs'), spin=e('spin'), stxEl=e('stx'),
-      wel=e('welcome'), fsec=e('fsec'), pt=e('pt'), snd=e('snd'),
-      icos=e('icos'), icox=e('icox'), abar=e('abar'), vn=e('vn');
-
-function e(id){return document.getElementById(id)}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,140)+'px'}
-function kd(ev){if(ev.key==='Enter'&&!ev.shiftKey&&!streaming){ev.preventDefault();send()}}
-function bot(){cw_.scrollTop=cw_.scrollHeight}
-function fileIcon(p){const m={py:'🐍',js:'🟨',ts:'🔷',tsx:'🔷',jsx:'🟨',html:'🌐',css:'🎨',json:'📋',md:'📝',sh:'⚙️',go:'🐹',rs:'🦀',java:'☕',cpp:'⚡',c:'⚡',vue:'💚',php:'🐘',rb:'💎',sql:'🗄️',yml:'⚙️',yaml:'⚙️',pdf:'📕',zip:'📦'};return m[p.split('.').pop().toLowerCase()]||'📄'}
-
-/* ══ DROPDOWN ════════════════════════════════════════════════════════════════ */
-function toggleDD(){
-  const m=e('ddm'),b=e('ddbtn'),o=e('ddov');
-  const open=m.classList.contains('show');
-  if(open){m.classList.remove('show');b.classList.remove('open');o.classList.remove('show')}
-  else{m.classList.add('show');b.classList.add('open');o.classList.add('show')}
-}
-function closeDD(){e('ddm').classList.remove('show');e('ddbtn').classList.remove('open');e('ddov').classList.remove('show')}
-function ddA(a){
-  closeDD();
-  const map={s2c:()=>openPanel('s2c'),tpl:()=>openPanel('tpl'),apis:()=>openPanel('apis'),
-    chats:()=>openPanel('chats'),save:()=>saveChat(),share:()=>shareChat(),
-    reconnect:()=>doReconnect(),clear:()=>clearChat(),
-    alerts:()=>{toggleAlerts();loadAlerts()}};
-  map[a]?.();
-}
-function doLogout(){closeDD();const f=document.createElement('form');f.method='POST';f.action='/logout';document.body.appendChild(f);f.submit()}
-function doReconnect(){
-  if(msgs&&msgs.children.length){
-    try{
-      const first=msgs.querySelector('.bbl.u');
-      const s=getSaved().filter(c=>!c.auto);
-      s.unshift({id:Date.now(),title:'💾 '+(first?.textContent||'محادثة').slice(0,50),date:new Date().toLocaleString('ar-SA'),html:msgs.innerHTML});
-      if(s.length>30)s.pop();setSaved(s);
-    }catch(_){}
-  }
-  window.location.href=window.location.origin+'/';
-}
-
-/* ══ PAGE SWITCH ════════════════════════════════════════════════════════════ */
-function sw(m){
-  ['c','g','i'].forEach(x=>{
-    e('pg'+x.toUpperCase())?.classList.toggle('on',m===x);
-    e('t'+x.toUpperCase())?.classList.toggle('on',m===x);
-  });
-  e('mp').style.display=m==='c'?'':'none';
-  if(m==='g'&&IS_ADMIN&&!allRepos.length)loadRepos();
-}
-
-/* ══ SMART ROUTER ════════════════════════════════════════════════════════════ */
-let smartT=null;
-function onInput(el){
-  ar(el);
-  if(sel!=='auto'){e('sbar').classList.remove('show');return}
-  clearTimeout(smartT);
-  smartT=setTimeout(async()=>{
-    const txt=el.value.trim();
-    if(txt.length<10){e('sbar').classList.remove('show');return}
-    try{
-      const r=await fetch('/smart-route?prompt='+encodeURIComponent(txt));
-      const d=await r.json();
-      e('sbarname').textContent=d.badge+' '+d.model_name;
-      e('sbar').classList.add('show');
-    }catch(_){}
-  },600);
-}
-
-/* ══ MODEL SHEET ════════════════════════════════════════════════════════════ */
-function tagCls(m){return m.vision?'v':m.strength==='reasoning'?'r':m.strength==='projects'?'p':'c'}
-function buildSh(){
-  const l=e('shlist');l.innerHTML='';
-  const a=document.createElement('div');a.className='mi automi'+(sel==='auto'?' sel':'');
-  a.innerHTML=`<div class="miico">🤖</div><div class="mibody"><div class="miname">ذكي — اختيار تلقائي<span class="tg c">AUTO</span></div><div class="midesc">يختار أفضل موديل لكل طلب</div></div><div class="michk">✓</div>`;
-  a.onclick=()=>{sel='auto';e('mb').textContent='🤖';e('mn').textContent='ذكي';e('sbar').classList.remove('show');buildSh();closeSh()};
-  l.appendChild(a);
-  const sep=document.createElement('div');sep.style.cssText='height:1px;background:var(--bd);margin:5px 0';l.appendChild(sep);
-  MODELS.forEach(m=>{
-    const d=document.createElement('div');d.className='mi'+(m.id===sel?' sel':'');
-    d.innerHTML=`<div class="miico">${m.badge}</div><div class="mibody"><div class="miname">${m.name}<span class="tg ${tagCls(m)}">${m.tag}</span></div><div class="midesc">${m.desc}</div></div><div class="michk">✓</div>`;
-    d.onclick=()=>{sel=m.id;e('mb').textContent=m.badge;e('mn').textContent=m.name.split(' ').slice(0,2).join(' ');e('sbar').classList.remove('show');buildSh();closeSh()};
-    l.appendChild(d);
-  });
-}
-function openSh(){buildSh();e('ov').classList.add('on');e('sh').classList.add('on');e('mp').classList.add('open')}
-function closeSh(){e('ov').classList.remove('on');e('sh').classList.remove('on');e('mp').classList.remove('open')}
-
-/* ══ PANEL ═══════════════════════════════════════════════════════════════════ */
-let activePanel=null;
-function openPanel(n){closePanel();activePanel=n;e('pov').classList.add('on');e('panel-'+n).classList.add('on');if(n==='chats')renderSC();if(n==='apis')loadAPIs()}
-function closePanel(){if(activePanel)e('panel-'+activePanel)?.classList.remove('on');activePanel=null;e('pov').classList.remove('on')}
-document.addEventListener('keydown',ev=>{if(ev.key==='Escape'){closeSh();closePanel();closeRv();closePv();closeDD()}});
-
-/* ══ ALERTS ═══════════════════════════════════════════════════════════════════ */
-function toggleAlerts(){alertsOpen=!alertsOpen;e('alp')?.classList.toggle('show',alertsOpen)}
-async function loadAlerts(){
-  const b=e('alpb'),f=e('alpf'),fab=e('alfab'),dot=e('aldot');
-  if(!b)return;
-  b.innerHTML='<div style="color:var(--mu);font-size:12px;padding:12px;text-align:center">⏳ جاري الفحص الشامل...<br><small style="opacity:.6">قد يستغرق 20 ثانية</small></div>';
-  if(f)f.innerHTML='';
-  try{
-    const r=await fetch('/admin/alerts');const d=await r.json();
-    b.innerHTML=(d.alerts||[]).map(a=>{
-      const det=esc(a.detail).replace(/\n/g,'<br>').replace(/→/g,'<span style="color:var(--ac2)">→</span>');
-      return`<div class="ali ${a.level}"><span class="aliico">${a.icon}</span><div class="alibody"><div class="alit">${esc(a.title)}</div><div class="alid">${det}</div></div></div>`;
-    }).join('');
-    if(f)f.innerHTML=`<span style="flex:1">آخر فحص: ${new Date().toLocaleTimeString('ar-SA')}</span>`
-      +(d.errors?`<span class="alstat e">❌ ${d.errors}</span>`:'')
-      +(d.warnings?`<span class="alstat w">⚠️ ${d.warnings}</span>`:'')
-      +(d.ok?`<span class="alstat o">✅ ${d.ok}</span>`:'');
-    const total=(d.errors||0)+(d.warnings||0);
-    if(fab){
-      fab.classList.add('vis');
-      if(total>0){
-        if(dot){dot.textContent=total>9?'9+':total;dot.classList.add('show')}
-        fab.style.borderColor=d.errors?'rgba(232,93,106,.5)':'rgba(232,162,74,.5)';
-        fab.innerHTML=(d.errors?'🚨':'⚠️')+(dot?.outerHTML||'');
-      } else {
-        if(dot)dot.classList.remove('show');
-        fab.style.borderColor='rgba(62,207,142,.3)';
-        fab.innerHTML='✅'+(dot?.outerHTML||'');
-      }
-    }
-  }catch(err){if(b)b.innerHTML=`<div class="ali error"><span class="aliico">❌</span><div class="alibody"><div class="alit">فشل الفحص</div><div class="alid">${esc(String(err))}</div></div></div>`}
-}
-
-/* ══ TEMPLATES ═══════════════════════════════════════════════════════════════ */
-const TPL={
-  stocks:`ابنِ dashboard أسهم سعودية بـ HTML+CSS+JS: تصميم داكن (#0a0f1e)، جدول أسهم (أرامكو سابك الراجحي)، رسم بياني chart.js، ألوان خضراء/حمراء`,
-  crypto:`ابنِ dashboard عملات رقمية يجلب بيانات حقيقية من GET /proxy/crypto?coin=bitcoin,ethereum,solana — بطاقات، رسم بياني، تحديث تلقائي، تصميم داكن`,
-  game_flappy:`ابنِ لعبة Flappy Bird كاملة HTML5 Canvas: طائر بالضغط/Space، أنابيب، نقاط، Highscore، Game Over، صعوبة متزايدة`,
-  weather:`ابنِ صفحة طقس تجلب بيانات حقيقية من GET /proxy/weather?lat=24.7&lon=46.7 — درجة حرارة، رطوبة، رياح، توقعات 7 أيام`,
-  portfolio:`ابنِ موقع portfolio شخصي HTML+CSS+JS: Hero، مهارات، مشاريع، contact، تصميم داكن، animations`,
-  dashboard:`ابنِ dashboard إدارة شامل: Sidebar، كروت إحصاء، رسم بياني خطي وشريطي، جدول بيانات، تصميم داكن`,
-  news:`ابنِ صفحة أخبار تجلب من GET /proxy/news?q=technology — grid بطاقات أخبار مع فلتر`,
-  game_snake:`ابنِ لعبة Snake HTML5 Canvas: ثعبان بالأسهم، طعام، نقاط، Game Over، تصميم neon داكن`,
+// ═══════════════════════════════════════════════════════════════════════════════
+//  GLOBAL STATE
+// ═══════════════════════════════════════════════════════════════════════════════
+const state = {
+  currentChat: localStorage.getItem('currentChat') || generateId(),
+  model: '{{ default_model }}',
+  modelName: 'Qwen3 Coder',
+  isAdmin: {{ 'true' if is_admin else 'false' }},
+  hasGithub: {{ 'true' if has_github_token else 'false' }},
+  isStreaming: false,
+  attachedFiles: [],
+  alerts: [],
+  models: {{ models | tojson }},
+  chats: [],
+  hasUnsavedMessages: false,
+  previewFiles: {},
+  currentPreview: null,
+  saveCallback: null
 };
-function useTpl(k){closePanel();if(TPL[k]){pt.value=TPL[k];ar(pt);sw('c');pt.focus()}}
 
-/* ══ APIs PANEL ═══════════════════════════════════════════════════════════════ */
-async function loadAPIs(){
-  const b=e('apibody');
-  b.innerHTML='<div style="color:var(--mu);font-size:12px;padding:10px">⏳ جاري التحميل...</div>';
-  try{
-    const r=await fetch('/apis');const d=await r.json();
-    const icons={stocks_global:'📈',crypto:'₿',currency:'💱',news:'📰',weather:'🌤️'};
-    const labels={stocks_global:'أسهم عالمية',crypto:'عملات رقمية',currency:'أسعار صرف',news:'أخبار',weather:'طقس'};
-    b.innerHTML='<div style="font-size:10.5px;color:var(--mu);padding:4px 2px 8px">تعمل عبر proxy — بدون مشاكل CORS</div>';
-    for(const[k,v] of Object.entries(d)){
-      const c=document.createElement('div');c.className='apic';
-      c.innerHTML=`<div class="apit"><span class="apin">${icons[k]||'🔌'} ${labels[k]||v.name}</span><span class="apidot ${v.configured?'ok':'no'}"></span></div><div class="apif">🆓 ${v.free_tier}</div><div class="apib"><button class="apibtn use" onclick="useAPI('${k}','${labels[k]||v.name}')">💬 استخدم</button><button class="apibtn test" onclick="testAPI('${k}')">🧪 اختبر</button></div>`;
-      b.appendChild(c);
-    }
-  }catch(err){b.innerHTML=`<div style="color:var(--danger);padding:10px">❌ ${esc(err)}</div>`}
+// ═══════════════════════════════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════════════════════════════
+function generateId() {
+  return Math.random().toString(36).substring(2, 10);
 }
-function useAPI(k,name){closePanel();const ps={crypto:`ابنِ dashboard عملات رقمية يجلب من GET /proxy/crypto?coin=bitcoin,ethereum,solana`,currency:`ابنِ محول عملات يجلب من GET /proxy/currency?base=SAR`,stocks_global:`ابنِ صفحة أسهم تجلب من GET /proxy/stock?symbol=AAPL`,weather:`ابنِ تطبيق طقس يجلب من GET /proxy/weather?lat=24.7&lon=46.7`,news:`ابنِ صفحة أخبار تجلب من GET /proxy/news?q=technology`};pt.value=ps[k]||`ابنِ صفحة تستخدم بيانات ${name}`;ar(pt);pt.focus()}
-function askAllApis(){closePanel();pt.value='ابنِ dashboard شامل يجمع: عملات رقمية من /proxy/crypto، أسعار صرف من /proxy/currency، طقس من /proxy/weather — صفحة HTML واحدة داكنة احترافية';ar(pt);pt.focus()}
-async function testAPI(k){const u={crypto:'/proxy/crypto?coin=bitcoin',currency:'/proxy/currency?base=SAR',stocks_global:'/proxy/stock?symbol=AAPL',weather:'/proxy/weather?lat=24.7&lon=46.7',news:'/proxy/news?q=technology'};try{const r=await fetch(u[k]);const d=await r.json();alert('✅ يعمل!\n'+JSON.stringify(d).slice(0,300)+'...')}catch(err){alert('❌ '+err)}}
 
-/* ══ LIVE PREVIEW ════════════════════════════════════════════════════════════ */
-function showPreview(code,lang,title){
-  pvCode=code;pvLang=lang;
-  e('pvtitle').textContent='🖥️ '+(title||'Preview');
-  const frame=e('pvframe'),pyout=e('pyout');
-  e('pvp').classList.add('show');
-  pyout.classList.remove('show');
-  if(lang==='python'||lang==='py'){
-    frame.style.display='none';pyout.classList.add('show');runPython(code);
+function el(id) { return document.getElementById(id); }
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function showLoading(show) {
+  el('loading').classList.toggle('show', show);
+}
+
+function addAlert(text, type = 'err') {
+  const alert = { text, type, time: new Date().toLocaleTimeString('ar') };
+  state.alerts.unshift(alert);
+  if (state.alerts.length > 50) state.alerts.pop();
+  updateAlertBadge();
+  renderAlerts();
+}
+
+function updateAlertBadge() {
+  const unread = state.alerts.filter(a => a.type === 'err').length;
+  const dot = document.querySelector('.aldot');
+  if (dot) dot.classList.toggle('show', unread > 0);
+}
+
+function renderAlerts() {
+  const box = el('alertBox');
+  if (!state.alerts.length) {
+    box.innerHTML = '<div style="text-align:center;color:var(--mu);padding:20px;font-size:12px">لا توجد تنبيهات</div>';
+    return;
+  }
+  box.innerHTML = state.alerts.map(a => 
+    `<div class="alpi ${a.type}">${escapeHtml(a.text)}<span class="ts">${a.time}</span></div>`
+  ).join('');
+}
+
+function toggleAlerts() {
+  el('alertPanel').classList.toggle('show');
+  el('alertFab').classList.toggle('vis');
+}
+
+function clearAlerts() {
+  state.alerts = [];
+  updateAlertBadge();
+  renderAlerts();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  MENU & NAVIGATION
+// ═══════════════════════════════════════════════════════════════════════════════
+el('menuBtn').addEventListener('click', () => {
+  el('ddMenu').classList.toggle('show');
+  el('ddOverlay').classList.toggle('show');
+});
+
+el('ddOverlay').addEventListener('click', () => {
+  el('ddMenu').classList.remove('show');
+  el('ddOverlay').classList.remove('show');
+});
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === tab));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('on', p.id === 'page-' + tab));
+  if (tab === 'github' && state.hasGithub) loadRepos();
+}
+
+function toggleSheet() {
+  el('modelSheet').classList.toggle('on');
+  el('overlay').classList.toggle('on');
+}
+
+el('overlay').addEventListener('click', () => {
+  el('modelSheet').classList.remove('on');
+  el('overlay').classList.remove('on');
+  closePanel();
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  MODEL SELECTION
+// ═══════════════════════════════════════════════════════════════════════════════
+function renderModels() {
+  const list = el('modelList');
+  list.innerHTML = state.models.map(m => `
+    <div class="mi ${m.id === state.model ? 'sel' : ''}" onclick="selectModel('${m.id}')">
+      <div class="miico">${m.badge}</div>
+      <div class="mibody">
+        <div class="miname">${m.name} <span class="tg ${m.vision ? 'v' : m.strength === 'code' ? 'c' : m.strength === 'reasoning' ? 'r' : 'p'}">${m.tag}</span></div>
+        <div class="midesc">${m.desc} • ${m.context}</div>
+      </div>
+      <div class="michk">✓</div>
+    </div>
+  `).join('');
+}
+
+function selectModel(id) {
+  const m = state.models.find(x => x.id === id);
+  if (!m) return;
+  state.model = id;
+  state.modelName = m.name;
+  el('modelName').textContent = m.name;
+  renderModels();
+  toggleSheet();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  SIDE PANEL
+// ═══════════════════════════════════════════════════════════════════════════════
+function openPanel(type) {
+  const titles = { chats: 'المحادثات', project: 'ذاكرة المشروع', settings: 'الإعدادات' };
+  el('panelTitle').textContent = titles[type] || 'اللوحة';
+  el('panelOv').classList.add('on');
+  el('sidePanel').classList.add('on');
+
+  if (type === 'chats') renderChatsPanel();
+  else if (type === 'project') renderProjectPanel();
+  else if (type === 'settings') renderSettingsPanel();
+}
+
+function closePanel() {
+  el('panelOv').classList.remove('on');
+  el('sidePanel').classList.remove('on');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  CHAT MANAGEMENT (SQLite)
+// ═══════════════════════════════════════════════════════════════════════════════
+async function loadChats() {
+  try {
+    const res = await fetch('/api/chats/list');
+    const data = await res.json();
+    state.chats = data.chats || [];
+  } catch (e) {
+    addAlert('فشل تحميل المحادثات', 'err');
+  }
+}
+
+function renderChatsPanel() {
+  const body = el('panelBody');
+  const foot = el('panelFoot');
+
+  if (!state.chats.length) {
+    body.innerHTML = '<div class="scmt">لا توجد محادثات محفوظة</div>';
   } else {
-    frame.style.display='block';
-    const lo=code.trim().toLowerCase();
-    const isH=lang==='html'||lo.startsWith('<!doctype')||lo.startsWith('<html');
-    frame.srcdoc=isH?code:`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{background:#0a0f1e;color:#e8edf5;font-family:sans-serif;padding:16px}</style></head><body><script type="module">${code}<\/script></body></html>`;
+    body.innerHTML = state.chats.map(c => `
+      <div class="sci" onclick="loadChat('${c.id}')">
+        <div class="scit">
+          <span class="sctl">${escapeHtml(c.title)}</span>
+          <button class="scdl" onclick="event.stopPropagation();renameChat('${c.id}', '${escapeHtml(c.title)}')">✏️</button>
+          <button class="scdl" onclick="event.stopPropagation();deleteChat('${c.id}')">🗑️</button>
+        </div>
+        <div class="scdt">${new Date(c.updated_at).toLocaleDateString('ar')}</div>
+      </div>
+    `).join('');
+  }
+
+  foot.innerHTML = `<button class="xbtn ac" onclick="newChat()">+ محادثة جديدة</button>`;
+}
+
+async function newChat() {
+  if (state.hasUnsavedMessages) {
+    showSaveConfirm(() => _doNewChat());
+  } else {
+    _doNewChat();
   }
 }
-function reloadPv(){showPreview(pvCode,pvLang)}
-function closePv(){e('pvp').classList.remove('show')}
-function openNewTab(){const w=window.open('','_blank');const lo=pvCode.trim().toLowerCase();const isH=pvLang==='html'||lo.startsWith('<!doctype')||lo.startsWith('<html');w.document.write(isH?pvCode:`<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><script>${pvCode}<\/script></body></html>`);w.document.close()}
-function openCodepen(){
-  const lo=pvCode.trim().toLowerCase();const isH=pvLang==='html'||lo.startsWith('<!doctype')||lo.startsWith('<html');
-  let html='',css='',js='';
-  if(isH){const cm=pvCode.match(/<style[^>]*>([\s\S]*?)<\/style>/i);const jm=pvCode.match(/<script[^>]*>([\s\S]*?)<\/script>/i);css=cm?cm[1].trim():'';js=jm?jm[1].trim():'';html=pvCode.replace(/<style[\s\S]*?<\/style>/gi,'').replace(/<script[\s\S]*?<\/script>/gi,'').replace(/<\/?html[^>]*>/gi,'').replace(/<head[\s\S]*?<\/head>/gi,'').replace(/<\/?body[^>]*>/gi,'').trim()}else{js=pvCode}
-  const form=document.createElement('form');form.method='POST';form.action='https://codepen.io/pen/define';form.target='_blank';const inp=document.createElement('input');inp.type='hidden';inp.name='data';inp.value=JSON.stringify({html,css,js,title:'Leo-AI'});form.appendChild(inp);document.body.appendChild(form);form.submit();document.body.removeChild(form)
+
+async function _doNewChat() {
+  try {
+    const res = await fetch('/api/chats/create', { method: 'POST', body: new FormData() });
+    const data = await res.json();
+    state.currentChat = data.id;
+    localStorage.setItem('currentChat', data.id);
+    state.hasUnsavedMessages = false;
+    clearChatUI();
+    closePanel();
+    addAlert('تم إنشاء محادثة جديدة', 'ok');
+  } catch (e) {
+    state.currentChat = generateId();
+    localStorage.setItem('currentChat', state.currentChat);
+    clearChatUI();
+    closePanel();
+  }
 }
-function togglePyOut(){e('pyout').classList.toggle('show')}
 
-/* Extract code from response then preview */
-function pvLast(lang,rb){
-  const raw=rb?atob(rb):(window._lastRaw||'');
-  const pats={html:[/```html\r?\n([\s\S]*?)```/i],js:[/```(?:javascript|js)\r?\n([\s\S]*?)```/i],python:[/```(?:python|py)\r?\n([\s\S]*?)```/i]};
-  let code='';
-  for(const pat of(pats[lang]||[])){const m=raw.match(pat);if(m){code=m[1].trim();break}}
-  if(!code){const m=raw.match(/```\w*\r?\n([\s\S]*?)```/);if(m)code=m[1].trim()}
-  if(!code&&lang==='html'){const lo=raw.trim().toLowerCase();if(lo.startsWith('<!doctype')||lo.startsWith('<html'))code=raw.trim()}
-  if(code)showPreview(code,lang,lang==='python'?'Python Runner':'Preview');
-  else alert('لم يُعثر على كود — تأكد أن البوت كتب كوداً');
+async function loadChat(chatId) {
+  try {
+    const res = await fetch(`/api/chats/${chatId}/messages`);
+    const data = await res.json();
+    state.currentChat = chatId;
+    localStorage.setItem('currentChat', chatId);
+    state.hasUnsavedMessages = false;
+    renderMessages(data.messages || []);
+    closePanel();
+  } catch (e) {
+    addAlert('فشل تحميل المحادثة', 'err');
+  }
 }
-function cpToCodepen(rb){pvCode=atob(rb);pvLang='html';openCodepen()}
 
-/* Python */
-async function loadPy(){if(pyLoaded)return true;if(pyLoading)return false;pyLoading=true;try{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js';document.head.appendChild(s);await new Promise((res,rej)=>{s.onload=res;s.onerror=rej});pyodide=await loadPyodide();pyLoaded=true;return true}catch(_){pyLoading=false;return false}}
-async function runPython(code){const out=e('pyout');out.innerHTML='<span style="color:var(--mu)">⏳ جاري تحميل Python...</span>';const ok=await loadPy();if(!ok){out.innerHTML='<span class="pyerr">❌ فشل تحميل Pyodide</span>';return}let output='';pyodide.setStdout({batched:s=>output+=s+'\n'});pyodide.setStderr({batched:s=>output+='ERR: '+s+'\n'});try{await pyodide.runPythonAsync(code);out.innerHTML=output?`<span class="pyok">✅ النتيجة:\n</span>${esc(output)}`:'<span class="pyok">✅ اكتمل</span>'}catch(err){out.innerHTML=`<span class="pyerr">❌ ${esc(String(err))}</span>`}}
+async function renameChat(chatId, currentTitle) {
+  const newTitle = prompt('اسم جديد للمحادثة:', currentTitle);
+  if (!newTitle || newTitle === currentTitle) return;
 
-/* ══ S2C ═════════════════════════════════════════════════════════════════════ */
-function s2cDrop(ev){ev.preventDefault();e('s2cd').classList.remove('drag');const f=ev.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))setS2C(f)}
-function s2cSel(inp){if(inp.files[0])setS2C(inp.files[0])}
-function setS2C(f){s2cFile=f;e('s2cimg').src=URL.createObjectURL(f);e('s2cp').classList.add('show');e('s2cbtn').disabled=false;e('s2ctxt').textContent=f.name}
-async function runS2C(){
-  if(!s2cFile)return;
-  const btn=e('s2cbtn');btn.disabled=true;btn.textContent='⏳ جاري التحويل...';
-  const fd=new FormData();fd.append('image',s2cFile);fd.append('style',e('s2cstyle').value);fd.append('framework',e('s2cfw').value);
-  closePanel();sw('c');wel.style.display='none';
-  const aRow=document.createElement('div');aRow.className='row a';
-  const avEl=Object.assign(document.createElement('div'),{className:'av aa',textContent:'🤖'});
-  const wrap=document.createElement('div');wrap.className='aiwrap';
-  const bbl=Object.assign(document.createElement('div'),{className:'bbl a'});
-  const cur=Object.assign(document.createElement('span'),{className:'cur'});
-  const mtag=Object.assign(document.createElement('div'),{className:'mtag'});
-  const mact=Object.assign(document.createElement('div'),{className:'mact'});
-  bbl.textContent='📸 جاري تحويل الصورة لكود...';bbl.appendChild(cur);
-  wrap.append(bbl,mtag,mact);aRow.append(avEl,wrap);msgs.appendChild(aRow);bot();
-  try{
-    const res=await fetch('/screenshot-to-code',{method:'POST',body:fd});
-    const reader=res.body.getReader();const dec=new TextDecoder();let buf='';let rawText='';
-    while(true){
-      const{done,value}=await reader.read();if(done)break;
-      buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();
-      for(const line of lines){
-        if(!line.startsWith('data:'))continue;const ds=line.slice(5).trim();if(!ds)continue;
-        try{const ev=JSON.parse(ds);
-          if(ev.token){rawText+=ev.token;bbl.textContent=rawText;bbl.appendChild(cur);bot()}
-          if(ev.done){cur.remove();bbl.innerHTML=ev.html;mtag.textContent='✦ Vision → كود';
-            if(ev.files){showFiles(ev.files);const code=atob(Object.values(ev.files)[0]);
-              const rb=btoa(code);
-              mact.innerHTML=`<button class="mbtn" onclick="showPreview(atob('${rb}'),'html','Screenshot')">🖥️ Preview</button><button class="mbtn" onclick="pvCode=atob('${rb}');pvLang='html';openCodepen()">🖊️ CodePen</button>`}
-            bot()}
-        }catch(_){}
-      }
+  const fd = new FormData();
+  fd.append('chat_id', chatId);
+  fd.append('title', newTitle);
+
+  try {
+    await fetch('/api/chats/rename', { method: 'POST', body: fd });
+    await loadChats();
+    renderChatsPanel();
+    addAlert('تم إعادة التسمية', 'ok');
+  } catch (e) {
+    addAlert('فشل إعادة التسمية', 'err');
+  }
+}
+
+async function deleteChat(chatId) {
+  if (!confirm('هل أنت متأكد من حذف هذه المحادثة؟')) return;
+
+  const fd = new FormData();
+  fd.append('chat_id', chatId);
+
+  try {
+    await fetch('/api/chats/delete', { method: 'POST', body: fd });
+    await loadChats();
+    renderChatsPanel();
+    if (state.currentChat === chatId) {
+      newChat();
     }
-  }catch(err){cur.remove();bbl.innerHTML=`<p style="color:var(--danger)">❌ ${esc(String(err))}</p>`}
-  btn.disabled=false;btn.textContent='🔄 تحويل للكود';
+    addAlert('تم الحذف', 'ok');
+  } catch (e) {
+    addAlert('فشل الحذف', 'err');
+  }
 }
 
-/* ══ SEND ════════════════════════════════════════════════════════════════════ */
-function addFiles(inp){Array.from(inp.files).slice(0,MAX_AT-pendingFiles.length).forEach(f=>pendingFiles.push(f));inp.value='';renderAbar();vn.classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')))}
-function removeFile(i){pendingFiles.splice(i,1);renderAbar();vn.classList.toggle('on',pendingFiles.some(f=>f.type.startsWith('image/')))}
-function renderAbar(){abar.innerHTML='';if(!pendingFiles.length){e('attico').innerHTML='📎';return}e('attico').innerHTML=`📎<span class="attcnt">${pendingFiles.length}</span>`;pendingFiles.forEach((f,i)=>{const el=document.createElement('div');el.className='atch';el.innerHTML=`<span>${fileIcon(f.name)}</span><span class="atchn">${esc(f.name)}</span><button class="atchd" onclick="removeFile(${i})">✕</button>`;abar.appendChild(el)})}
-function setStream(v){streaming=v;snd.classList.toggle('stop',v);icos.style.display=v?'none':'';icox.style.display=v?'':'none'}
-function toggleSend(){streaming?stopStream():send()}
-async function stopStream(){if(ctrl)ctrl.abort();try{const fd=new FormData();fd.append('sid',SID);await fetch('/stop',{method:'POST',body:fd})}catch(_){}}
+function renderMessages(messages) {
+  clearChatUI();
+  const box = el('chatBox');
 
-async function send(){
-  const txt=pt.value.trim();if(!txt||streaming)return;
-  wel.style.display='none';setStream(true);
-  e('sbar').classList.remove('show');
-  const uRow=document.createElement('div');uRow.className='row u';
-  uRow.innerHTML=`<div class="bbl u">${esc(txt)}${pendingFiles.length?`<br><span style="font-size:10px;color:var(--mu)">📎 ${pendingFiles.length}</span>`:''}</div><div class="av ua">👤</div>`;
-  msgs.appendChild(uRow);pt.value='';pt.style.height='auto';vn.classList.remove('on');bot();
-  const aRow=document.createElement('div');aRow.className='row a';
-  const avEl=Object.assign(document.createElement('div'),{className:'av aa',textContent:'🤖'});
-  const wrap=document.createElement('div');wrap.className='aiwrap';
-  const bbl=Object.assign(document.createElement('div'),{className:'bbl a'});
-  const cur=Object.assign(document.createElement('span'),{className:'cur'});
-  const mtag=Object.assign(document.createElement('div'),{className:'mtag'});
-  const mact=Object.assign(document.createElement('div'),{className:'mact'});
-  bbl.appendChild(cur);wrap.append(bbl,mtag,mact);aRow.append(avEl,wrap);msgs.appendChild(aRow);
-  spin.classList.add('on');bot();
-  const fd=new FormData();fd.append('prompt',txt);fd.append('model_id',sel);fd.append('sid',SID);
-  pendingFiles.forEach(f=>fd.append('files',f));pendingFiles=[];renderAbar();
-  ctrl=new AbortController();let rawText='';let gotFirst=false;let wasAuto=sel==='auto';
-  // Watchdog: 90s timeout
-  watchdog=setTimeout(()=>{if(streaming)showWatchdogBar()},90000);
-  try{
-    const res=await fetch('/chat-stream',{method:'POST',body:fd,signal:ctrl.signal});
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const reader=res.body.getReader();const dec=new TextDecoder();let buf='';
-    while(true){
-      const{done,value}=await reader.read();if(done)break;
-      buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();
-      for(const line of lines){
-        if(!line.startsWith('data:'))continue;const ds=line.slice(5).trim();if(!ds)continue;
-        try{
-          const ev=JSON.parse(ds);
-          if(ev.first&&!gotFirst){gotFirst=true;spin.classList.remove('on')}
-          if(ev.token!==undefined){if(!gotFirst){gotFirst=true;spin.classList.remove('on')}rawText+=ev.token;bbl.textContent=rawText;bbl.appendChild(cur);bot()}
-          if(ev.done){
-            cur.remove();bbl.innerHTML=ev.html;
-            window._lastRaw=ev.raw||rawText;
-            const autoTag=wasAuto?'<span class="autotag">AUTO</span>':'';
-            mtag.innerHTML=`<span style="color:var(--mu)">✦ ${esc(ev.used_model||'')}</span>${autoTag}`;
-            const raw=ev.raw||rawText;
-            const rb=btoa(unescape(encodeURIComponent(raw)));
-            const hasH=raw.includes('```html')||raw.includes('```HTML')||raw.includes('<!DOCTYPE')||raw.includes('<html');
-            const hasJ=raw.includes('```javascript')||raw.includes('```js');
-            const hasP=raw.includes('```python')||raw.includes('```py');
-            let btns=`<button class="mbtn" onclick="cpyFull(this,'${rb}')">📄 نسخ</button>`;
-            if(hasH)btns=`<button class="mbtn" onclick="pvLast('html','${rb}')">🖥️ Preview</button><button class="mbtn" onclick="cpToCodepen('${rb}')">🖊️ CodePen</button>`+btns;
-            else if(hasJ)btns=`<button class="mbtn" onclick="pvLast('js','${rb}')">🖥️ Preview</button>`+btns;
-            else if(hasP)btns=`<button class="mbtn" onclick="pvLast('python','${rb}')">🐍 Run</button>`+btns;
-            mact.innerHTML=btns;
-            if(ev.files)showFiles(ev.files);bot();autoSave();
+  messages.forEach(m => {
+    if (m.role === 'user') {
+      addUserBubble(m.content);
+    } else {
+      addAssistantBubble(m.content, m.model || '');
+    }
+  });
+
+  scrollToBottom();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  PROJECT MEMORY PANEL
+// ═══════════════════════════════════════════════════════════════════════════════
+async function renderProjectPanel() {
+  const body = el('panelBody');
+  const foot = el('panelFoot');
+
+  if (!state.isAdmin) {
+    body.innerHTML = '<div class="scmt">متاح للمستخدم الرئيسي فقط</div>';
+    return;
+  }
+
+  try {
+    const res = await fetch('/project/list');
+    const data = await res.json();
+
+    if (!data.files || !data.files.length) {
+      body.innerHTML = '<div class="scmt">لا توجد ملفات في الذاكرة</div>';
+    } else {
+      body.innerHTML = data.files.map(f => `
+        <div class="apic">
+          <div class="apit"><span class="apin">${escapeHtml(f.name)}</span><span class="apidot ok"></span></div>
+          <div class="apif">${f.size} حرف</div>
+          <div class="apib">
+            <button class="apibtn" onclick="removeProjectFile('${f.name}')">🗑️ حذف</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    foot.innerHTML = `
+      <button class="xbtn ac" onclick="document.getElementById('projFileInput').click()">+ رفع ملفات</button>
+      <button class="xbtn sec" onclick="clearProject()">مسح الكل</button>
+      <input type="file" id="projFileInput" multiple style="display:none" onchange="uploadProjectFiles(this)">
+    `;
+  } catch (e) {
+    body.innerHTML = '<div class="scmt">فشل تحميل الذاكرة</div>';
+  }
+}
+
+async function uploadProjectFiles(input) {
+  if (!input.files.length) return;
+  const fd = new FormData();
+  for (const f of input.files) fd.append('files', f);
+
+  try {
+    await fetch('/project/add', { method: 'POST', body: fd });
+    renderProjectPanel();
+    addAlert('تم رفع الملفات للذاكرة', 'ok');
+  } catch (e) {
+    addAlert('فشل الرفع', 'err');
+  }
+  input.value = '';
+}
+
+async function removeProjectFile(name) {
+  const fd = new FormData();
+  fd.append('filename', name);
+  try {
+    await fetch('/project/remove', { method: 'POST', body: fd });
+    renderProjectPanel();
+  } catch (e) {
+    addAlert('فشل الحذف', 'err');
+  }
+}
+
+async function clearProject() {
+  if (!confirm('مسح كل ملفات المشروع؟')) return;
+  try {
+    await fetch('/project/clear', { method: 'POST' });
+    renderProjectPanel();
+    addAlert('تم المسح', 'ok');
+  } catch (e) {
+    addAlert('فشل المسح', 'err');
+  }
+}
+
+function renderSettingsPanel() {
+  const body = el('panelBody');
+  body.innerHTML = `
+    <div class="apic">
+      <div class="apit"><span class="apin">⚙️ الإعدادات</span></div>
+      <div class="apif">إعدادات التطبيق</div>
+    </div>
+  `;
+  el('panelFoot').innerHTML = '';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  CHAT UI
+// ═══════════════════════════════════════════════════════════════════════════════
+function clearChatUI() {
+  const box = el('chatBox');
+  box.innerHTML = `
+    <div class="empty" id="emptyState">
+      <div class="elogo">🚀</div>
+      <h2>Leo-AI</h2>
+      <p>مساعد البرمجة الاحترافي. اكتب رسالتك أو اسحب ملفات للرفع.</p>
+      <div class="sugs">
+        <button class="sug" onclick="setPrompt('اكتب لي تطبيق React كامل')">⚛️ تطبيق React</button>
+        <button class="sug" onclick="setPrompt('اشرح لي كيف أعمل API بـ FastAPI')">🔧 FastAPI</button>
+        <button class="sug" onclick="setPrompt('حلل هذا الكود واصلح الأخطاء')">🔍 مراجعة كود</button>
+      </div>
+    </div>
+  `;
+  state.previewFiles = {};
+  state.currentPreview = null;
+}
+
+function setPrompt(text) {
+  el('msgInput').value = text;
+  el('msgInput').focus();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function addUserBubble(text) {
+  const box = el('chatBox');
+  const empty = el('emptyState');
+  if (empty) empty.remove();
+
+  const div = document.createElement('div');
+  div.className = 'row u';
+  div.innerHTML = `
+    <div class="bbl u">${escapeHtml(text)}</div>
+    <div class="av ua">👤</div>
+  `;
+  box.appendChild(div);
+  scrollToBottom();
+}
+
+function addAssistantBubble(html, modelName) {
+  const box = el('chatBox');
+  const empty = el('emptyState');
+  if (empty) empty.remove();
+
+  const div = document.createElement('div');
+  div.className = 'row';
+  div.innerHTML = `
+    <div class="av aa">🤖</div>
+    <div class="bbl a">
+      <div style="font-size:10px;color:var(--mu);margin-bottom:4px">${modelName || 'Leo-AI'}</div>
+      ${html}
+    </div>
+  `;
+  box.appendChild(div);
+  scrollToBottom();
+  extractPreviewFiles(html);
+}
+
+function extractPreviewFiles(html) {
+  // Extract code blocks for preview
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  const codeBlocks = temp.querySelectorAll('.cw2');
+
+  codeBlocks.forEach(block => {
+    const langSpan = block.querySelector('.ch span');
+    const codeEl = block.querySelector('code');
+    if (langSpan && codeEl) {
+      const lang = langSpan.textContent;
+      const code = codeEl.textContent;
+
+      let filename = 'code.txt';
+      if (lang === 'html') filename = 'index.html';
+      else if (lang === 'css') filename = 'style.css';
+      else if (lang === 'javascript' || lang === 'js') filename = 'script.js';
+      else if (lang === 'python' || lang === 'py') filename = 'app.py';
+      else if (lang === 'json') filename = 'data.json';
+
+      state.previewFiles[filename] = code;
+    }
+  });
+
+  // Show preview button if we have HTML
+  if (state.previewFiles['index.html']) {
+    showPreviewBtn();
+  }
+}
+
+function showPreviewBtn() {
+  // Add preview button to last assistant bubble
+  const bubbles = document.querySelectorAll('.bbl.a');
+  const last = bubbles[bubbles.length - 1];
+  if (last && !last.querySelector('.pv-btn')) {
+    const btn = document.createElement('button');
+    btn.className = 'pv-btn';
+    btn.style.cssText = 'background:var(--sf);border:1px solid var(--bd);color:var(--ac2);padding:4px 10px;border-radius:6px;font-size:10px;cursor:pointer;margin-top:8px;';
+    btn.innerHTML = '👁️ معاينة';
+    btn.onclick = () => openPreview();
+    last.appendChild(btn);
+  }
+}
+
+function showThinking() {
+  const box = el('chatBox');
+  const empty = el('emptyState');
+  if (empty) empty.remove();
+
+  const div = document.createElement('div');
+  div.className = 'row';
+  div.id = 'thinkRow';
+  div.innerHTML = `
+    <div class="av aa">🤖</div>
+    <div class="think"><div class="dot"></div><div class="dot"></div><div class="dot"></div> يفكر...</div>
+  `;
+  box.appendChild(div);
+  scrollToBottom();
+}
+
+function removeThinking() {
+  const think = el('thinkRow');
+  if (think) think.remove();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  FILE HANDLING
+// ═══════════════════════════════════════════════════════════════════════════════
+function handleFiles(input) {
+  if (!input.files.length) return;
+
+  for (const file of input.files) {
+    state.attachedFiles.push(file);
+  }
+  renderFileChips();
+  input.value = '';
+}
+
+function renderFileChips() {
+  const container = el('fileChips');
+  if (!state.attachedFiles.length) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = state.attachedFiles.map((f, i) => `
+    <span class="filechip">${f.name} <span class="x" onclick="removeFile(${i})">✕</span></span>
+  `).join('');
+}
+
+function removeFile(index) {
+  state.attachedFiles.splice(index, 1);
+  renderFileChips();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  MESSAGE SENDING
+// ═══════════════════════════════════════════════════════════════════════════════
+async function sendMessage() {
+  const input = el('msgInput');
+  const text = input.value.trim();
+  if (!text && !state.attachedFiles.length) return;
+  if (state.isStreaming) return;
+
+  state.isStreaming = true;
+  state.hasUnsavedMessages = true;
+  input.value = '';
+  input.style.height = 'auto';
+
+  // Add user bubble
+  const displayText = text + (state.attachedFiles.length ? `
+[${state.attachedFiles.length} ملف مرفق]` : '');
+  addUserBubble(displayText);
+  showThinking();
+
+  // Disable buttons
+  el('sendBtn').disabled = true;
+  el('fileBtn').disabled = true;
+  el('imgBtn').disabled = true;
+
+  // Prepare form data
+  const fd = new FormData();
+  fd.append('prompt', text);
+  fd.append('model_id', state.model);
+  fd.append('chat_id', state.currentChat);
+
+  for (const f of state.attachedFiles) {
+    fd.append('files', f);
+  }
+
+  state.attachedFiles = [];
+  renderFileChips();
+
+  try {
+    const res = await fetch('/chat-stream', { method: 'POST', body: fd });
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+
+    let buffer = '';
+    let fullHtml = '';
+    let usedModel = '';
+    let gotFirst = false;
+
+    removeThinking();
+
+    // Create assistant bubble
+    const box = el('chatBox');
+    const div = document.createElement('div');
+    div.className = 'row';
+    div.id = 'streamRow';
+    div.innerHTML = `
+      <div class="av aa">🤖</div>
+      <div class="bbl a" id="streamBubble">
+        <div style="font-size:10px;color:var(--mu);margin-bottom:4px" id="streamModel">Leo-AI</div>
+        <div id="streamContent"></div>
+      </div>
+    `;
+    box.appendChild(div);
+    scrollToBottom();
+
+    // Add stop button
+    const stopDiv = document.createElement('div');
+    stopDiv.className = 'row';
+    stopDiv.id = 'stopRow';
+    stopDiv.innerHTML = `<button class="stopbtn" onclick="stopStream()">⏹ إيقاف</button>`;
+    box.appendChild(stopDiv);
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+
+      for (const line of lines) {
+        if (!line.startsWith('data:')) continue;
+        const data = line.slice(5).trim();
+        if (data === '[DONE]') continue;
+
+        try {
+          const parsed = JSON.parse(data);
+
+          if (parsed.error) {
+            addAlert(parsed.error, 'err');
+            continue;
           }
-          if(ev.error){cur.remove();bbl.innerHTML=`<p style="color:var(--danger)">❌ ${esc(ev.error)}</p>`;bot()}
-        }catch(_){}
+
+          if (parsed.first) {
+            gotFirst = true;
+          }
+
+          if (parsed.token) {
+            fullHtml += parsed.token;
+            el('streamContent').innerHTML = markdownToHtml(fullHtml);
+            scrollToBottom();
+          }
+
+          if (parsed.done) {
+            usedModel = parsed.used_model || '';
+            if (parsed.html) {
+              el('streamContent').innerHTML = parsed.html;
+            }
+            if (parsed.auto_title) {
+              addAlert(`تم توليد عنوان: ${parsed.auto_title}`, 'ok');
+            }
+
+            // Add file download buttons
+            if (parsed.files && Object.keys(parsed.files).length > 0) {
+              addFileButtons(parsed.files);
+            }
+
+            // Extract preview files
+            extractPreviewFiles(el('streamContent').innerHTML);
+          }
+        } catch (e) {
+          // Ignore parse errors
+        }
       }
     }
-  }catch(err){
-    spin.classList.remove('on');cur.remove();
-    bbl.innerHTML=err.name==='AbortError'?`<p style="color:var(--mu)">⏹ توقف</p>`:`<p style="color:var(--danger)">❌ ${esc(String(err))}</p>`;bot();
+
+    // Update model name
+    if (usedModel) {
+      el('streamModel').textContent = usedModel;
+    }
+
+    // Remove stop button
+    const stopRow = el('stopRow');
+    if (stopRow) stopRow.remove();
+
+  } catch (e) {
+    removeThinking();
+    addAlert('فشل الإرسال: ' + e.message, 'err');
+  } finally {
+    state.isStreaming = false;
+    el('sendBtn').disabled = false;
+    el('fileBtn').disabled = false;
+    el('imgBtn').disabled = false;
   }
-  setStream(false);ctrl=null;pt.focus();
-  clearTimeout(watchdog);e('wdbar')?.remove();
 }
 
-function showWatchdogBar(){
-  if(e('wdbar'))return;
-  const b=document.createElement('div');b.id='wdbar';
-  b.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:500;background:var(--bg2);border:1px solid var(--danger);border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:10px;font-size:13px;box-shadow:0 4px 20px rgba(0,0,0,.7)';
-  b.innerHTML=`<span style="color:var(--danger)">⚠️ البوت متوقف</span><button onclick="doReconnect()" style="background:var(--danger);color:#fff;border:none;border-radius:7px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer">🔄 إعادة الاتصال</button><button onclick="this.parentElement.remove()" style="background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:7px;padding:6px 10px;font-size:11px;cursor:pointer">✕</button>`;
-  document.body.appendChild(b);
+function stopStream() {
+  const fd = new FormData();
+  fd.append('chat_id', state.currentChat);
+  fetch('/stop', { method: 'POST', body: fd });
+
+  const stopRow = el('stopRow');
+  if (stopRow) stopRow.remove();
 }
 
-/* ══ FILES ═══════════════════════════════════════════════════════════════════ */
-function showFiles(fb){
-  if(!fb||!Object.keys(fb).length)return;
-  Object.assign(pf,fb);const names=Object.keys(fb);
-  let h=`<div class="fb"><div class="fbh"><span>📁 ملفات (${names.length})</span><button class="fbhdl" onclick="dlZip()">📦 ZIP</button></div>`;
-  names.forEach(n=>{const b64=fb[n];const isW=n.match(/\.(html|js|css)$/i);const isP=n.match(/\.py$/i);
-    h+=`<div class="fi2"><span>${fileIcon(n)} ${esc(n)}</span><div class="fi2btns">${isW||isP?`<button onclick="showPreview(atob('${b64}'),'${n.split('.').pop()}','${esc(n)}')">🖥️</button>`:''}${isW?`<button onclick="pvCode=atob('${b64}');pvLang='html';openCodepen()">🖊️</button>`:''}<button onclick="dlFile('${esc(n)}')">💾</button>{% if is_admin %}<button onclick="pushFile('${esc(n)}','${b64}')">📤</button>{% endif %}</div></div>`});
-  h+='</div>';fsec.innerHTML=h;
+function addFileButtons(files) {
+  const bubble = el('streamBubble');
+  if (!bubble) return;
+
+  const btnDiv = document.createElement('div');
+  btnDiv.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;';
+
+  for (const [name, b64] of Object.entries(files)) {
+    const btn = document.createElement('button');
+    btn.className = 'pv-btn';
+    btn.style.cssText = 'background:var(--sf);border:1px solid var(--bd);color:var(--ac);padding:4px 10px;border-radius:6px;font-size:10px;cursor:pointer;';
+    btn.innerHTML = `📥 ${name}`;
+    btn.onclick = () => downloadFile(name, b64);
+    btnDiv.appendChild(btn);
+  }
+
+  // Add zip button if multiple files
+  if (Object.keys(files).length > 1) {
+    const zipBtn = document.createElement('button');
+    zipBtn.className = 'pv-btn';
+    zipBtn.style.cssText = 'background:var(--sf);border:1px solid var(--bd);color:var(--ok);padding:4px 10px;border-radius:6px;font-size:10px;cursor:pointer;';
+    zipBtn.innerHTML = `📦 تحميل الكل`;
+    zipBtn.onclick = () => downloadZip();
+    btnDiv.appendChild(zipBtn);
+  }
+
+  bubble.appendChild(btnDiv);
 }
-async function dlFile(n){const b64=pf[n];if(!b64)return;const fd=new FormData();fd.append('filename',n);fd.append('code_b64',b64);const blob=await(await fetch('/download',{method:'POST',body:fd})).blob();const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:n});a.click();URL.revokeObjectURL(a.href)}
-async function dlZip(){const blob=await(await fetch(`/download/zip/${SID}`)).blob();const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:'leo-ai.zip'});a.click();URL.revokeObjectURL(a.href)}
-function cpy(btn,b64){navigator.clipboard.writeText(atob(b64)).then(()=>{btn.textContent='✅';btn.classList.add('ok');setTimeout(()=>{btn.textContent='📋 نسخ';btn.classList.remove('ok')},1500)})}
-function explainCode(btn,b64){pt.value='اشرح هذا الكود:\n```\n'+atob(b64)+'\n```';ar(pt);sw('c');send()}
-function cpyFull(btn,rb){navigator.clipboard.writeText(atob(rb)).then(()=>{btn.textContent='✅';setTimeout(()=>btn.textContent='📄 نسخ',1500)})}
-async function pushFile(filename,b64){if(!curRepo){alert('افتح GitHub واختر repo أولاً');return}const{owner,repo,branch}=curRepo;const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch||'main');fd.append('files',JSON.stringify({[filename]:b64}));fd.append('message','Leo-AI: add '+filename);try{const r=await fetch('/github/push',{method:'POST',body:fd});const d=await r.json();alert(d.ok?`✅ تم رفع ${filename}`:`❌ ${d.errors?.join('\n')}`)}catch(err){alert('❌ '+err)}}
 
-/* ══ AUTO-SAVE ═══════════════════════════════════════════════════════════════ */
-function autoSave(){if(!msgs?.children.length)return;const first=msgs.querySelector('.bbl.u');const s=getSaved();const idx=s.findIndex(c=>c.auto);const en={id:'auto',title:'🔄 '+(first?.textContent||'محادثة').slice(0,50),date:new Date().toLocaleString('ar-SA'),html:msgs.innerHTML,auto:true};if(idx>=0)s[idx]=en;else s.unshift(en);if(s.length>31)s.pop();setSaved(s)}
+function downloadFile(name, b64) {
+  const fd = new FormData();
+  fd.append('filename', name);
+  fd.append('code_b64', b64);
 
-/* ══ GITHUB ═══════════════════════════════════════════════════════════════════ */
-function ghSetView(v){e('ghacts').style.display=v==='files'?'block':'none';e('ghsrch').style.display=v==='repos'?'block':'none'}
-async function loadRepos(){ghSetView('repos');e('ghtitle').textContent='🐙 مستودعاتك';e('ghlist').innerHTML='<div class="ghmt">⏳ جاري التحميل...</div>';try{const r=await fetch('/github/repos');const d=await r.json();if(d.error){e('ghlist').innerHTML=`<div class="ghmt" style="color:var(--danger)">❌ ${esc(d.error)}</div>`;return}allRepos=d;renderRepos(d)}catch(err){e('ghlist').innerHTML=`<div class="ghmt" style="color:var(--danger)">❌ ${esc(String(err))}</div>`}}
-function renderRepos(repos){if(!repos.length){e('ghlist').innerHTML='<div class="ghmt">لا توجد مستودعات</div>';return}const frag=document.createDocumentFragment();repos.forEach(r=>{const div=document.createElement('div');div.className='repoi';const ico=r.language==='Python'?'🐍':r.language==='JavaScript'?'🟨':r.language==='HTML'?'🌐':'📦';div.innerHTML=`<div class="riico">${ico}</div><div class="ribody"><div class="riname">${esc(r.name)} ${r.private?'<span class="riprv">خاص</span>':''}</div><div class="rimeta"><span style="color:var(--ac2)">${esc(r.language)}</span><span>⭐${r.stars}</span><span>${r.updated_at}</span></div></div><span class="riarr">›</span>`;div.onclick=()=>loadRepo(r.full_name.split('/')[0],r.name,r.default_branch);frag.appendChild(div)});const l=e('ghlist');l.innerHTML='';l.appendChild(frag)}
-function filterRepos(q){if(!q.trim()){renderRepos(allRepos);return}renderRepos(allRepos.filter(r=>r.name.toLowerCase().includes(q.toLowerCase())))}
-async function loadRepo(owner,repo,branch){curRepo={owner,repo,branch};selPaths.clear();updSel();ghSetView('files');e('ghtitle').innerHTML=`<button class="ghback" onclick="backRepos()">‹</button> ${esc(repo)}`;e('ghlist').innerHTML='<div class="ghmt">⏳ جاري جلب الملفات...</div>';try{const r=await fetch(`/github/tree?owner=${owner}&repo=${repo}&branch=${branch}`);const d=await r.json();if(d.error){e('ghlist').innerHTML=`<div class="ghmt" style="color:var(--danger)">❌ ${esc(d.error)}</div>`;return}curTree=d.files;curRepo.branch=d.branch;renderFiles(d.files)}catch(err){e('ghlist').innerHTML=`<div class="ghmt" style="color:var(--danger)">❌ ${esc(String(err))}</div>`}}
-function backRepos(){ghSetView('repos');e('ghtitle').textContent='🐙 مستودعاتك';selPaths.clear();updSel();curRepo=null;curTree=[];renderRepos(allRepos)}
-function renderFiles(files){if(!files.length){e('ghlist').innerHTML='<div class="ghmt">لا توجد ملفات</div>';return}const frag=document.createDocumentFragment();files.forEach(f=>{const inM=projMem.some(k=>k.endsWith(f.path));const div=document.createElement('div');div.className='filei';div.dataset.path=f.path;div.innerHTML=`<div class="fichk"><span class="fichi">✓</span></div><span class="fiico">${fileIcon(f.path)}</span><span class="finame ${f.is_code?'code':'other'}">${esc(f.path)}</span><span class="fisz">${f.size>1000?Math.round(f.size/1000)+'K':f.size+'B'}</span>${inM?'<span class="fimem">💾</span>':''}`;div.onclick=()=>toggleFile(f.path,div);frag.appendChild(div)});const l=e('ghlist');l.innerHTML='';l.appendChild(frag)}
-function toggleFile(p,item){if(selPaths.has(p)){selPaths.delete(p);item.classList.remove('chk')}else{selPaths.add(p);item.classList.add('chk')}updSel()}
-function selAll(){curTree.forEach(f=>{if(!f.is_code)return;selPaths.add(f.path);document.querySelector(`.filei[data-path="${CSS.escape(f.path)}"]`)?.classList.add('chk')});updSel()}
-function clearSel(){selPaths.clear();document.querySelectorAll('.filei.chk').forEach(el=>el.classList.remove('chk'));updSel()}
-function updSel(){const b=e('selbar');e('selcnt').textContent=`${selPaths.size} محدد`;b.classList.toggle('show',selPaths.size>0)}
-async function loadFullRepo(){if(!curRepo)return;const btn=e('btnload');btn.textContent='⏳...';btn.disabled=true;const{owner,repo,branch}=curRepo;const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch);fd.append('sid',SID);try{const r=await fetch('/github/load-repo-full',{method:'POST',body:fd});const d=await r.json();if(d.error){alert('❌ '+d.error);btn.textContent='⚡ تحميل الكل';btn.disabled=false;return}projMem=d.files||[];updMemBar(d);if(curTree.length)renderFiles(curTree);btn.textContent='✅ تم';setTimeout(()=>{btn.textContent='⚡ تحميل الكل';btn.disabled=false},2000)}catch(err){alert('❌ '+err);btn.textContent='⚡ تحميل الكل';btn.disabled=false}}
-function updMemBar(d){const b=e('membar');if(!d?.added){b.classList.remove('show');return}b.classList.add('show');e('memcnt').textContent=d.added;e('memlbl').textContent='ملف من '+d.repo}
-async function clearMem(){if(!confirm('مسح الذاكرة؟'))return;const fd=new FormData();fd.append('sid',SID);await fetch('/project/clear',{method:'POST',body:fd});projMem=[];e('membar').classList.remove('show');if(curTree.length)renderFiles(curTree)}
-function goChat(){sw('c');pt.value=`تم تحميل مشروع ${curRepo?.repo} للذاكرة. راجعه وأخبرني بأبرز المشاكل.`;ar(pt);pt.focus()}
-async function startRv(){
-  if(!curRepo){alert('اختر مستودعاً');return}if(!selPaths.size){alert('حدد ملفات');return}
-  const panel=e('rvp');const body=e('rvbody');
-  e('rvtitle').textContent=`🔍 مراجعة ${selPaths.size} ملف — ${curRepo.repo}`;
-  panel.classList.add('show');body.innerHTML='<div style="text-align:center;padding:40px"><div class="ring" style="margin:auto;border-top-color:var(--ac2)"></div><p style="margin-top:12px;color:var(--mu)">جاري تحليل الكود...</p></div>';
-  const{owner,repo,branch}=curRepo;const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch);fd.append('paths',Array.from(selPaths).join(','));fd.append('model_id',sel==='auto'?'':sel);
-  try{const res=await fetch('/github/review',{method:'POST',body:fd});const reader=res.body.getReader();const dec=new TextDecoder();let buf='';let rawT='';body.innerHTML='<div id="rvc" class="bbl a" style="padding:0"></div>';const rc=e('rvc');const cur=document.createElement('span');cur.className='cur';rc.appendChild(cur);
-    while(true){const{done,value}=await reader.read();if(done)break;buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();for(const line of lines){if(!line.startsWith('data:'))continue;const ds=line.slice(5).trim();if(!ds)continue;try{const ev=JSON.parse(ds);if(ev.token){rawT+=ev.token;rc.textContent=rawT;rc.appendChild(cur)}if(ev.done){cur.remove();rc.innerHTML=ev.html}}catch(_){}}}
-  }catch(err){body.innerHTML=`<p style="color:var(--danger);padding:20px">❌ ${esc(String(err))}</p>`}
+  fetch('/download', { method: 'POST', body: fd })
+    .then(r => r.blob())
+    .then(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
 }
-function closeRv(){e('rvp').classList.remove('show')}
-async function loadToChat(){if(!curRepo||!selPaths.size){alert('حدد ملفات');return}const{owner,repo,branch}=curRepo;const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch);fd.append('paths',Array.from(selPaths).join(','));fd.append('sid',SID);try{const r=await fetch('/github/load-to-memory',{method:'POST',body:fd});const d=await r.json();if(d.error){alert('❌ '+d.error);return}projMem=d.files||[];sw('c');pt.value=`تم تحميل ${d.added.length} ملف من ${owner}/${repo}. كيف أساعدك؟`;ar(pt);pt.focus()}catch(err){alert('❌ '+err)}}
-async function pushFiles(){if(!curRepo||!selPaths.size){alert('حدد ملفات');return}const{owner,repo,branch}=curRepo;const fp={};for(const path of selPaths){try{const r=await fetch(`/github/file?owner=${owner}&repo=${repo}&path=${encodeURIComponent(path)}&branch=${branch}`);const d=await r.json();if(d.content)fp[path]=btoa(unescape(encodeURIComponent(d.content)))}catch(_){}}if(!Object.keys(fp).length){alert('❌ لم يتم جلب أي ملف');return}const fd=new FormData();fd.append('owner',owner);fd.append('repo',repo);fd.append('branch',branch||'main');fd.append('files',JSON.stringify(fp));fd.append('message','Leo-AI: update files');try{const r=await fetch('/github/push',{method:'POST',body:fd});const d=await r.json();alert(d.ok?`✅ تم رفع ${d.pushed.length} ملف`:`⚠️ ${d.errors?.join('\n')}`)}catch(err){alert('❌ '+err)}}
 
-/* ══ SAVED CHATS ══════════════════════════════════════════════════════════════ */
-function getSaved(){return JSON.parse(localStorage.getItem('leoai_'+ROLE)||'[]')}
-function setSaved(v){localStorage.setItem('leoai_'+ROLE,JSON.stringify(v))}
-function renderSC(){const s=getSaved();const l=e('sclist');if(!s.length){l.innerHTML='<div class="scmt">لا توجد محادثات</div>';return}l.innerHTML=s.map((c,i)=>`<div class="sci" onclick="loadChat(${i})"><div class="scit"><span class="sctl">${esc(c.title)}</span><button class="scdl" onclick="event.stopPropagation();delChat(${i})">🗑️</button></div><div class="scdt">${c.date}</div></div>`).join('')}
-function loadChat(i){const c=getSaved()[i];if(!c)return;wel.style.display='none';msgs.innerHTML=c.html;bot();closePanel()}
-function delChat(i){const s=getSaved();s.splice(i,1);setSaved(s);renderSC()}
-function saveChat(){if(!msgs?.children.length){alert('لا يوجد شيء');return}const s=getSaved().filter(c=>!c.auto);const f=msgs.querySelector('.bbl.u');s.unshift({id:Date.now(),title:(f?.textContent||'محادثة').slice(0,50),date:new Date().toLocaleString('ar-SA'),html:msgs.innerHTML});if(s.length>30)s.pop();setSaved(s);renderSC();alert('✅ تم الحفظ')}
-async function shareChat(){if(!msgs?.children.length){alert('لا يوجد شيء');return}const f=msgs.querySelector('.bbl.u');const fd=new FormData();fd.append('html',msgs.innerHTML);fd.append('title',(f?.textContent||'محادثة').slice(0,50));try{const r=await fetch('/share',{method:'POST',body:fd});const d=await r.json();const url=window.location.origin+d.url;await navigator.clipboard.writeText(url);alert('✅ تم نسخ الرابط:\n'+url)}catch(err){alert('❌ '+err)}}
-async function clearChat(){if(!confirm('مسح المحادثة؟'))return;if(streaming)await stopStream();const fd=new FormData();fd.append('sid',SID);try{await fetch('/clear',{method:'POST',body:fd})}catch(_){}msgs.innerHTML='';fsec.innerHTML='';spin.classList.remove('on');setStream(false);ctrl=null;pendingFiles=[];renderAbar();wel.style.display='flex';Object.keys(pf).forEach(k=>delete pf[k])}
+function downloadZip() {
+  window.open(`/download/zip/${state.currentChat}`, '_blank');
+}
 
-/* ══ IMAGE GEN ════════════════════════════════════════════════════════════════ */
-async function genImg(){const p=e('igp').value.trim();if(!p){e('ige').textContent='⚠️ اكتب وصف';return}e('ige').textContent='';const btn=e('igbtn'),sp2=e('igsp');btn.disabled=true;sp2.classList.add('on');const fd=new FormData();fd.append('prompt',p);fd.append('size',e('igsize').value);fd.append('model',e('igmod').value);try{const data=await(await fetch('/generate-image',{method:'POST',body:fd})).json();sp2.classList.remove('on');btn.disabled=false;if(data.error){e('ige').textContent='❌ '+data.error;return}const card=document.createElement('div');card.className='icard';card.innerHTML=`<img src="${data.url}" loading="lazy"><div class="icft"><span class="icp">${esc(p)}</span><a class="icdl" href="${data.url}" download="leo.jpg" target="_blank">⬇️</a></div>`;e('igg').prepend(card)}catch(_){e('igsp').classList.remove('on');e('igbtn').disabled=false}}
-e('igp').addEventListener('keydown',ev=>{if(ev.key==='Enter'&&!ev.shiftKey){ev.preventDefault();genImg()}});
+// ═══════════════════════════════════════════════════════════════════════════════
+//  PREVIEW
+// ═══════════════════════════════════════════════════════════════════════════════
+function openPreview() {
+  el('previewPanel').classList.add('show');
+  updatePreview();
+}
 
-/* ══ INIT ════════════════════════════════════════════════════════════════════ */
-buildSh();
-e('mb').textContent='🤖';e('mn').textContent='ذكي';
-if(IS_ADMIN)setTimeout(loadAlerts,3000);
+function closePreview() {
+  el('previewPanel').classList.remove('show');
+}
+
+function updatePreview() {
+  const iframe = el('pvframe');
+  const html = state.previewFiles['index.html'] || '';
+  const css = state.previewFiles['style.css'] || '';
+  const js = state.previewFiles['script.js'] || '';
+
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+  doc.open();
+  doc.write(`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>${css}</style>
+</head>
+<body>
+${html}
+<script>${js}</script>
+</body>
+</html>`);
+  doc.close();
+
+  el('pvTitle').textContent = 'معاينة - ' + (state.previewFiles['index.html'] ? 'HTML' : 'كود');
+}
+
+function openPreviewTab() {
+  const html = state.previewFiles['index.html'] || '';
+  const css = state.previewFiles['style.css'] || '';
+  const js = state.previewFiles['script.js'] || '';
+
+  const fullHtml = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>${css}</style>
+</head>
+<body>
+${html}
+<script>${js}</script>
+</body>
+</html>`;
+
+  const blob = new Blob([fullHtml], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  SAVE CONFIRMATION
+// ═══════════════════════════════════════════════════════════════════════════════
+function showSaveConfirm(callback) {
+  state.saveCallback = callback;
+  el('saveConfirm').classList.add('show');
+}
+
+function confirmSave(save) {
+  el('saveConfirm').classList.remove('show');
+
+  if (save) {
+    // Chat is already saved to SQLite automatically
+    state.hasUnsavedMessages = false;
+    addAlert('تم حفظ المحادثة', 'ok');
+  } else {
+    // Clear current chat
+    clearCurrentChat();
+  }
+
+  if (state.saveCallback) {
+    state.saveCallback();
+    state.saveCallback = null;
+  }
+}
+
+async function clearCurrentChat() {
+  const fd = new FormData();
+  fd.append('chat_id', state.currentChat);
+  try {
+    await fetch('/clear', { method: 'POST', body: fd });
+    clearChatUI();
+    state.hasUnsavedMessages = false;
+  } catch (e) {
+    addAlert('فشل المسح', 'err');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  BEFORE UNLOAD
+// ═══════════════════════════════════════════════════════════════════════════════
+window.addEventListener('beforeunload', (e) => {
+  if (state.hasUnsavedMessages) {
+    e.preventDefault();
+    e.returnValue = 'هل تريد حفظ هذه المحادثة؟';
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  SCROLL
+// ═══════════════════════════════════════════════════════════════════════════════
+function scrollToBottom() {
+  const box = el('chatBox');
+  box.scrollTop = box.scrollHeight;
+}
+
+el('chatBox').addEventListener('scroll', () => {
+  const box = el('chatBox');
+  const btn = el('scrollBtn');
+  const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 100;
+  btn.classList.toggle('show', !nearBottom);
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════════════════════════════════════════════
+let modalResolve = null;
+
+function showModal(title, body, showInput = false) {
+  return new Promise((resolve) => {
+    modalResolve = resolve;
+    el('modalTitle').textContent = title;
+    el('modalBody').textContent = body;
+    el('modalInput').style.display = showInput ? 'block' : 'none';
+    if (showInput) el('modalInput').value = '';
+    el('modal').classList.add('show');
+  });
+}
+
+function closeModal() {
+  el('modal').classList.remove('show');
+  if (modalResolve) {
+    modalResolve(null);
+    modalResolve = null;
+  }
+}
+
+function modalConfirm() {
+  const value = el('modalInput').style.display !== 'none' ? el('modalInput').value : true;
+  el('modal').classList.remove('show');
+  if (modalResolve) {
+    modalResolve(value);
+    modalResolve = null;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  GITHUB
+// ═══════════════════════════════════════════════════════════════════════════════
+let ghState = { repos: [], currentRepo: null, files: [], selectedFiles: [] };
+
+async function loadRepos(page = 1) {
+  showLoading(true);
+  try {
+    const res = await fetch(`/github/repos?page=${page}`);
+    const data = await res.json();
+    if (data.error) {
+      addAlert(data.error, 'err');
+      return;
+    }
+    ghState.repos = data;
+    renderRepos();
+  } catch (e) {
+    addAlert('فشل تحميل المستودعات', 'err');
+  } finally {
+    showLoading(false);
+  }
+}
+
+function renderRepos() {
+  const list = el('ghList');
+  if (!ghState.repos.length) {
+    list.innerHTML = '<div class="ghmt">لا توجد مستودعات</div>';
+    return;
+  }
+
+  list.innerHTML = ghState.repos.map(r => `
+    <div class="repoi" onclick="loadRepoFiles('${r.full_name}', '${r.default_branch}')">
+      <div class="riico">📁</div>
+      <div class="ribody">
+        <div class="riname">${r.name} ${r.private ? '<span class="riprv">خاص</span>' : ''}</div>
+        <div class="rimeta">⭐ ${r.stars} • ${r.language} • ${r.updated_at}</div>
+      </div>
+      <div class="riarr">←</div>
+    </div>
+  `).join('');
+}
+
+function filterRepos(query) {
+  const items = document.querySelectorAll('.repoi');
+  items.forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.style.display = text.includes(query.toLowerCase()) ? '' : 'none';
+  });
+}
+
+async function loadRepoFiles(fullName, branch) {
+  showLoading(true);
+  const [owner, repo] = fullName.split('/');
+
+  try {
+    const res = await fetch(`/github/tree?owner=${owner}&repo=${repo}&branch=${branch}`);
+    const data = await res.json();
+    if (data.error) {
+      addAlert(data.error, 'err');
+      return;
+    }
+
+    ghState.currentRepo = { owner, repo, branch };
+    ghState.files = data.files || [];
+    ghState.selectedFiles = [];
+
+    el('ghTitle').textContent = `${owner}/${repo}`;
+    renderFiles();
+  } catch (e) {
+    addAlert('فشل تحميل الملفات', 'err');
+  } finally {
+    showLoading(false);
+  }
+}
+
+function renderFiles() {
+  const list = el('ghList');
+
+  // Add action bar
+  const actions = document.createElement('div');
+  actions.className = 'ghacts';
+  actions.innerHTML = `
+    <button class="gha ac" onclick="reviewSelected()">🔍 مراجعة</button>
+    <button class="gha ld" onclick="loadSelectedToMemory()">📥 تحميل للذاكرة</button>
+    <button class="gha" onclick="ghBack()">← رجوع</button>
+  `;
+
+  list.innerHTML = '';
+  list.appendChild(actions);
+
+  // Selected bar
+  const selBar = document.createElement('div');
+  selBar.className = 'selbar';
+  selBar.id = 'selBar';
+  selBar.innerHTML = `<span class="selcnt" id="selCnt">0 محدد</span>`;
+  list.appendChild(selBar);
+
+  // Files
+  ghState.files.forEach(f => {
+    const div = document.createElement('div');
+    div.className = 'filei';
+    div.dataset.path = f.path;
+    div.onclick = () => toggleFileSelect(div, f.path);
+
+    const isCode = f.is_code;
+    div.innerHTML = `
+      <div class="fichk"><span class="fichi">✓</span></div>
+      <span class="fiico">${isCode ? '📄' : '📋'}</span>
+      <span class="finame ${isCode ? 'code' : 'other'}">${f.path}</span>
+      <span class="fisz">${formatSize(f.size)}</span>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+function toggleFileSelect(el, path) {
+  el.classList.toggle('chk');
+  if (el.classList.contains('chk')) {
+    ghState.selectedFiles.push(path);
+  } else {
+    ghState.selectedFiles = ghState.selectedFiles.filter(p => p !== path);
+  }
+
+  const selBar = document.getElementById('selBar');
+  const selCnt = document.getElementById('selCnt');
+  if (ghState.selectedFiles.length > 0) {
+    selBar.classList.add('show');
+    selCnt.textContent = `${ghState.selectedFiles.length} محدد`;
+  } else {
+    selBar.classList.remove('show');
+  }
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+function ghBack() {
+  if (ghState.currentRepo) {
+    ghState.currentRepo = null;
+    ghState.files = [];
+    ghState.selectedFiles = [];
+    el('ghTitle').textContent = 'GitHub Repos';
+    renderRepos();
+  }
+}
+
+async function reviewSelected() {
+  if (!ghState.selectedFiles.length) {
+    addAlert('اختر ملفات أولاً', 'warn');
+    return;
+  }
+
+  const { owner, repo, branch } = ghState.currentRepo;
+  const fd = new FormData();
+  fd.append('owner', owner);
+  fd.append('repo', repo);
+  fd.append('branch', branch);
+  fd.append('paths', ghState.selectedFiles.join(','));
+  fd.append('model_id', state.model);
+  fd.append('chat_id', state.currentChat);
+
+  switchTab('chat');
+  showThinking();
+
+  try {
+    const res = await fetch('/github/review', { method: 'POST', body: fd });
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+
+    let buffer = '';
+    let fullHtml = '';
+
+    removeThinking();
+
+    const box = el('chatBox');
+    const div = document.createElement('div');
+    div.className = 'row';
+    div.id = 'streamRow';
+    div.innerHTML = `
+      <div class="av aa">🤖</div>
+      <div class="bbl a" id="streamBubble">
+        <div style="font-size:10px;color:var(--mu);margin-bottom:4px" id="streamModel">مراجعة GitHub</div>
+        <div id="streamContent"></div>
+      </div>
+    `;
+    box.appendChild(div);
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+
+      for (const line of lines) {
+        if (!line.startsWith('data:')) continue;
+        const data = line.slice(5).trim();
+        if (data === '[DONE]') continue;
+
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.token) {
+            fullHtml += parsed.token;
+            el('streamContent').innerHTML = markdownToHtml(fullHtml);
+            scrollToBottom();
+          }
+          if (parsed.done && parsed.html) {
+            el('streamContent').innerHTML = parsed.html;
+          }
+        } catch (e) {}
+      }
+    }
+  } catch (e) {
+    removeThinking();
+    addAlert('فشل المراجعة', 'err');
+  }
+}
+
+async function loadSelectedToMemory() {
+  if (!ghState.selectedFiles.length) {
+    addAlert('اختر ملفات أولاً', 'warn');
+    return;
+  }
+
+  const { owner, repo, branch } = ghState.currentRepo;
+  const fd = new FormData();
+  fd.append('owner', owner);
+  fd.append('repo', repo);
+  fd.append('branch', branch);
+  fd.append('paths', ghState.selectedFiles.join(','));
+
+  try {
+    const res = await fetch('/github/load-to-memory', { method: 'POST', body: fd });
+    const data = await res.json();
+    addAlert(`تم تحميل ${data.added?.length || 0} ملفات للذاكرة`, 'ok');
+  } catch (e) {
+    addAlert('فشل التحميل', 'err');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  SHARE & CLEAR
+// ═══════════════════════════════════════════════════════════════════════════════
+async function shareChat() {
+  const html = el('chatBox').innerHTML;
+  const fd = new FormData();
+  fd.append('html', html);
+  fd.append('title', 'محادثة Leo-AI');
+
+  try {
+    const res = await fetch('/share', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.url) {
+      const fullUrl = window.location.origin + data.url;
+      await navigator.clipboard.writeText(fullUrl);
+      addAlert('تم نسخ رابط المشاركة!', 'ok');
+    }
+  } catch (e) {
+    addAlert('فشل المشاركة', 'err');
+  }
+}
+
+function clearChat() {
+  if (state.hasUnsavedMessages) {
+    showSaveConfirm(() => clearCurrentChat());
+  } else {
+    clearCurrentChat();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  MARKDOWN TO HTML (Client-side fallback)
+// ═══════════════════════════════════════════════════════════════════════════════
+function markdownToHtml(text) {
+  // Simple markdown parser for streaming
+  let html = escapeHtml(text);
+
+  // Code blocks
+  html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+    const b64 = btoa(unescape(encodeURIComponent(code)));
+    return `<div class="cw2"><div class="ch"><span>${lang || 'code'}</span><div class="ch-btns"><button onclick="cpy(this,'${b64}')">📋 نسخ</button><button onclick="explainCode(this,'${b64}')">💡 شرح</button></div></div><pre><code class="lang-${lang}">${escapeHtml(code)}</code></pre></div>`;
+  });
+
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // Headers
+  html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+  html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+  html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+  // Bold & Italic
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+  // Blockquote
+  html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+
+  // Line breaks
+  html = html.replace(/\n/g, '<br>');
+
+  return html;
+}
+
+function cpy(btn, b64) {
+  const code = decodeURIComponent(escape(atob(b64)));
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = '✓ تم!';
+    setTimeout(() => btn.textContent = '📋 نسخ', 2000);
+  });
+}
+
+function explainCode(btn, b64) {
+  const code = decodeURIComponent(escape(atob(b64)));
+  setPrompt(`اشرح لي هذا الكود:
+
+\`\`\`
+${code}
+\`\`\``);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  renderModels();
+  loadChats();
+
+  // Load current chat messages if exists
+  const savedChat = localStorage.getItem('currentChat');
+  if (savedChat) {
+    loadChat(savedChat).catch(() => {});
+  }
+
+  // Textarea auto-resize
+  el('msgInput').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+  });
+
+  // Drag & drop
+  document.addEventListener('dragover', (e) => e.preventDefault());
+  document.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (e.dataTransfer.files.length) {
+      for (const f of e.dataTransfer.files) {
+        state.attachedFiles.push(f);
+      }
+      renderFileChips();
+    }
+  });
+});
 </script>
 </body>
 </html>
