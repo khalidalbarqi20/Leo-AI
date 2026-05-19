@@ -422,1404 +422,631 @@ code{font-family:'Fira Code','Consolas',monospace}
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="hdr">
   <div class="ddw">
     <button class="ddbtn" id="menuBtn" title="القائمة">☰</button>
     <div class="ddov" id="ddOv"></div>
     <div class="ddm" id="ddMenu">
       <div class="dds">
-        <button class="ddi" onclick="newChat()"><span class="ico">💬</span><span class="lbl">محادثة جديدة</span></button>
-        <button class="ddi" onclick="openPanel('chats')"><span class="ico">📁</span><span class="lbl">المحادثات المحفوظة</span></button>
+        <button class="ddi" onclick="openPanel('history')">
+          <span class="ico">💬</span><span class="lbl">سجل المحادثات</span>
+        </button>
+        <button class="ddi" onclick="openPanel('api')">
+          <span class="ico">🔑</span><span class="lbl">مفاتيح API</span>
+        </button>
+        <button class="ddi" onclick="openPage('github')">
+          <span class="ico">📦</span><span class="lbl">مستودعات GitHub</span>
+        </button>
         <div class="ddsep"></div>
-        {% if is_admin %}
-        <button class="ddi" onclick="switchTab('github')"><span class="ico">🐙</span><span class="lbl">GitHub</span></button>
-        <button class="ddi" onclick="openPanel('project')"><span class="ico">📦</span><span class="lbl">ذاكرة المشروع</span></button>
-        <button class="ddi" onclick="openPanel('settings')"><span class="ico">⚙️</span><span class="lbl">الإعدادات</span></button>
-        <div class="ddsep"></div>
-        {% endif %}
-        <button class="ddi" onclick="shareChat()"><span class="ico">🔗</span><span class="lbl">مشاركة المحادثة</span></button>
-        <button class="ddi" onclick="clearChat()"><span class="ico">🗑️</span><span class="lbl">مسح المحادثة</span></button>
-        <div class="ddsep"></div>
-        <a class="ddi danger" href="/logout"><span class="ico">🚪</span><span class="lbl">خروج</span></a>
+        <button class="ddi danger" onclick="clearAllData()">
+          <span class="ico">🗑️</span><span class="lbl">مسح البيانات</span>
+        </button>
       </div>
     </div>
   </div>
-  <div class="logo">🚀</div>
-  <span class="rbadge {{ 'admin' if is_admin else 'guest' }}">{{ 'رئيسي' if is_admin else 'ضيف' }}</span>
+
+  <div class="logo">🦁</div>
+  <span class="rbadge" id="roleBadge">...</span>
+
   <div class="hdrmid">
     <div class="tabs">
-      <button class="tab on" data-tab="chat" onclick="switchTab('chat')">💬 محادثة</button>
-      {% if is_admin %}
-      <button class="tab" data-tab="github" onclick="switchTab('github')">🐙 GitHub</button>
-      {% endif %}
+      <button class="tab on" id="tChat" onclick="setTab('chat')">شات</button>
+      <button class="tab" id="tPrv" onclick="setTab('preview')">معاينة</button>
     </div>
-    <div class="mpick" id="modelPick" onclick="toggleSheet()">
-      <span class="mn" id="modelName">Qwen3 Coder</span>
+    <div class="mpick" id="modelBtn" onclick="openModels()">
+      <span class="mn" id="modelName">تحميل...</span>
       <span class="arr">▼</span>
     </div>
+    <button class="rfbtn" onclick="newChat()" title="محادثة جديدة">＋</button>
   </div>
-  <button class="rfbtn" id="refreshBtn" onclick="location.reload()" title="تحديث">↻</button>
 </header>
 
-<!-- OVERLAYS -->
-<div class="ov" id="overlay"></div>
-<div class="ddov" id="ddOverlay"></div>
+<div class="ov" id="ov" onclick="closeAll()"></div>
 
-<!-- MODEL SHEET -->
 <div class="sheet" id="modelSheet">
   <div class="shbar"></div>
-  <div class="shhead"><span class="shttl">اختيار النموذج</span><button class="shx" onclick="toggleSheet()">✕</button></div>
-  <div class="shlist" id="modelList"></div>
+  <div class="shhead">
+    <span class="shttl">اختر النموذج</span>
+    <button class="shx" onclick="closeAll()">✕</button>
+  </div>
+  <div class="shlist" id="modelsList"></div>
 </div>
 
-<!-- SIDE PANELS -->
-<div class="pov" id="panelOv" onclick="closePanel()"></div>
-<div class="panel" id="sidePanel">
-  <div class="ph"><span class="phttl" id="panelTitle">اللوحة</span><button class="phx" onclick="closePanel()">✕</button></div>
+<div class="pov" id="pov" onclick="closeAll()"></div>
+<div class="panel" id="panel">
+  <div class="ph">
+    <span class="phttl" id="panelTitle">...</span>
+    <button class="phx" onclick="closeAll()">✕</button>
+  </div>
   <div class="pb" id="panelBody"></div>
   <div class="pf" id="panelFoot"></div>
 </div>
 
-<!-- CHAT PAGE -->
-<div class="page on" id="page-chat">
-  <div class="chat" id="chatBox">
-    <div class="empty" id="emptyState">
-      <div class="elogo">🚀</div>
-      <h2>Leo-AI</h2>
-      <p>مساعد البرمجة الاحترافي. اكتب رسالتك أو اسحب ملفات للرفع.</p>
+<div class="page on" id="pMain">
+  <div class="chat" id="chat">
+    <div class="empty">
+      <div class="elogo">🦁</div>
+      <h2>كيف يمكنني مساعدتك اليوم؟</h2>
+      <p>أنا Leo-AI، مساعدك الذكي المطور لإدارة المشاريع، كتابة الأكواد، وتصفح ملفات GitHub.</p>
       <div class="sugs">
-        <button class="sug" onclick="setPrompt('اكتب لي تطبيق React كامل')">⚛️ تطبيق React</button>
-        <button class="sug" onclick="setPrompt('اشرح لي كيف أعمل API بـ FastAPI')">🔧 FastAPI</button>
-        <button class="sug" onclick="setPrompt('حلل هذا الكود واصلح الأخطاء')">🔍 مراجعة كود</button>
+        <div class="sug" onclick="setPrompt('اكتب كود صفحة هبوط بسيطة وجذابة بالـ HTML و CSS')">صفحة هبوط جذابة ✨</div>
+        <div class="sug" onclick="setPrompt('كيف أقوم بربط قاعدة بيانات SQLite مع نظام FastAPI؟')">ربط SQLite مع FastAPI 🚀</div>
       </div>
     </div>
   </div>
+  <button class="stb" id="stbBtn" onclick="scrollToBottom()">▼</button>
+
   <div class="inpw">
     <div id="fileChips"></div>
     <div class="inpb">
-      <textarea class="inpta" id="msgInput" rows="1" placeholder="اكتب رسالتك..." onkeydown="handleKey(event)"></textarea>
+      <button class="inpbtn" onclick="el('fileInput').click()" title="إرفاق ملف">📎</button>
+      <input type="file" id="fileInput" style="display:none" multiple onchange="handleFileSelect(this)">
+      <textarea class="inpta" id="msgInput" placeholder="اكتب رسالتك هنا..." rows="1"></textarea>
       <div class="inpbtns">
-        <button class="inpbtn" id="fileBtn" onclick="document.getElementById('fileInput').click()" title="رفع ملف">📎</button>
-        <button class="inpbtn" id="imgBtn" onclick="document.getElementById('imgInput').click()" title="صورة">🖼️</button>
-        <button class="inpbtn send" id="sendBtn" onclick="sendMessage()" title="إرسال">➤</button>
+        <button class="inpbtn send" id="sendBtn" onclick="sendMessage()">➔</button>
       </div>
     </div>
   </div>
 </div>
 
-<input type="file" id="fileInput" multiple style="display:none" onchange="handleFiles(this)">
-<input type="file" id="imgInput" accept="image/*" multiple style="display:none" onchange="handleFiles(this)">
-
-<!-- GITHUB PAGE -->
-{% if is_admin %}
-<div class="page" id="page-github">
-  <div class="ghpage" id="ghPage">
+<div class="page" id="pGithub">
+  <div class="ghpage">
     <div class="ghtopbar">
-      <button class="ghback" onclick="ghBack()">← رجوع</button>
-      <span class="ghtitle" id="ghTitle">GitHub Repos</span>
+      <button class="ghback" onclick="ghBack()">➔ عودة</button>
+      <span class="ghtitle" id="ghTitle">GitHub</span>
     </div>
-    <div class="ghsrch"><input type="text" id="ghSearch" placeholder="بحث..." oninput="filterRepos(this.value)"></div>
+    <div class="ghacts" id="ghActs"></div>
+    <div class="membar" id="memBar">
+      <span class="memcnt" id="memCount">0</span>
+      <span class="memlbl" id="memLbl">ملفات في الذاكرة</span>
+      <button class="memclr" onclick="clearMemory()">تفريغ</button>
+      <button class="memgo" onclick="sendMemoryToChat()">إرسال للشات</button>
+    </div>
+    <div class="selbar" id="selBar">
+      <span class="selcnt" id="selCount">تم تحديد 0 ملف</span>
+    </div>
+    <div class="ghsrch" id="ghSrch" style="display:none">
+      <input type="text" id="ghSrchInp" placeholder="بحث..." oninput="handleGhSearch(this.value)">
+    </div>
     <div class="ghlist" id="ghList"></div>
   </div>
 </div>
-{% endif %}
 
-<!-- PREVIEW -->
-<div class="pvp" id="previewPanel">
+<div class="pvp" id="pPreview">
   <div class="pvh">
-    <span class="pvtitle" id="pvTitle">معاينة</span>
-    <button class="pvbtn" onclick="updatePreview()">🔄 تحديث</button>
-    <button class="pvbtn" onclick="openPreviewTab()">↗️ فتح</button>
-    <button class="pvbtn d" onclick="closePreview()">✕ إغلاق</button>
+    <span class="pvtitle" id="pvTitle">لا يوجد معاينة نشطة</span>
+    <button class="pvbtn ac" onclick="runPreviewCode()">🔄 تحديث</button>
+    <button class="pvbtn" onclick="togglePyOut()" id="pyOutBtn" style="display:none">📝 مخرجات الكود</button>
+    <button class="pvbtn d" onclick="setTab('chat')">✕ إغلاق</button>
   </div>
-  <iframe id="pvframe" sandbox="allow-scripts allow-same-origin"></iframe>
-  <div class="pyout" id="pyOutput"></div>
+  <iframe id="pvframe" sandbox="allow-scripts allow-modals"></iframe>
+  <div class="pyout" id="pyOut"></div>
 </div>
 
-<!-- ALERTS -->
-<button class="alfab" id="alertFab" onclick="toggleAlerts()">🔔</button>
-<div class="alp" id="alertPanel">
-  <div class="alph"><span class="alpttl">التنبيهات</span><button class="alpref" onclick="clearAlerts()">مسح</button><button class="alpx" onclick="toggleAlerts()">✕</button></div>
-  <div class="alpb" id="alertBox"></div>
+<button class="alfab" id="alFab" onclick="toggleAlp()">🔔
+  <span class="aldot" id="alDot">0</span>
+</button>
+<div class="alp" id="alPanel">
+  <div class="alph">
+    <span class="alpttl">التنبيهات والأخطاء</span>
+    <button class="alpref" onclick="refreshAlerts()">تحديث</button>
+    <button class="alpx" onclick="toggleAlp()">✕</button>
+  </div>
+  <div class="alpb" id="alBody"></div>
 </div>
 
-<!-- SCROLL TO BOTTOM -->
-<button class="stb" id="scrollBtn" onclick="scrollToBottom()">↓</button>
-
-<!-- LOADING -->
-<div class="ldg" id="loading"><div class="ldgsp"></div></div>
-
-<!-- MODALS -->
 <div class="modal" id="modal">
   <div class="mdl">
-    <div class="mdlt" id="modalTitle">عنوان</div>
-    <div class="mdlp" id="modalBody">محتوى</div>
-    <input type="text" class="mdlin" id="modalInput" style="display:none">
-    <div class="mdlbtns" id="modalBtns">
-      <button class="mdlbtn sec" onclick="closeModal()">إلغاء</button>
-      <button class="mdlbtn prim" onclick="modalConfirm()">تأكيد</button>
+    <div class="mdlt" id="mdlTitle">...</div>
+    <div class="mdlp" id="mdlText">...</div>
+    <input type="text" class="mdlin" id="mdlInput" style="display:none">
+    <div class="mdlbtns">
+      <button class="mdlbtn sec" id="mdlCancel" onclick="closeModal()">إلغاء</button>
+      <button class="mdlbtn prim" id="mdlConfirm">تأكيد</button>
     </div>
   </div>
 </div>
 
-<!-- SAVE CONFIRMATION -->
-<div class="savecf" id="saveConfirm">
+<div class="savecf" id="saveCfModal">
   <div class="savebox">
     <div class="saveicon">💾</div>
-    <div class="saveh">هل تريد حفظ هذه المحادثة؟</div>
-    <div class="savep">يمكنك العودة إليها لاحقاً من قائمة المحادثات المحفوظة</div>
+    <div class="saveh">لم يتم حفظ التعديلات!</div>
+    <div class="savep">هل تريد حفظ التغييرات الحالية في المشروع قبل الانتقال؟</div>
     <div class="savebtns">
-      <button class="savebtn yes" onclick="confirmSave(true)">✓ نعم، احفظ</button>
-      <button class="savebtn no" onclick="confirmSave(false)">✕ لا، امسح</button>
+      <button class="savebtn yes" onclick="handleSaveCf('yes')">حفظ الآن</button>
+      <button class="savebtn discard" onclick="handleSaveCf('discard')">تجاهل</button>
+      <button class="savebtn no" onclick="handleSaveCf('no')">إلغاء</button>
     </div>
   </div>
+</div>
+
+<div class="ldg" id="loading">
+  <div class="ldgsp"></div>
 </div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════════════════════
-//  GLOBAL STATE
+//  GLOBALS & UTILS
 // ═══════════════════════════════════════════════════════════════════════════════
-const state = {
-  currentChat: localStorage.getItem('currentChat') || generateId(),
-  model: '{{ default_model }}',
-  modelName: 'Qwen3 Coder',
-  isAdmin: {{ 'true' if is_admin else 'false' }},
-  hasGithub: {{ 'true' if has_github_token else 'false' }},
-  isStreaming: false,
-  attachedFiles: [],
-  alerts: [],
-  models: {{ models | tojson }},
-  chats: [],
-  hasUnsavedMessages: false,
-  previewFiles: {},
-  currentPreview: null,
-  saveCallback: null
+let state = {
+  role: 'guest', chats: [], currentChatId: null, models: [], currentModel: '',
+  files: [], mode: 'chat', ghPath: [], ghRepo: null, ghFiles: [], ghSearch: '',
+  memoryCount: 0, alertsCount: 0, isGenerating: false, activePreviewId: null
 };
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  UTILITIES
-// ═══════════════════════════════════════════════════════════════════════════════
-function generateId() {
-  return Math.random().toString(36).substring(2, 10);
-}
-
-function el(id) { return document.getElementById(id); }
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-function showLoading(show) {
-  el('loading').classList.toggle('show', show);
-}
-
-function addAlert(text, type = 'err') {
-  const alert = { text, type, time: new Date().toLocaleTimeString('ar') };
-  state.alerts.unshift(alert);
-  if (state.alerts.length > 50) state.alerts.pop();
-  updateAlertBadge();
-  renderAlerts();
-}
-
-function updateAlertBadge() {
-  const unread = state.alerts.filter(a => a.type === 'err').length;
-  const dot = document.querySelector('.aldot');
-  if (dot) dot.classList.toggle('show', unread > 0);
-}
-
-function renderAlerts() {
-  const box = el('alertBox');
-  if (!state.alerts.length) {
-    box.innerHTML = '<div style="text-align:center;color:var(--mu);padding:20px;font-size:12px">لا توجد تنبيهات</div>';
-    return;
-  }
-  box.innerHTML = state.alerts.map(a => 
-    `<div class="alpi ${a.type}">${escapeHtml(a.text)}<span class="ts">${a.time}</span></div>`
-  ).join('');
-}
-
-function toggleAlerts() {
-  el('alertPanel').classList.toggle('show');
-  el('alertFab').classList.toggle('vis');
-}
-
-function clearAlerts() {
-  state.alerts = [];
-  updateAlertBadge();
-  renderAlerts();
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  MENU & NAVIGATION
-// ═══════════════════════════════════════════════════════════════════════════════
-el('menuBtn').addEventListener('click', () => {
-  el('ddMenu').classList.toggle('show');
-  el('ddOverlay').classList.toggle('show');
-});
-
-el('ddOverlay').addEventListener('click', () => {
-  el('ddMenu').classList.remove('show');
-  el('ddOverlay').classList.remove('show');
-});
-
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === tab));
-  document.querySelectorAll('.page').forEach(p => p.classList.toggle('on', p.id === 'page-' + tab));
-  if (tab === 'github' && state.hasGithub) loadRepos();
-}
-
-function toggleSheet() {
-  el('modelSheet').classList.toggle('on');
-  el('overlay').classList.toggle('on');
-}
-
-el('overlay').addEventListener('click', () => {
-  el('modelSheet').classList.remove('on');
-  el('overlay').classList.remove('on');
-  closePanel();
-});
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  MODEL SELECTION
-// ═══════════════════════════════════════════════════════════════════════════════
-function renderModels() {
-  const list = el('modelList');
-  list.innerHTML = state.models.map(m => `
-    <div class="mi ${m.id === state.model ? 'sel' : ''}" onclick="selectModel('${m.id}')">
-      <div class="miico">${m.badge}</div>
-      <div class="mibody">
-        <div class="miname">${m.name} <span class="tg ${m.vision ? 'v' : m.strength === 'code' ? 'c' : m.strength === 'reasoning' ? 'r' : 'p'}">${m.tag}</span></div>
-        <div class="midesc">${m.desc} • ${m.context}</div>
-      </div>
-      <div class="michk">✓</div>
-    </div>
-  `).join('');
-}
-
-function selectModel(id) {
-  const m = state.models.find(x => x.id === id);
-  if (!m) return;
-  state.model = id;
-  state.modelName = m.name;
-  el('modelName').textContent = m.name;
-  renderModels();
-  toggleSheet();
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  SIDE PANEL
-// ═══════════════════════════════════════════════════════════════════════════════
-function openPanel(type) {
-  const titles = { chats: 'المحادثات', project: 'ذاكرة المشروع', settings: 'الإعدادات' };
-  el('panelTitle').textContent = titles[type] || 'اللوحة';
-  el('panelOv').classList.add('on');
-  el('sidePanel').classList.add('on');
-
-  if (type === 'chats') renderChatsPanel();
-  else if (type === 'project') renderProjectPanel();
-  else if (type === 'settings') renderSettingsPanel();
-}
-
-function closePanel() {
-  el('panelOv').classList.remove('on');
-  el('sidePanel').classList.remove('on');
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  CHAT MANAGEMENT (SQLite)
-// ═══════════════════════════════════════════════════════════════════════════════
-async function loadChats() {
-  try {
-    const res = await fetch('/api/chats/list');
-    const data = await res.json();
-    state.chats = data.chats || [];
-  } catch (e) {
-    addAlert('فشل تحميل المحادثات', 'err');
-  }
-}
-
-function renderChatsPanel() {
-  const body = el('panelBody');
-  const foot = el('panelFoot');
-
-  if (!state.chats.length) {
-    body.innerHTML = '<div class="scmt">لا توجد محادثات محفوظة</div>';
-  } else {
-    body.innerHTML = state.chats.map(c => `
-      <div class="sci" onclick="loadChat('${c.id}')">
-        <div class="scit">
-          <span class="sctl">${escapeHtml(c.title)}</span>
-          <button class="scdl" onclick="event.stopPropagation();renameChat('${c.id}', '${escapeHtml(c.title)}')">✏️</button>
-          <button class="scdl" onclick="event.stopPropagation();deleteChat('${c.id}')">🗑️</button>
-        </div>
-        <div class="scdt">${new Date(c.updated_at).toLocaleDateString('ar')}</div>
-      </div>
-    `).join('');
-  }
-
-  foot.innerHTML = `<button class="xbtn ac" onclick="newChat()">+ محادثة جديدة</button>`;
-}
-
-async function newChat() {
-  if (state.hasUnsavedMessages) {
-    showSaveConfirm(() => _doNewChat());
-  } else {
-    _doNewChat();
-  }
-}
-
-async function _doNewChat() {
-  try {
-    const res = await fetch('/api/chats/create', { method: 'POST', body: new FormData() });
-    const data = await res.json();
-    state.currentChat = data.id;
-    localStorage.setItem('currentChat', data.id);
-    state.hasUnsavedMessages = false;
-    clearChatUI();
-    closePanel();
-    addAlert('تم إنشاء محادثة جديدة', 'ok');
-  } catch (e) {
-    state.currentChat = generateId();
-    localStorage.setItem('currentChat', state.currentChat);
-    clearChatUI();
-    closePanel();
-  }
-}
-
-async function loadChat(chatId) {
-  try {
-    const res = await fetch(`/api/chats/${chatId}/messages`);
-    const data = await res.json();
-    state.currentChat = chatId;
-    localStorage.setItem('currentChat', chatId);
-    state.hasUnsavedMessages = false;
-    renderMessages(data.messages || []);
-    closePanel();
-  } catch (e) {
-    addAlert('فشل تحميل المحادثة', 'err');
-  }
-}
-
-async function renameChat(chatId, currentTitle) {
-  const newTitle = prompt('اسم جديد للمحادثة:', currentTitle);
-  if (!newTitle || newTitle === currentTitle) return;
-
-  const fd = new FormData();
-  fd.append('chat_id', chatId);
-  fd.append('title', newTitle);
-
-  try {
-    await fetch('/api/chats/rename', { method: 'POST', body: fd });
-    await loadChats();
-    renderChatsPanel();
-    addAlert('تم إعادة التسمية', 'ok');
-  } catch (e) {
-    addAlert('فشل إعادة التسمية', 'err');
-  }
-}
-
-async function deleteChat(chatId) {
-  if (!confirm('هل أنت متأكد من حذف هذه المحادثة؟')) return;
-
-  const fd = new FormData();
-  fd.append('chat_id', chatId);
-
-  try {
-    await fetch('/api/chats/delete', { method: 'POST', body: fd });
-    await loadChats();
-    renderChatsPanel();
-    if (state.currentChat === chatId) {
-      newChat();
-    }
-    addAlert('تم الحذف', 'ok');
-  } catch (e) {
-    addAlert('فشل الحذف', 'err');
-  }
-}
-
-function renderMessages(messages) {
-  clearChatUI();
-  const box = el('chatBox');
-
-  messages.forEach(m => {
-    if (m.role === 'user') {
-      addUserBubble(m.content);
-    } else {
-      addAssistantBubble(m.content, m.model || '');
-    }
-  });
-
-  scrollToBottom();
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  PROJECT MEMORY PANEL
-// ═══════════════════════════════════════════════════════════════════════════════
-async function renderProjectPanel() {
-  const body = el('panelBody');
-  const foot = el('panelFoot');
-
-  if (!state.isAdmin) {
-    body.innerHTML = '<div class="scmt">متاح للمستخدم الرئيسي فقط</div>';
-    return;
-  }
-
-  try {
-    const res = await fetch('/project/list');
-    const data = await res.json();
-
-    if (!data.files || !data.files.length) {
-      body.innerHTML = '<div class="scmt">لا توجد ملفات في الذاكرة</div>';
-    } else {
-      body.innerHTML = data.files.map(f => `
-        <div class="apic">
-          <div class="apit"><span class="apin">${escapeHtml(f.name)}</span><span class="apidot ok"></span></div>
-          <div class="apif">${f.size} حرف</div>
-          <div class="apib">
-            <button class="apibtn" onclick="removeProjectFile('${f.name}')">🗑️ حذف</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    foot.innerHTML = `
-      <button class="xbtn ac" onclick="document.getElementById('projFileInput').click()">+ رفع ملفات</button>
-      <button class="xbtn sec" onclick="clearProject()">مسح الكل</button>
-      <input type="file" id="projFileInput" multiple style="display:none" onchange="uploadProjectFiles(this)">
-    `;
-  } catch (e) {
-    body.innerHTML = '<div class="scmt">فشل تحميل الذاكرة</div>';
-  }
-}
-
-async function uploadProjectFiles(input) {
-  if (!input.files.length) return;
-  const fd = new FormData();
-  for (const f of input.files) fd.append('files', f);
-
-  try {
-    await fetch('/project/add', { method: 'POST', body: fd });
-    renderProjectPanel();
-    addAlert('تم رفع الملفات للذاكرة', 'ok');
-  } catch (e) {
-    addAlert('فشل الرفع', 'err');
-  }
-  input.value = '';
-}
-
-async function removeProjectFile(name) {
-  const fd = new FormData();
-  fd.append('filename', name);
-  try {
-    await fetch('/project/remove', { method: 'POST', body: fd });
-    renderProjectPanel();
-  } catch (e) {
-    addAlert('فشل الحذف', 'err');
-  }
-}
-
-async function clearProject() {
-  if (!confirm('مسح كل ملفات المشروع؟')) return;
-  try {
-    await fetch('/project/clear', { method: 'POST' });
-    renderProjectPanel();
-    addAlert('تم المسح', 'ok');
-  } catch (e) {
-    addAlert('فشل المسح', 'err');
-  }
-}
-
-function renderSettingsPanel() {
-  const body = el('panelBody');
-  body.innerHTML = `
-    <div class="apic">
-      <div class="apit"><span class="apin">⚙️ الإعدادات</span></div>
-      <div class="apif">إعدادات التطبيق</div>
-    </div>
-  `;
-  el('panelFoot').innerHTML = '';
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  CHAT UI
-// ═══════════════════════════════════════════════════════════════════════════════
-function clearChatUI() {
-  const box = el('chatBox');
-  box.innerHTML = `
-    <div class="empty" id="emptyState">
-      <div class="elogo">🚀</div>
-      <h2>Leo-AI</h2>
-      <p>مساعد البرمجة الاحترافي. اكتب رسالتك أو اسحب ملفات للرفع.</p>
-      <div class="sugs">
-        <button class="sug" onclick="setPrompt('اكتب لي تطبيق React كامل')">⚛️ تطبيق React</button>
-        <button class="sug" onclick="setPrompt('اشرح لي كيف أعمل API بـ FastAPI')">🔧 FastAPI</button>
-        <button class="sug" onclick="setPrompt('حلل هذا الكود واصلح الأخطاء')">🔍 مراجعة كود</button>
-      </div>
-    </div>
-  `;
-  state.previewFiles = {};
-  state.currentPreview = null;
-}
-
-function setPrompt(text) {
-  el('msgInput').value = text;
-  el('msgInput').focus();
-}
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-}
-
-function addUserBubble(text) {
-  const box = el('chatBox');
-  const empty = el('emptyState');
-  if (empty) empty.remove();
-
-  const div = document.createElement('div');
-  div.className = 'row u';
-  div.innerHTML = `
-    <div class="bbl u">${escapeHtml(text)}</div>
-    <div class="av ua">👤</div>
-  `;
-  box.appendChild(div);
-  scrollToBottom();
-}
-
-function addAssistantBubble(html, modelName) {
-  const box = el('chatBox');
-  const empty = el('emptyState');
-  if (empty) empty.remove();
-
-  const div = document.createElement('div');
-  div.className = 'row';
-  div.innerHTML = `
-    <div class="av aa">🤖</div>
-    <div class="bbl a">
-      <div style="font-size:10px;color:var(--mu);margin-bottom:4px">${modelName || 'Leo-AI'}</div>
-      ${html}
-    </div>
-  `;
-  box.appendChild(div);
-  scrollToBottom();
-  extractPreviewFiles(html);
-}
-
-function extractPreviewFiles(html) {
-  // Extract code blocks for preview
-  const temp = document.createElement('div');
-  temp.innerHTML = html;
-  const codeBlocks = temp.querySelectorAll('.cw2');
-
-  codeBlocks.forEach(block => {
-    const langSpan = block.querySelector('.ch span');
-    const codeEl = block.querySelector('code');
-    if (langSpan && codeEl) {
-      const lang = langSpan.textContent;
-      const code = codeEl.textContent;
-
-      let filename = 'code.txt';
-      if (lang === 'html') filename = 'index.html';
-      else if (lang === 'css') filename = 'style.css';
-      else if (lang === 'javascript' || lang === 'js') filename = 'script.js';
-      else if (lang === 'python' || lang === 'py') filename = 'app.py';
-      else if (lang === 'json') filename = 'data.json';
-
-      state.previewFiles[filename] = code;
-    }
-  });
-
-  // Show preview button if we have HTML
-  if (state.previewFiles['index.html']) {
-    showPreviewBtn();
-  }
-}
-
-function showPreviewBtn() {
-  // Add preview button to last assistant bubble
-  const bubbles = document.querySelectorAll('.bbl.a');
-  const last = bubbles[bubbles.length - 1];
-  if (last && !last.querySelector('.pv-btn')) {
-    const btn = document.createElement('button');
-    btn.className = 'pv-btn';
-    btn.style.cssText = 'background:var(--sf);border:1px solid var(--bd);color:var(--ac2);padding:4px 10px;border-radius:6px;font-size:10px;cursor:pointer;margin-top:8px;';
-    btn.innerHTML = '👁️ معاينة';
-    btn.onclick = () => openPreview();
-    last.appendChild(btn);
-  }
-}
-
-function showThinking() {
-  const box = el('chatBox');
-  const empty = el('emptyState');
-  if (empty) empty.remove();
-
-  const div = document.createElement('div');
-  div.className = 'row';
-  div.id = 'thinkRow';
-  div.innerHTML = `
-    <div class="av aa">🤖</div>
-    <div class="think"><div class="dot"></div><div class="dot"></div><div class="dot"></div> يفكر...</div>
-  `;
-  box.appendChild(div);
-  scrollToBottom();
-}
-
-function removeThinking() {
-  const think = el('thinkRow');
-  if (think) think.remove();
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  FILE HANDLING
-// ═══════════════════════════════════════════════════════════════════════════════
-function handleFiles(input) {
-  if (!input.files.length) return;
-
-  for (const file of input.files) {
-    state.attachedFiles.push(file);
-  }
-  renderFileChips();
-  input.value = '';
-}
-
-function renderFileChips() {
-  const container = el('fileChips');
-  if (!state.attachedFiles.length) {
-    container.innerHTML = '';
-    return;
-  }
-
-  container.innerHTML = state.attachedFiles.map((f, i) => `
-    <span class="filechip">${f.name} <span class="x" onclick="removeFile(${i})">✕</span></span>
-  `).join('');
-}
-
-function removeFile(index) {
-  state.attachedFiles.splice(index, 1);
-  renderFileChips();
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  MESSAGE SENDING
-// ═══════════════════════════════════════════════════════════════════════════════
-async function sendMessage() {
-  const input = el('msgInput');
-  const text = input.value.trim();
-  if (!text && !state.attachedFiles.length) return;
-  if (state.isStreaming) return;
-
-  state.isStreaming = true;
-  state.hasUnsavedMessages = true;
-  input.value = '';
-  input.style.height = 'auto';
-
-  // Add user bubble
-  const displayText = text + (state.attachedFiles.length ? `
-[${state.attachedFiles.length} ملف مرفق]` : '');
-  addUserBubble(displayText);
-  showThinking();
-
-  // Disable buttons
-  el('sendBtn').disabled = true;
-  el('fileBtn').disabled = true;
-  el('imgBtn').disabled = true;
-
-  // Prepare form data
-  const fd = new FormData();
-  fd.append('prompt', text);
-  fd.append('model_id', state.model);
-  fd.append('chat_id', state.currentChat);
-
-  for (const f of state.attachedFiles) {
-    fd.append('files', f);
-  }
-
-  state.attachedFiles = [];
-  renderFileChips();
-
-  try {
-    const res = await fetch('/chat-stream', { method: 'POST', body: fd });
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-
-    let buffer = '';
-    let fullHtml = '';
-    let usedModel = '';
-    let gotFirst = false;
-
-    removeThinking();
-
-    // Create assistant bubble
-    const box = el('chatBox');
-    const div = document.createElement('div');
-    div.className = 'row';
-    div.id = 'streamRow';
-    div.innerHTML = `
-      <div class="av aa">🤖</div>
-      <div class="bbl a" id="streamBubble">
-        <div style="font-size:10px;color:var(--mu);margin-bottom:4px" id="streamModel">Leo-AI</div>
-        <div id="streamContent"></div>
-      </div>
-    `;
-    box.appendChild(div);
-    scrollToBottom();
-
-    // Add stop button
-    const stopDiv = document.createElement('div');
-    stopDiv.className = 'row';
-    stopDiv.id = 'stopRow';
-    stopDiv.innerHTML = `<button class="stopbtn" onclick="stopStream()">⏹ إيقاف</button>`;
-    box.appendChild(stopDiv);
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop();
-
-      for (const line of lines) {
-        if (!line.startsWith('data:')) continue;
-        const data = line.slice(5).trim();
-        if (data === '[DONE]') continue;
-
-        try {
-          const parsed = JSON.parse(data);
-
-          if (parsed.error) {
-            addAlert(parsed.error, 'err');
-            continue;
-          }
-
-          if (parsed.first) {
-            gotFirst = true;
-          }
-
-          if (parsed.token) {
-            fullHtml += parsed.token;
-            el('streamContent').innerHTML = markdownToHtml(fullHtml);
-            scrollToBottom();
-          }
-
-          if (parsed.done) {
-            usedModel = parsed.used_model || '';
-            if (parsed.html) {
-              el('streamContent').innerHTML = parsed.html;
-            }
-            if (parsed.auto_title) {
-              addAlert(`تم توليد عنوان: ${parsed.auto_title}`, 'ok');
-            }
-
-            // Add file download buttons
-            if (parsed.files && Object.keys(parsed.files).length > 0) {
-              addFileButtons(parsed.files);
-            }
-
-            // Extract preview files
-            extractPreviewFiles(el('streamContent').innerHTML);
-          }
-        } catch (e) {
-          // Ignore parse errors
-        }
-      }
-    }
-
-    // Update model name
-    if (usedModel) {
-      el('streamModel').textContent = usedModel;
-    }
-
-    // Remove stop button
-    const stopRow = el('stopRow');
-    if (stopRow) stopRow.remove();
-
-  } catch (e) {
-    removeThinking();
-    addAlert('فشل الإرسال: ' + e.message, 'err');
-  } finally {
-    state.isStreaming = false;
-    el('sendBtn').disabled = false;
-    el('fileBtn').disabled = false;
-    el('imgBtn').disabled = false;
-  }
-}
-
-function stopStream() {
-  const fd = new FormData();
-  fd.append('chat_id', state.currentChat);
-  fetch('/stop', { method: 'POST', body: fd });
-
-  const stopRow = el('stopRow');
-  if (stopRow) stopRow.remove();
-}
-
-function addFileButtons(files) {
-  const bubble = el('streamBubble');
-  if (!bubble) return;
-
-  const btnDiv = document.createElement('div');
-  btnDiv.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;';
-
-  for (const [name, b64] of Object.entries(files)) {
-    const btn = document.createElement('button');
-    btn.className = 'pv-btn';
-    btn.style.cssText = 'background:var(--sf);border:1px solid var(--bd);color:var(--ac);padding:4px 10px;border-radius:6px;font-size:10px;cursor:pointer;';
-    btn.innerHTML = `📥 ${name}`;
-    btn.onclick = () => downloadFile(name, b64);
-    btnDiv.appendChild(btn);
-  }
-
-  // Add zip button if multiple files
-  if (Object.keys(files).length > 1) {
-    const zipBtn = document.createElement('button');
-    zipBtn.className = 'pv-btn';
-    zipBtn.style.cssText = 'background:var(--sf);border:1px solid var(--bd);color:var(--ok);padding:4px 10px;border-radius:6px;font-size:10px;cursor:pointer;';
-    zipBtn.innerHTML = `📦 تحميل الكل`;
-    zipBtn.onclick = () => downloadZip();
-    btnDiv.appendChild(zipBtn);
-  }
-
-  bubble.appendChild(btnDiv);
-}
-
-function downloadFile(name, b64) {
-  const fd = new FormData();
-  fd.append('filename', name);
-  fd.append('code_b64', b64);
-
-  fetch('/download', { method: 'POST', body: fd })
-    .then(r => r.blob())
-    .then(blob => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = name;
-      a.click();
-      URL.revokeObjectURL(url);
-    });
-}
-
-function downloadZip() {
-  window.open(`/download/zip/${state.currentChat}`, '_blank');
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  PREVIEW
-// ═══════════════════════════════════════════════════════════════════════════════
-function openPreview() {
-  el('previewPanel').classList.add('show');
-  updatePreview();
-}
-
-function closePreview() {
-  el('previewPanel').classList.remove('show');
-}
-
-function updatePreview() {
-  const iframe = el('pvframe');
-  const html = state.previewFiles['index.html'] || '';
-  const css = state.previewFiles['style.css'] || '';
-  const js = state.previewFiles['script.js'] || '';
-
-  const doc = iframe.contentDocument || iframe.contentWindow.document;
-  doc.open();
-  doc.write(`<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<style>${css}</style>
-</head>
-<body>
-${html}
-<script>${js}</script>
-</body>
-</html>`);
-  doc.close();
-
-  el('pvTitle').textContent = 'معاينة - ' + (state.previewFiles['index.html'] ? 'HTML' : 'كود');
-}
-
-function openPreviewTab() {
-  const html = state.previewFiles['index.html'] || '';
-  const css = state.previewFiles['style.css'] || '';
-  const js = state.previewFiles['script.js'] || '';
-
-  const fullHtml = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<style>${css}</style>
-</head>
-<body>
-${html}
-<script>${js}</script>
-</body>
-</html>`;
-
-  const blob = new Blob([fullHtml], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  window.open(url, '_blank');
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  SAVE CONFIRMATION
-// ═══════════════════════════════════════════════════════════════════════════════
-function showSaveConfirm(callback) {
-  state.saveCallback = callback;
-  el('saveConfirm').classList.add('show');
-}
-
-function confirmSave(save) {
-  el('saveConfirm').classList.remove('show');
-
-  if (save) {
-    // Chat is already saved to SQLite automatically
-    state.hasUnsavedMessages = false;
-    addAlert('تم حفظ المحادثة', 'ok');
-  } else {
-    // Clear current chat
-    clearCurrentChat();
-  }
-
-  if (state.saveCallback) {
-    state.saveCallback();
-    state.saveCallback = null;
-  }
-}
-
-async function clearCurrentChat() {
-  const fd = new FormData();
-  fd.append('chat_id', state.currentChat);
-  try {
-    await fetch('/clear', { method: 'POST', body: fd });
-    clearChatUI();
-    state.hasUnsavedMessages = false;
-  } catch (e) {
-    addAlert('فشل المسح', 'err');
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  BEFORE UNLOAD
-// ═══════════════════════════════════════════════════════════════════════════════
-window.addEventListener('beforeunload', (e) => {
-  if (state.hasUnsavedMessages) {
-    e.preventDefault();
-    e.returnValue = 'هل تريد حفظ هذه المحادثة؟';
-  }
-});
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  SCROLL
-// ═══════════════════════════════════════════════════════════════════════════════
-function scrollToBottom() {
-  const box = el('chatBox');
-  box.scrollTop = box.scrollHeight;
-}
-
-el('chatBox').addEventListener('scroll', () => {
-  const box = el('chatBox');
-  const btn = el('scrollBtn');
-  const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 100;
-  btn.classList.toggle('show', !nearBottom);
-});
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  MODAL
-// ═══════════════════════════════════════════════════════════════════════════════
-let modalResolve = null;
-
-function showModal(title, body, showInput = false) {
-  return new Promise((resolve) => {
-    modalResolve = resolve;
-    el('modalTitle').textContent = title;
-    el('modalBody').textContent = body;
-    el('modalInput').style.display = showInput ? 'block' : 'none';
-    if (showInput) el('modalInput').value = '';
-    el('modal').classList.add('show');
+const el = id => document.getElementById(id);
+
+function closeAll() {
+  ['modelSheet','ov','panel','pov','ddMenu','ddOv'].forEach(id => {
+    const e = el(id); if(e) { e.classList.remove('on','show','open'); }
   });
 }
 
-function closeModal() {
-  el('modal').classList.remove('show');
-  if (modalResolve) {
-    modalResolve(null);
-    modalResolve = null;
-  }
-}
-
-function modalConfirm() {
-  const value = el('modalInput').style.display !== 'none' ? el('modalInput').value : true;
-  el('modal').classList.remove('show');
-  if (modalResolve) {
-    modalResolve(value);
-    modalResolve = null;
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  GITHUB
-// ═══════════════════════════════════════════════════════════════════════════════
-let ghState = { repos: [], currentRepo: null, files: [], selectedFiles: [] };
-
-async function loadRepos(page = 1) {
-  showLoading(true);
-  try {
-    const res = await fetch(`/github/repos?page=${page}`);
-    const data = await res.json();
-    if (data.error) {
-      addAlert(data.error, 'err');
-      return;
-    }
-    ghState.repos = data;
-    renderRepos();
-  } catch (e) {
-    addAlert('فشل تحميل المستودعات', 'err');
-  } finally {
-    showLoading(false);
-  }
-}
-
-function renderRepos() {
-  const list = el('ghList');
-  if (!ghState.repos.length) {
-    list.innerHTML = '<div class="ghmt">لا توجد مستودعات</div>';
-    return;
-  }
-
-  list.innerHTML = ghState.repos.map(r => `
-    <div class="repoi" onclick="loadRepoFiles('${r.full_name}', '${r.default_branch}')">
-      <div class="riico">📁</div>
-      <div class="ribody">
-        <div class="riname">${r.name} ${r.private ? '<span class="riprv">خاص</span>' : ''}</div>
-        <div class="rimeta">⭐ ${r.stars} • ${r.language} • ${r.updated_at}</div>
-      </div>
-      <div class="riarr">←</div>
-    </div>
-  `).join('');
-}
-
-function filterRepos(query) {
-  const items = document.querySelectorAll('.repoi');
-  items.forEach(item => {
-    const text = item.textContent.toLowerCase();
-    item.style.display = text.includes(query.toLowerCase()) ? '' : 'none';
+// Menu Dropdown
+if (el('menuBtn')) {
+  el('menuBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    el('ddMenu').classList.toggle('show');
+    el('ddOv').classList.toggle('show');
   });
 }
+if (el('ddOv')) { el('ddOv').addEventListener('click', closeAll); }
 
-async function loadRepoFiles(fullName, branch) {
-  showLoading(true);
-  const [owner, repo] = fullName.split('/');
-
-  try {
-    const res = await fetch(`/github/tree?owner=${owner}&repo=${repo}&branch=${branch}`);
-    const data = await res.json();
-    if (data.error) {
-      addAlert(data.error, 'err');
-      return;
-    }
-
-    ghState.currentRepo = { owner, repo, branch };
-    ghState.files = data.files || [];
-    ghState.selectedFiles = [];
-
-    el('ghTitle').textContent = `${owner}/${repo}`;
-    renderFiles();
-  } catch (e) {
-    addAlert('فشل تحميل الملفات', 'err');
-  } finally {
-    showLoading(false);
+// ═══════════════════════════════════════════════════════════════════════════════
+//  TABS & VIEWS
+// ═══════════════════════════════════════════════════════════════════════════════
+function setTab(tab) {
+  state.mode = tab;
+  ['tChat','tPrv'].forEach(id => { if(el(id)) el(id).classList.remove('on'); });
+  ['pMain','pPreview'].forEach(id => { if(el(id)) el(id).classList.remove('on','show'); });
+  
+  if (tab === 'chat') {
+    if(el('tChat')) el('tChat').classList.add('on');
+    if(el('pMain')) el('pMain').classList.add('on');
+  } else if (tab === 'preview') {
+    if(el('tPrv')) el('tPrv').classList.add('on');
+    if(el('pPreview')) el('pPreview').classList.add('show');
+    runPreviewCode();
   }
 }
 
-function renderFiles() {
-  const list = el('ghList');
-
-  // Add action bar
-  const actions = document.createElement('div');
-  actions.className = 'ghacts';
-  actions.innerHTML = `
-    <button class="gha ac" onclick="reviewSelected()">🔍 مراجعة</button>
-    <button class="gha ld" onclick="loadSelectedToMemory()">📥 تحميل للذاكرة</button>
-    <button class="gha" onclick="ghBack()">← رجوع</button>
-  `;
-
-  list.innerHTML = '';
-  list.appendChild(actions);
-
-  // Selected bar
-  const selBar = document.createElement('div');
-  selBar.className = 'selbar';
-  selBar.id = 'selBar';
-  selBar.innerHTML = `<span class="selcnt" id="selCnt">0 محدد</span>`;
-  list.appendChild(selBar);
-
-  // Files
-  ghState.files.forEach(f => {
-    const div = document.createElement('div');
-    div.className = 'filei';
-    div.dataset.path = f.path;
-    div.onclick = () => toggleFileSelect(div, f.path);
-
-    const isCode = f.is_code;
-    div.innerHTML = `
-      <div class="fichk"><span class="fichi">✓</span></div>
-      <span class="fiico">${isCode ? '📄' : '📋'}</span>
-      <span class="finame ${isCode ? 'code' : 'other'}">${f.path}</span>
-      <span class="fisz">${formatSize(f.size)}</span>
-    `;
-
-    list.appendChild(div);
-  });
-}
-
-function toggleFileSelect(el, path) {
-  el.classList.toggle('chk');
-  if (el.classList.contains('chk')) {
-    ghState.selectedFiles.push(path);
-  } else {
-    ghState.selectedFiles = ghState.selectedFiles.filter(p => p !== path);
+function openPage(page) {
+  closeAll();
+  ['pMain','pGithub'].forEach(id => { if(el(id)) el(id).classList.remove('on'); });
+  if (page === 'github') {
+    if(el('pGithub')) el('pGithub').classList.add('on');
+    loadRepos();
   }
-
-  const selBar = document.getElementById('selBar');
-  const selCnt = document.getElementById('selCnt');
-  if (ghState.selectedFiles.length > 0) {
-    selBar.classList.add('show');
-    selCnt.textContent = `${ghState.selectedFiles.length} محدد`;
-  } else {
-    selBar.classList.remove('show');
-  }
-}
-
-function formatSize(bytes) {
-  if (bytes < 1024) return bytes + ' B';
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
 }
 
 function ghBack() {
-  if (ghState.currentRepo) {
-    ghState.currentRepo = null;
-    ghState.files = [];
-    ghState.selectedFiles = [];
-    el('ghTitle').textContent = 'GitHub Repos';
-    renderRepos();
-  }
-}
-
-async function reviewSelected() {
-  if (!ghState.selectedFiles.length) {
-    addAlert('اختر ملفات أولاً', 'warn');
-    return;
-  }
-
-  const { owner, repo, branch } = ghState.currentRepo;
-  const fd = new FormData();
-  fd.append('owner', owner);
-  fd.append('repo', repo);
-  fd.append('branch', branch);
-  fd.append('paths', ghState.selectedFiles.join(','));
-  fd.append('model_id', state.model);
-  fd.append('chat_id', state.currentChat);
-
-  switchTab('chat');
-  showThinking();
-
-  try {
-    const res = await fetch('/github/review', { method: 'POST', body: fd });
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-
-    let buffer = '';
-    let fullHtml = '';
-
-    removeThinking();
-
-    const box = el('chatBox');
-    const div = document.createElement('div');
-    div.className = 'row';
-    div.id = 'streamRow';
-    div.innerHTML = `
-      <div class="av aa">🤖</div>
-      <div class="bbl a" id="streamBubble">
-        <div style="font-size:10px;color:var(--mu);margin-bottom:4px" id="streamModel">مراجعة GitHub</div>
-        <div id="streamContent"></div>
-      </div>
-    `;
-    box.appendChild(div);
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop();
-
-      for (const line of lines) {
-        if (!line.startsWith('data:')) continue;
-        const data = line.slice(5).trim();
-        if (data === '[DONE]') continue;
-
-        try {
-          const parsed = JSON.parse(data);
-          if (parsed.token) {
-            fullHtml += parsed.token;
-            el('streamContent').innerHTML = markdownToHtml(fullHtml);
-            scrollToBottom();
-          }
-          if (parsed.done && parsed.html) {
-            el('streamContent').innerHTML = parsed.html;
-          }
-        } catch (e) {}
-      }
-    }
-  } catch (e) {
-    removeThinking();
-    addAlert('فشل المراجعة', 'err');
-  }
-}
-
-async function loadSelectedToMemory() {
-  if (!ghState.selectedFiles.length) {
-    addAlert('اختر ملفات أولاً', 'warn');
-    return;
-  }
-
-  const { owner, repo, branch } = ghState.currentRepo;
-  const fd = new FormData();
-  fd.append('owner', owner);
-  fd.append('repo', repo);
-  fd.append('branch', branch);
-  fd.append('paths', ghState.selectedFiles.join(','));
-
-  try {
-    const res = await fetch('/github/load-to-memory', { method: 'POST', body: fd });
-    const data = await res.json();
-    addAlert(`تم تحميل ${data.added?.length || 0} ملفات للذاكرة`, 'ok');
-  } catch (e) {
-    addAlert('فشل التحميل', 'err');
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  SHARE & CLEAR
-// ═══════════════════════════════════════════════════════════════════════════════
-async function shareChat() {
-  const html = el('chatBox').innerHTML;
-  const fd = new FormData();
-  fd.append('html', html);
-  fd.append('title', 'محادثة Leo-AI');
-
-  try {
-    const res = await fetch('/share', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (data.url) {
-      const fullUrl = window.location.origin + data.url;
-      await navigator.clipboard.writeText(fullUrl);
-      addAlert('تم نسخ رابط المشاركة!', 'ok');
-    }
-  } catch (e) {
-    addAlert('فشل المشاركة', 'err');
-  }
-}
-
-function clearChat() {
-  if (state.hasUnsavedMessages) {
-    showSaveConfirm(() => clearCurrentChat());
+  if (state.ghPath.length > 0) {
+    state.ghPath.pop();
+    loadFiles();
+  } else if (state.ghRepo) {
+    state.ghRepo = null;
+    loadRepos();
   } else {
-    clearCurrentChat();
+    ['pMain','pGithub'].forEach(id => { if(id==='pMain') el(id).classList.add('on'); else el(id).classList.remove('on'); });
   }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  MARKDOWN TO HTML (Client-side fallback)
+//  MODELS
 // ═══════════════════════════════════════════════════════════════════════════════
-function markdownToHtml(text) {
-  // Simple markdown parser for streaming
-  let html = escapeHtml(text);
+function openModels() {
+  closeAll();
+  if(el('modelSheet')) el('modelSheet').classList.add('on');
+  if(el('ov')) el('ov').classList.add('on');
+}
 
-  // Code blocks
-  html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
-    const b64 = btoa(unescape(encodeURIComponent(code)));
-    return `<div class="cw2"><div class="ch"><span>${lang || 'code'}</span><div class="ch-btns"><button onclick="cpy(this,'${b64}')">📋 نسخ</button><button onclick="explainCode(this,'${b64}')">💡 شرح</button></div></div><pre><code class="lang-${lang}">${escapeHtml(code)}</code></pre></div>`;
+async function renderModels() {
+  try {
+    const r = await fetch('/api/models');
+    if (!r.ok) throw new Error('API error');
+    const data = await r.json();
+    state.models = data.models || [];
+    state.currentModel = data.current || '';
+    if(el('modelName')) el('modelName').textContent = state.currentModel.split('/').pop() || 'اختر النموذج';
+    
+    let h = '';
+    state.models.forEach(m => {
+      const isSel = m.id === state.currentModel ? 'sel' : '';
+      h += `
+        <div class="mi ${isSel}" onclick="selectModel('${m.id}')">
+          <div class="miico">🤖</div>
+          <div class="mibody">
+            <div class="miname">${m.name} <span class="tg p">Free</span></div>
+            <div class="midesc">${m.id}</div>
+          </div>
+          <div class="michk">✓</div>
+        </div>`;
+    });
+    if(el('modelsList')) el('modelsList').innerHTML = h || '<div class="ghmt">لا توجد نماذج متوفرة</div>';
+  } catch (e) {
+    console.error("فشل تحميل النماذج ولكن تم تجنب الانهيار:", e);
+    if(el('modelName')) el('modelName').textContent = 'خطأ في التحميل';
+  }
+}
+
+async function selectModel(id) {
+  try {
+    closeAll();
+    const r = await fetch('/api/models', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({model: id})
+    });
+    if (r.ok) { await renderModels(); }
+  } catch (e) {
+    console.error("فشل تغيير النموذج:", e);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  CHATS MANAGEMENT
+// ═══════════════════════════════════════════════════════════════════════════════
+async function loadChats() {
+  try {
+    const r = await fetch('/api/chats');
+    if (!r.ok) throw new Error('Network status error');
+    const data = await r.json();
+    state.chats = data.chats || [];
+    state.role = data.role || 'guest';
+    
+    const rb = el('roleBadge');
+    if (rb) {
+      rb.textContent = state.role === 'admin' ? '⚙️ أدمن' : '👤 زائر';
+      rb.className = `rbadge ${state.role}`;
+    }
+    
+    // التحديث التلقائي للسجل في القائمة الجانبية إذا كان مفتوحاً
+    if (el('panel') && el('panel').classList.contains('on') && el('panelTitle').textContent === 'سجل المحادثات') {
+      openPanel('history');
+    }
+  } catch (e) {
+    console.error("فشل تحميل المحادثات ولكن تم تجنب الانهيار:", e);
+  }
+}
+
+async function loadChat(id) {
+  if (!id) return;
+  try {
+    if(el('loading')) el('loading').classList.add('show');
+    const r = await fetch(`/api/chats/${id}`);
+    if (!r.ok) throw new Error('Chat data loading failed');
+    const data = await r.json();
+    state.currentChatId = id;
+    localStorage.setItem('currentChat', id);
+    renderMessages(data.messages || []);
+  } catch (e) {
+    console.error("فشل جلب المحادثة:", e);
+  } finally {
+    if(el('loading')) el('loading').classList.remove('show');
+  }
+}
+
+function renderMessages(msgs) {
+  const c = el('chat');
+  if (!c) return;
+  if (msgs.length === 0) {
+    c.innerHTML = `
+      <div class="empty">
+        <div class="elogo">🦁</div>
+        <h2>كيف يمكنني مساعدتك اليوم؟</h2>
+        <p>أنا Leo-AI، مساعدك الذكي المطور لإدارة المشاريع، كتابة الأكواد، وتصفح ملفات GitHub.</p>
+        <div class="sugs">
+          <div class="sug" onclick="setPrompt('اكتب كود صفحة هبوط بسيطة وجذابة بالـ HTML و CSS')">صفحة هبوط جذابة ✨</div>
+          <div class="sug" onclick="setPrompt('كيف أقوم بربط قاعدة بيانات SQLite مع نظام FastAPI؟')">ربط SQLite مع FastAPI 🚀</div>
+        </div>
+      </div>`;
+    return;
+  }
+  
+  let h = '';
+  msgs.forEach(m => {
+    if (!m.role || m.role === 'system') return;
+    const isU = m.role === 'user';
+    const cls = isU ? 'u' : 'a';
+    const avCls = isU ? 'ua' : 'aa';
+    const avTxt = isU ? '👤' : '🦁';
+    
+    let body = m.content || '';
+    if (!isU) { body = formatMarkdown(body); } else { body = escapeHtml(body).replace(/\n/g, '<br>'); }
+    
+    h += `
+      <div class="row ${cls}">
+        <div class="av ${avCls}">${avTxt}</div>
+        <div class="bbl ${cls}">${body}</div>
+      </div>`;
+  });
+  c.innerHTML = h;
+  scrollToBottom();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  SEND MESSAGE
+// ═══════════════════════════════════════════════════════════════════════════════
+async function sendMessage() {
+  const inp = el('msgInput');
+  if (!inp || state.isGenerating) return;
+  const txt = inp.value.trim();
+  if (!txt && state.files.length === 0) return;
+  
+  inp.value = '';
+  inp.style.height = 'auto';
+  state.isGenerating = true;
+  if(el('sendBtn')) el('sendBtn').disabled = true;
+  
+  // إنشاء محادثة جديدة على الخادم إذا لم تكن موجودة
+  if (!state.currentChatId) {
+    try {
+      const r = await fetch('/api/chats', {method: 'POST'});
+      const d = await r.json();
+      state.currentChatId = d.id;
+      localStorage.setItem('currentChat', d.id);
+      await loadChats();
+    } catch (e) {
+      console.error("فشل إنشاء محادثة جديدة:", e);
+      state.isGenerating = false;
+      if(el('sendBtn')) el('sendBtn').disabled = false;
+      return;
+    }
+  }
+  
+  // إرسال البيانات للـ API
+  try {
+    const fd = new FormData();
+    fd.append('message', txt);
+    state.files.forEach(f => fd.append('files', f));
+    
+    // مسح مصفوفة الملفات المرفقة بعد البناء
+    state.files = [];
+    if(el('fileChips')) el('fileChips').innerHTML = '';
+    
+    const response = await fetch(`/api/chats/${state.currentChatId}/message`, {
+      method: 'POST', body: fd
+    });
+    
+    if (!response.ok) throw new Error('Error inside processing endpoint');
+    
+    // جلب المحادثة كاملة لتحديث العرض
+    await loadChat(state.currentChatId);
+  } catch (e) {
+    console.error("فشل إرسال الرسالة:", e);
+  } finally {
+    state.isGenerating = false;
+    if(el('sendBtn')) el('sendBtn').disabled = false;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  PANELS (HISTORY / API KEYS)
+// ═══════════════════════════════════════════════════════════════════════════════
+function openPanel(type) {
+  closeAll();
+  const p = el('panel');
+  const ttl = el('panelTitle');
+  const bdy = el('panelBody');
+  const ft = el('panelFoot');
+  
+  if (!p || !ttl || !bdy || !ft) return;
+  
+  p.classList.add('on');
+  if(el('pov')) el('pov').classList.add('on');
+  
+  if (type === 'history') {
+    ttl.textContent = 'سجل المحادثات';
+    let h = '';
+    state.chats.forEach(c => {
+      h += `
+        <div class="sci" onclick="selectHistoryChat('${c.id}')">
+          <div class="scit">
+            <span class="sctl">💬 ${escapeHtml(c.title || 'محادثة بدون عنوان')}</span>
+            <button class="scdl" onclick="deleteChat(event, '${c.id}')">🗑️</button>
+          </div>
+          <div class="scdt">${c.updated_at || ''}</div>
+        </div>`;
+    });
+    bdy.innerHTML = h || '<div class="scmt">لا توجد محادثات سابقة</div>';
+    ft.innerHTML = '';
+  } else if (type === 'api') {
+    ttl.textContent = 'مفاتيح الـ API';
+    bdy.innerHTML = `
+      <div class="apic">
+        <div class="apit"><span class="apin">OpenRouter API</span></div>
+        <p class="apif">مفاتيح النظام الأساسي تعمل بشكل كامل ومحفوظة بالـ Backend تلقائياً.</p>
+      </div>`;
+    ft.innerHTML = '';
+  }
+}
+
+function selectHistoryChat(id) {
+  closeAll();
+  loadChat(id);
+}
+
+async function deleteChat(e, id) {
+  e.stopPropagation();
+  if (!confirm('هل أنت متأكد من حذف هذه المحادثة نهائياً؟')) return;
+  try {
+    const r = await fetch(`/api/chats/${id}`, {method: 'DELETE'});
+    if (r.ok) {
+      if (state.currentChatId === id) {
+        state.currentChatId = null;
+        localStorage.removeItem('currentChat');
+        renderMessages([]);
+      }
+      await loadChats();
+      openPanel('history');
+    }
+  } catch (err) {
+    console.error("فشل حذف المحادثة:", err);
+  }
+}
+
+async function newChat() {
+  state.currentChatId = null;
+  localStorage.removeItem('currentChat');
+  renderMessages([]);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  MARKDOWN PARSER & HELPERS
+// ═══════════════════════════════════════════════════════════════════════════════
+function setPrompt(val) { inp = el('msgInput'); if(inp) { inp.value = val; inp.focus(); } }
+function scrollToBottom() { const c = el('chat'); if(c) c.scrollTop = c.scrollHeight; }
+function escapeHtml(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+function handleFileSelect(inp) {
+  state.files = Array.from(inp.files);
+  let h = '';
+  state.files.forEach((f, i) => {
+    h += `<div class="filechip">📄 ${f.name} <span class="x" onclick="removeAttachedFile(${i})">✕</span></div>`;
+  });
+  if(el('fileChips')) el('fileChips').innerHTML = h;
+}
+
+function removeAttachedFile(i) {
+  state.files.splice(i, 1);
+  let h = '';
+  state.files.forEach((f, i) => {
+    h += `<div class="filechip">📄 ${f.name} <span class="x" onclick="removeAttachedFile(${i})">✕</span></div>`;
+  });
+  if(el('fileChips')) el('fileChips').innerHTML = h;
+}
+
+function formatMarkdown(src) {
+  let html = escapeHtml(src);
+  
+  // Code Blocks
+  html = html.replace(/```([\s\S]*?)```/gm, (match, code) => {
+    const b64 = btoa(unescape(encodeURIComponent(code.trim())));
+    return `
+      <div class="cw2">
+        <div class="ch"><span>CODE</span>
+          <div class="ch-btns">
+            <button onclick="cpy(this, '${b64}')">📋 نسخ</button>
+            <button onclick="explainCode(this, '${b64}')">💡 اشرح لي</button>
+          </div>
+        </div>
+        <pre><code>${code.trim()}</code></pre>
+      </div>`;
   });
 
   // Inline code
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-  // Headers
-  html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-  html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-  html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-
-  // Bold & Italic
-  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-  // Blockquote
-  html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
-
-  // Line breaks
-  html = html.replace(/\n/g, '<br>');
-
+  // Bold
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  // Titles
+  html = html.replace(/^### (.*$)/gim, '<h3 style="margin:8px 0;color:var(--ac)">$1</h3>');
+  html = html.replace(/^## (.*$)/gim, '<h2 style="margin:10px 0;color:var(--ac2)">$1</h2>');
+  
   return html;
 }
 
 function cpy(btn, b64) {
-  const code = decodeURIComponent(escape(atob(b64)));
-  navigator.clipboard.writeText(code).then(() => {
-    btn.textContent = '✓ تم!';
-    setTimeout(() => btn.textContent = '📋 نسخ', 2000);
-  });
+  try {
+    const code = decodeURIComponent(escape(atob(b64)));
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = '✓ تم!';
+      setTimeout(() => btn.textContent = '📋 نسخ', 2000);
+    });
+  } catch (e) { console.error(e); }
 }
 
 function explainCode(btn, b64) {
-  const code = decodeURIComponent(escape(atob(b64)));
-  setPrompt(`اشرح لي هذا الكود:
+  try {
+    const code = decodeURIComponent(escape(atob(b64)));
+    setPrompt(`اشرح لي هذا الكود بالتفصيل والسطور المحددة:\n\n\`\`\`\n${code}\n\`\`\``);
+  } catch (e) { console.error(e); }
+}
 
-\`\`\`
-${code}
-\`\`\``);
+function runPreviewCode() {
+  const fr = el('pvframe');
+  if (!fr) return;
+  // محاولة البحث عن آخر كود HTML تم توليده في الشات لعرضه
+  const codes = document.querySelectorAll('pre code');
+  if (codes.length > 0) {
+    let lastHtml = '';
+    for (let i = codes.length - 1; i >= 0; i--) {
+      const txt = codes[i].innerText;
+      if (txt.includes('<!DOCTYPE') || txt.includes('<html') || txt.includes('<div')) {
+        lastHtml = txt;
+        break;
+      }
+    }
+    if (lastHtml) {
+      if(el('pvTitle')) el('pvTitle').textContent = "معاينة حية للكود المكتوب";
+      const doc = fr.contentWindow.document;
+      doc.open();
+      doc.write(lastHtml);
+      doc.close();
+      return;
+    }
+  }
+  if(el('pvTitle')) el('pvTitle').textContent = "لا يوجد كود واجهة جاهز للمعاينة الحالية";
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-  renderModels();
-  loadChats();
+  // محاولة تحميل البيانات الأساسية بشكل مستقل لمنع التجمد
+  try {
+    renderModels();
+  } catch (e) { console.error("خطأ في تشغيل النماذج البداية:", e); }
 
-  // Load current chat messages if exists
-  const savedChat = localStorage.getItem('currentChat');
-  if (savedChat) {
-    loadChat(savedChat).catch(() => {});
-  }
+  try {
+    loadChats();
+  } catch (e) { console.error("خطأ في تشغيل المحادثات البداية:", e); }
 
-  // Textarea auto-resize
-  el('msgInput').addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-  });
-
-  // Drag & drop
-  document.addEventListener('dragover', (e) => e.preventDefault());
-  document.addEventListener('drop', (e) => {
-    e.preventDefault();
-    if (e.dataTransfer.files.length) {
-      for (const f of e.dataTransfer.files) {
-        state.attachedFiles.push(f);
-      }
-      renderFileChips();
+  try {
+    const savedChat = localStorage.getItem('currentChat');
+    if (savedChat) {
+      loadChat(savedChat).catch(() => {});
     }
-  });
+  } catch (e) { console.error("خطأ في استرجاع كود المحادثة السابقة من localStorage:", e); }
+
+  // تفعيل مستمعات الأحداث لعناصر الإدخال والواجهة بشكل آمن تماماً
+  try {
+    const msgInp = el('msgInput');
+    if (msgInp) {
+      msgInp.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+      });
+    }
+  } catch (e) { console.error("خطأ في تعيين مستمع أحداث حقل الإدخال:", e); }
+
+  try {
+    document.addEventListener('click', (e) => {
+      const menu = el('ddMenu');
+      const btn = el('menuBtn');
+      if (menu && menu.classList.contains('show') && e.target !== btn && !btn.contains(e.target) && !menu.contains(e.target)) {
+        closeAll();
+      }
+    });
+  } catch (e) { console.error("خطأ في مستمع النقر العام:", e); }
 });
 </script>
 </body>
