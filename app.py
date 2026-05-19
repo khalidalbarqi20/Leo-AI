@@ -32,6 +32,7 @@ APP_PASSWORD:       str = os.getenv("APP_PASSWORD", "")
 AUTO_LOAD_REPO:     str = os.getenv("AUTO_LOAD_REPO", "")
 ALPHA_VANTAGE_KEY:  str = os.getenv("ALPHA_VANTAGE_KEY", "demo")
 NEWS_API_KEY:       str = os.getenv("NEWS_API_KEY", "")
+ANTHROPIC_API_KEY:  str = os.getenv("ANTHROPIC_API_KEY", "")
 
 # ── Session stores ─────────────────────────────────────────────────────────────
 admin_sessions:  set[str]               = set()
@@ -64,33 +65,17 @@ def gh_headers():
     if GITHUB_TOKEN: h["Authorization"] = f"token {GITHUB_TOKEN}"
     return h
 
-# ── Models — May 2026 ──────────────────────────────────────────────────────────
+# ── Models ─────────────────────────────────────────────────────────────────────
+CLAUDE_ID = "claude-sonnet-4-6"
+# Claude فقط — الوحيد والرئيسي
 MODELS = [
-    {"id":"qwen/qwen3-235b-a22b:free",           "name":"Qwen3 235B",      "desc":"الأقوى للكود • 128K",          "badge":"🥇","context":"128K","speed":"متوسط","tag":"أفضل للكود","vision":False,"strength":"code"},
-    {"id":"deepseek/deepseek-chat-v3-0324:free",  "name":"DeepSeek Chat V3","desc":"تفكير + كود ممتاز",            "badge":"🧠","context":"128K","speed":"متوسط","tag":"تفكير",     "vision":False,"strength":"reasoning"},
-    {"id":"meta-llama/llama-4-maverick:free",      "name":"Llama 4 Maverick","desc":"سريع + يقرأ الصور",           "badge":"🦙","context":"128K","speed":"سريع", "tag":"سريع",     "vision":True, "strength":"general"},
-    {"id":"google/gemini-2.5-pro-exp-03-25:free",  "name":"Gemini 2.5 Pro",  "desc":"الأذكى • مليون token",        "badge":"✨","context":"1M",  "speed":"متوسط","tag":"1M context","vision":True, "strength":"projects"},
-    {"id":"moonshotai/kimi-k2:free",               "name":"Kimi K2",          "desc":"بناء المشاريع الكاملة",      "badge":"🚀","context":"128K","speed":"متوسط","tag":"مشاريع",   "vision":False,"strength":"projects"},
-    {"id":"deepseek/deepseek-r1:free",             "name":"DeepSeek R1",      "desc":"تفكير عميق • debugging",     "badge":"🔍","context":"128K","speed":"بطيء", "tag":"reasoning","vision":False,"strength":"reasoning"},
-    {"id":"qwen/qwen2.5-vl-72b-instruct:free",    "name":"Qwen2.5 VL 72B",  "desc":"يقرأ الصور",                  "badge":"👁️","context":"128K","speed":"متوسط","tag":"يرى الصور","vision":True, "strength":"vision"},
-    {"id":"mistralai/devstral-small:free",         "name":"Devstral Small",   "desc":"للكود فقط • سريع",           "badge":"⚡","context":"128K","speed":"سريع", "tag":"كود سريع","vision":False,"strength":"code"},
+    {"id":CLAUDE_ID,"name":"Claude Sonnet 4.6","desc":"الأقوى • دائم التشغيل • 200K","badge":"👑","context":"200K","speed":"سريع","tag":"الرئيسي","vision":True,"strength":"code","provider":"anthropic"},
 ]
-VISION_IDS = [m["id"] for m in MODELS if m["vision"]]
-CODING_IDS  = [m["id"] for m in MODELS if not m["vision"]]
+VISION_IDS = [CLAUDE_ID]
+CODING_IDS = [CLAUDE_ID]
 
 def smart_route(prompt: str) -> str:
-    p = prompt.lower()
-    if any(w in p for w in ["صورة","صوره","image","screenshot","ارفع","انظر"]):
-        return "meta-llama/llama-4-maverick:free"
-    if any(w in p for w in ["لماذا","سبب","خطأ","error","bug","debug","حلل","why","analyze"]):
-        return "deepseek/deepseek-chat-v3-0324:free"
-    if any(w in p for w in ["مشروع كامل","منصة كاملة","full project","platform","هيكل كامل"]):
-        return "google/gemini-2.5-pro-exp-03-25:free"
-    if any(w in p for w in ["كود","code","html","css","js","dashboard","داشبورد","موقع","صفحة","بناء","build","لعبة","game"]):
-        return "qwen/qwen3-235b-a22b:free"
-    if len(prompt) < 80:
-        return "mistralai/devstral-small:free"
-    return MODELS[0]["id"]
+    return CLAUDE_ID
 
 # ── Free APIs ──────────────────────────────────────────────────────────────────
 FREE_APIS = {
@@ -838,112 +823,141 @@ async def chat_stream(request: Request, prompt: str = Form(...), model_id: str =
                        files: List[UploadFile] = File(default=[]), sid: str = Form("default"),
                        leo_session: str | None = Cookie(default=None)):
     if r := check_auth(leo_session): return r
-    if not OPENROUTER_API_KEY:
-        async def _e():
-            yield f"data: {json.dumps({'error':'OPENROUTER_API_KEY غير موجود في Render'})}\n\n"
-        return StreamingResponse(_e(), media_type="text/event-stream")
+    if not ANTHROPIC_API_KEY:
+        async def _no_key():
+            yield "data: " + json.dumps({"error": "ANTHROPIC_API_KEY غير موجود في Render — أضفه في Environment Variables"}) + "\n\n"
+        return StreamingResponse(_no_key(), media_type="text/event-stream")
 
     role = get_role(leo_session)
-    if role == "guest": sid = f"guest_{sid}"
+    if role == "guest":
+        sid = f"guest_{sid}"
 
-    valid_ids = [m["id"] for m in MODELS]
-    # Smart routing
-    if model_id == "auto" or not model_id or model_id not in valid_ids:
-        chosen = smart_route(prompt)
-    else:
-        chosen = model_id
-
-    user_text = prompt; img_parts = []; has_image = False; switched = False
+    user_text = prompt
+    img_parts = []
+    has_image = False
 
     real_files = [f for f in (files or []) if f and f.filename][:25]
     for f in real_files:
         try:
-            raw = await f.read(); mt = f.content_type or ""
+            raw = await f.read()
+            mt = f.content_type or ""
             if mt.startswith("image/"):
-                has_image = True; b64 = base64.b64encode(raw).decode()
-                img_parts.append({"type":"image_url","image_url":{"url":f"data:{mt};base64,{b64}"}})
+                has_image = True
+                b64 = base64.b64encode(raw).decode()
+                img_parts.append({"type": "image", "source": {"type": "base64", "media_type": mt, "data": b64}})
             else:
                 user_text += f"\n\n{read_file(f.filename, raw, mt)}"
-        except Exception as e: logger.error(f"File {f.filename}: {e}")
+        except Exception as e:
+            logger.error(f"File {f.filename}: {e}")
 
-    if has_image and not next((m for m in MODELS if m["id"]==chosen and m["vision"]), None):
-        chosen = VISION_IDS[0] if VISION_IDS else chosen; switched = True
-
-    ordered = VISION_IDS if has_image else ([chosen] + [mid for mid in CODING_IDS if mid != chosen])
-    chat_sessions.setdefault(sid, []); session = chat_sessions[sid]
-    stop_ev = asyncio.Event(); stop_flags[sid] = stop_ev
+    chat_sessions.setdefault(sid, [])
+    session = chat_sessions[sid]
+    stop_ev = asyncio.Event()
+    stop_flags[sid] = stop_ev
 
     sys_prompt = SYSTEM_PROMPT
     if role == "admin":
         ctx = build_project_ctx(sid)
-        if ctx: sys_prompt += "\n\n" + ctx
+        if ctx:
+            sys_prompt += "\n\n" + ctx
 
-    content_parts = [{"type":"text","text":user_text}] + img_parts
-    msg_content = content_parts if img_parts else user_text
-    messages = [{"role":"system","content":sys_prompt}] + session[-12:] + [{"role":"user","content":msg_content}]
-    hdrs = {"Authorization":f"Bearer {OPENROUTER_API_KEY}","Content-Type":"application/json",
-            "HTTP-Referer":"https://leo-ai.app","X-Title":"Leo-AI"}
+    # بناء رسائل Anthropic
+    an_messages = []
+    for m in session[-12:]:
+        an_messages.append({"role": m["role"], "content": m["content"]})
+
+    # الرسالة الحالية
+    if img_parts:
+        user_content = [{"type": "text", "text": user_text}] + img_parts
+    else:
+        user_content = user_text
+    an_messages.append({"role": "user", "content": user_content})
+
+    hdrs = {
+        "x-api-key": ANTHROPIC_API_KEY,
+        "Content-Type": "application/json",
+        "anthropic-version": "2023-06-01",
+    }
+    body = {
+        "model": "claude-sonnet-4-6",
+        "max_tokens": 8000,
+        "system": sys_prompt,
+        "messages": an_messages,
+        "stream": True,
+    }
 
     async def streamer():
-        full_text = ""; used_model = ordered[0] if ordered else chosen; last_err = ""
-        for mid in ordered:
-            if stop_ev.is_set(): break
-            try:
-                # Longer timeout for big projects
-                rt = 180.0 if any(w in prompt.lower() for w in ["مشروع كامل","full project","منصة كاملة"]) else 90.0
-                to = httpx.Timeout(connect=8.0, read=rt, write=10.0, pool=5.0)
-                async with httpx.AsyncClient(timeout=to) as client:
-                    async with client.stream("POST","https://openrouter.ai/api/v1/chat/completions",
-                        headers=hdrs, json={"model":mid,"messages":messages,"temperature":0.3,"max_tokens":8000,"stream":True}) as resp:
-                        if resp.status_code != 200:
-                            body = await resp.aread()
-                            try: last_err = json.loads(body).get("error",{}).get("message","")
-                            except: last_err = body.decode(errors="replace")[:200]
-                            continue
-                        used_model = mid; buf = ""; got_first = False
+        full_text = ""
+        last_err = ""
+        got_first = False
+        try:
+            rt = 180.0 if any(w in prompt.lower() for w in ["مشروع كامل", "full project", "منصة كاملة"]) else 90.0
+            to = httpx.Timeout(connect=8.0, read=rt, write=10.0, pool=5.0)
+            async with httpx.AsyncClient(timeout=to) as client:
+                async with client.stream("POST", "https://api.anthropic.com/v1/messages",
+                                         headers=hdrs, json=body) as resp:
+                    if resp.status_code != 200:
+                        err_body = await resp.aread()
+                        try:
+                            last_err = json.loads(err_body).get("error", {}).get("message", "")
+                        except:
+                            last_err = err_body.decode(errors="replace")[:300]
+                        full_text = f"❌ خطأ من Claude API: {last_err}"
+                        yield "data: " + json.dumps({"token": full_text}) + "\n\n"
+                    else:
+                        buf = ""
                         async for chunk in resp.aiter_text():
-                            if stop_ev.is_set(): break
-                            buf += chunk; lines = buf.split("\n"); buf = lines.pop()
-                            for line in lines:
+                            if stop_ev.is_set():
+                                break
+                            buf += chunk
+                            events = buf.split("\n")
+                            buf = events.pop()
+                            for line in events:
                                 line = line.strip()
-                                if not line.startswith("data:"): continue
+                                if not line.startswith("data:"):
+                                    continue
                                 ds = line[5:].strip()
-                                if ds == "[DONE]": break
                                 try:
-                                    delta = json.loads(ds)["choices"][0]["delta"].get("content","")
-                                    if delta:
-                                        if not got_first: got_first=True; yield f"data: {json.dumps({'first':True})}\n\n"
-                                        full_text += delta; yield f"data: {json.dumps({'token':delta})}\n\n"
-                                except: continue
-                break
-            except httpx.ReadTimeout: last_err = "timeout"; continue
-            except asyncio.CancelledError: break
-            except Exception as exc: last_err = str(exc); continue
+                                    ev = json.loads(ds)
+                                    if ev.get("type") == "content_block_delta":
+                                        delta = ev.get("delta", {}).get("text", "")
+                                        if delta:
+                                            if not got_first:
+                                                got_first = True
+                                                yield "data: " + json.dumps({"first": True}) + "\n\n"
+                                            full_text += delta
+                                            yield "data: " + json.dumps({"token": delta}) + "\n\n"
+                                except:
+                                    continue
+        except httpx.ReadTimeout:
+            full_text = "⏱️ **انتهت مهلة الانتظار**\n\n- اضغط 🔄 وأرسل مرة أخرى\n- قسّم الطلب لأجزاء أصغر"
+            yield "data: " + json.dumps({"token": full_text}) + "\n\n"
+        except Exception as exc:
+            full_text = f"⚠️ **خطأ في الاتصال**\n\n`{str(exc)[:200]}`\n\n- اضغط 🔄 إعادة الاتصال"
+            yield "data: " + json.dumps({"token": full_text}) + "\n\n"
 
-        if stop_ev.is_set() and full_text: full_text += "\n\n*(⏹ توقف)*"
-        if not full_text:
-            if "timeout" in last_err.lower():
-                full_text = "⏱️ **انتهت مهلة الانتظار**\n\n- اضغط 🔄 وأرسل مرة أخرى\n- أو قسّم الطلب إلى أجزاء أصغر\n- أو اختر موديلاً أسرع (⚡ Devstral)"
-            elif "No endpoints" in last_err or "not found" in last_err.lower():
-                full_text = "🤖 **الموديل المختار غير متاح**\n\n- اختر موديلاً آخر من القائمة\n- أو افتح ☰ > 🔔 التنبيهات لمعرفة الشغّال"
-            else:
-                full_text = f"⚠️ **تعذّر الحصول على رد**\n\nالخطأ: `{last_err[:150]}`\n\n- اضغط 🔄 إعادة الاتصال\n- جرّب موديلاً مختلفاً"
-            yield f"data: {json.dumps({'token':full_text})}\n\n"
+        if stop_ev.is_set() and full_text:
+            full_text += "\n\n*(⏹ توقف)*"
 
-        session.append({"role":"user","content":prompt})
-        session.append({"role":"assistant","content":full_text})
+        session.append({"role": "user", "content": prompt})
+        session.append({"role": "assistant", "content": full_text})
         files_found = extract_files(full_text)
         generated_files.setdefault(sid, {}).update(files_found)
         files_b64 = {n: base64.b64encode(c.encode()).decode() for n, c in files_found.items()}
-        used_name = next((m["name"] for m in MODELS if m["id"]==used_model), "")
-        yield f"data: {json.dumps({'done':True,'html':markdown_to_html(full_text),'files':files_b64,'used_model':used_name,'switched':switched,'raw':full_text,'role':role})}\n\n"
+        yield "data: " + json.dumps({
+            "done": True,
+            "html": markdown_to_html(full_text),
+            "files": files_b64,
+            "used_model": "Claude Sonnet 4.6",
+            "switched": False,
+            "raw": full_text,
+            "role": role,
+        }) + "\n\n"
 
     return StreamingResponse(streamer(), media_type="text/event-stream",
-                             headers={"Cache-Control":"no-cache","X-Accel-Buffering":"no"})
+                             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
-# ══════════════════════════════════════════════════════════════════════════════
-# COMMON ROUTES
-# ══════════════════════════════════════════════════════════════════════════════
+
 @app.post("/stop")
 async def stop(sid: str = Form("default"), leo_session: str | None = Cookie(default=None)):
     if r := check_auth(leo_session): return r
@@ -1012,4 +1026,10 @@ async def generate_image(prompt: str = Form(...), size: str = Form("1024x1024"),
 
 @app.get("/health")
 async def health():
-    return JSONResponse({"status":"ok","version":"9.0.0","models":len(MODELS)})
+    return JSONResponse({
+        "status": "ok",
+        "version": "9.1.0-claude-only",
+        "models": len(MODELS),
+        "model_names": [m["name"] for m in MODELS],
+        "claude_ready": bool(ANTHROPIC_API_KEY),
+    })
