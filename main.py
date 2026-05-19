@@ -1,5 +1,5 @@
 """
-Leo-AI v7 — Dual Account System with SQLite Persistence
+Leo-AI v7.1 — Dual Account System with SQLite Persistence
 - Admin: password login → full access (GitHub, project memory, all features)
 - Guest: no password → limited access (chat only, no GitHub, saves locally)
 - All chats persist in SQLite
@@ -10,18 +10,16 @@ Leo-AI v7 — Dual Account System with SQLite Persistence
 """
 
 import os, base64, logging, re, zipfile, io, json, sqlite3, uuid, hashlib, time, secrets
-from markupsafe import Markup
 import urllib.parse, asyncio
 from datetime import datetime
 from contextlib import contextmanager
 
 import httpx
-from fastapi import FastAPI, Request, Form, UploadFile, File, Cookie, Depends
+from fastapi import FastAPI, Request, Form, UploadFile, File, Cookie
 from fastapi.responses import (HTMLResponse, Response, JSONResponse,
                                 StreamingResponse, RedirectResponse)
 from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
-from typing import List, Optional
+from typing import List
 
 try:
     from pypdf import PdfReader
@@ -40,8 +38,6 @@ DB_PATH = os.path.join(BASE_DIR, "leo_ai.db")
 
 os.makedirs(TEMPLATES_DIR, exist_ok=True)
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
-# Enable autoescape for security, but use |safe filter for trusted data
-templates.env.autoescape = True
 
 OPENROUTER_API_KEY: str | None = os.getenv("OPENROUTER_API_KEY")
 GITHUB_TOKEN:       str | None = os.getenv("GITHUB_TOKEN")
@@ -147,14 +143,11 @@ def gh_headers() -> dict:
 def generate_title(text: str) -> str:
     """Generate a title from the first user message."""
     text = text.strip()
-    # Remove code blocks
     text = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
-    # Remove special chars
     text = re.sub(r"[#*`\[\]_]", "", text)
     text = text.strip()
     if not text:
         return "محادثة جديدة"
-    # Take first 30 chars
     title = text[:30].strip()
     if len(text) > 30:
         title += "..."
@@ -212,7 +205,16 @@ SYSTEM_PROMPT_GUEST = """You are a helpful AI coding assistant. Help the user wr
 """
 
 # ── Models ────────────────────────────────────────────────────────────────────
-MODELS: list[dict] = [{"id": "deepseek/deepseek-chat-v3-0324:free", "name": "DeepSeek Chat V3", "desc": "أفضل للمحادثة العامة • 64K", "badge": "💬", "context": "64K", "speed": "سريع", "tag": "محادثة", "vision": False, "strength": "general"}, {"id": "deepseek/deepseek-r1:free", "name": "DeepSeek R1", "desc": "تفكير عميق • debugging", "badge": "🧠", "context": "128K", "speed": "بطيء", "tag": "تفكير عميق", "vision": False, "strength": "reasoning"}, {"id": "meta-llama/llama-4-maverick:free", "name": "Llama 4 Maverick", "desc": "أداء قوي عام", "badge": "🦙", "context": "128K", "speed": "متوسط", "tag": "عام", "vision": False, "strength": "general"}, {"id": "qwen/qwen3-235b-a22b:free", "name": "Qwen3 235B", "desc": "قوي للكود والمنطق", "badge": "🥇", "context": "128K", "speed": "متوسط", "tag": "كود + منطق", "vision": False, "strength": "code"}, {"id": "openai/gpt-oss-120b:free", "name": "GPT-OSS 120B", "desc": "نموذج مفتوح من OpenAI", "badge": "⚡", "context": "128K", "speed": "متوسط", "tag": "عام", "vision": False, "strength": "general"}, {"id": "nvidia/nemotron-nano-12b-v2-vl:free", "name": "Nemotron Nano 2 VL", "desc": "يرى الصور والفيديو", "badge": "👁️", "context": "128K", "speed": "سريع", "tag": "يرى الصور", "vision": True, "strength": "vision"}, {"id": "openrouter/owl-alpha:free", "name": "Owl Alpha", "desc": "وكيل ذكي • أدوات", "badge": "🦉", "context": "1M", "speed": "متوسط", "tag": "وكيل", "vision": False, "strength": "agent"}, {"id": "openrouter/pareto-code:free", "name": "Pareto Code", "desc": "أفضل للبرمجة تلقائياً", "badge": "💻", "context": "2M", "speed": "سريع", "tag": "كود تلقائي", "vision": False, "strength": "code"}]
+MODELS: list[dict] = [
+    {"id":"deepseek/deepseek-chat-v3-0324:free","name":"DeepSeek Chat V3","desc":"أفضل للمحادثة العامة • 64K","badge":"💬","context":"64K","speed":"سريع","tag":"محادثة","vision":False,"strength":"general"},
+    {"id":"deepseek/deepseek-r1:free","name":"DeepSeek R1","desc":"تفكير عميق • debugging","badge":"🧠","context":"128K","speed":"بطيء","tag":"تفكير عميق","vision":False,"strength":"reasoning"},
+    {"id":"meta-llama/llama-4-maverick:free","name":"Llama 4 Maverick","desc":"أداء قوي عام","badge":"🦙","context":"128K","speed":"متوسط","tag":"عام","vision":False,"strength":"general"},
+    {"id":"qwen/qwen3-235b-a22b:free","name":"Qwen3 235B","desc":"قوي للكود والمنطق","badge":"🥇","context":"128K","speed":"متوسط","tag":"كود + منطق","vision":False,"strength":"code"},
+    {"id":"openai/gpt-oss-120b:free","name":"GPT-OSS 120B","desc":"نموذج مفتوح من OpenAI","badge":"⚡","context":"128K","speed":"متوسط","tag":"عام","vision":False,"strength":"general"},
+    {"id":"nvidia/nemotron-nano-12b-v2-vl:free","name":"Nemotron Nano 2 VL","desc":"يرى الصور والفيديو","badge":"👁️","context":"128K","speed":"سريع","tag":"يرى الصور","vision":True,"strength":"vision"},
+    {"id":"openrouter/owl-alpha:free","name":"Owl Alpha","desc":"وكيل ذكي • أدوات","badge":"🦉","context":"1M","speed":"متوسط","tag":"وكيل","vision":False,"strength":"agent"},
+    {"id":"openrouter/pareto-code:free","name":"Pareto Code","desc":"أفضل للبرمجة تلقائياً","badge":"💻","context":"2M","speed":"سريع","tag":"كود تلقائي","vision":False,"strength":"code"},
+]
 VISION_IDS = [m["id"] for m in MODELS if m["vision"]]
 CODING_IDS = [m["id"] for m in MODELS if not m["vision"]]
 
@@ -614,7 +616,6 @@ async def github_review(owner:str=Form(...), repo:str=Form(...), branch:str=Form
     chosen=model_id if model_id in valid_ids else MODELS[0]["id"]
     ordered=[chosen]+[mid for mid in CODING_IDS if mid!=chosen]
 
-    # Load chat history
     messages_history = get_chat_messages(chat_id)[-10:]
 
     stop_ev=asyncio.Event(); stop_flags[chat_id]=stop_ev
@@ -654,7 +655,6 @@ async def github_review(owner:str=Form(...), repo:str=Form(...), branch:str=Form
             except: continue
         if not full_text: full_text=f"⚠️ فشل: {last_err}"; yield f"data: {json.dumps({'token':full_text})}\n\n"
 
-        # Save to DB
         with get_db() as conn:
             conn.execute("INSERT INTO messages (chat_id, role, content, model) VALUES (?, ?, ?, ?)",
                         (chat_id, "user", review_prompt, chosen))
@@ -739,12 +739,10 @@ async def chat_stream(request:Request, prompt:str=Form(...), model_id:str=Form(N
 
     ordered=VISION_IDS if has_image else ([chosen]+[mid for mid in CODING_IDS if mid!=chosen])
 
-    # Load history from DB
     messages_history = get_chat_messages(chat_id)[-10:]
 
     stop_ev=asyncio.Event(); stop_flags[chat_id]=stop_ev
 
-    # System prompt differs by role
     sys_prompt=SYSTEM_PROMPT_ADMIN if role=="admin" else SYSTEM_PROMPT_GUEST
     if role=="admin":
         project_ctx=build_project_context(leo_session)
@@ -756,7 +754,6 @@ async def chat_stream(request:Request, prompt:str=Form(...), model_id:str=Form(N
     hdrs={"Authorization":f"Bearer {OPENROUTER_API_KEY}","Content-Type":"application/json",
           "HTTP-Referer":"https://leo-ai.app","X-Title":"Leo-AI"}
 
-    # Auto-generate title if first message
     is_first = len(messages_history) == 0
     auto_title = generate_title(prompt) if is_first else None
 
@@ -797,21 +794,18 @@ async def chat_stream(request:Request, prompt:str=Form(...), model_id:str=Form(N
         if stop_ev.is_set() and full_text: full_text+="\n\n*(⏹ توقف)*"
         if not full_text: full_text=f"⚠️ فشلت كل النماذج.\n\nالخطأ: `{last_err}`"; yield f"data: {json.dumps({'token':full_text})}\n\n"
 
-        # Save to SQLite
         with get_db() as conn:
             conn.execute("INSERT INTO messages (chat_id, role, content, model) VALUES (?, ?, ?, ?)",
                         (chat_id, "user", prompt, chosen))
             conn.execute("INSERT INTO messages (chat_id, role, content, model) VALUES (?, ?, ?, ?)",
                         (chat_id, "assistant", full_text, used_model))
 
-            # Update chat title if first message
             if auto_title:
                 conn.execute("UPDATE chats SET title = ? WHERE id = ?", (auto_title, chat_id))
 
             conn.execute("UPDATE chats SET updated_at = CURRENT_TIMESTAMP WHERE id = ?", (chat_id,))
 
         files_found=extract_files(full_text)
-        # Save generated files
         with get_db() as conn:
             for fname, content in files_found.items():
                 conn.execute("""INSERT INTO generated_files (chat_id, filename, content) VALUES (?, ?, ?)
@@ -898,7 +892,7 @@ h1,h2,h3{{color:#19c37d}}strong{{color:#fff}}
 <div style="background:#171717;padding:12px 16px;border-radius:10px;margin-bottom:20px;display:flex;justify-content:space-between">
 <span style="color:#19c37d;font-weight:700">🚀 Leo-AI — {chat['title']}</span>
 <span style="color:#8e8ea0;font-size:12px">محادثة مشتركة</span></div>
-{chat['html']}</body></html>"")
+{chat['html']}</body></html>""")
 
 @app.post("/generate-image")
 async def generate_image(prompt:str=Form(...),size:str=Form("1024x1024"),model:str=Form("flux"),
